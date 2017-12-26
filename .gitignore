@@ -1,5 +1,11 @@
+# General
 target/
 .classpath
 .project
 .settings
 .DS_Store
+
+# Intellij
+.idea/
+*.iml
+*.iws
