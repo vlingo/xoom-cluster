@@ -44,7 +44,7 @@ health conditions will be reported to the registered ClusterApplication.
 You can see how to configure your own ClusterApplication by changing
 the vlingo-cluster.properties file:
 
-  # classname of client/application
+  \# classname of client/application
   cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor
 
 Have fun!
