@@ -7,8 +7,8 @@
 
 package io.vlingo.cluster.model.application.attributes;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class AttributeSet {
   public final String name;
@@ -18,7 +18,7 @@ public final class AttributeSet {
     return new AttributeSet(name);
   }
   
-  protected TrackedAttribute addIfAbsent(final Attribute attribute) {
+  protected TrackedAttribute addIfAbsent(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isAbsent()) {
@@ -36,7 +36,7 @@ public final class AttributeSet {
     return find(name);
   }
   
-  protected TrackedAttribute remove(final Attribute attribute) {
+  protected TrackedAttribute remove(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {
@@ -46,22 +46,46 @@ public final class AttributeSet {
     return maybeAttribute;
   }
   
-  protected TrackedAttribute replace(final Attribute attribute) {
+  protected TrackedAttribute replace(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {
-      return attributes.remove(maybeAttribute.id);
+      final TrackedAttribute newlyTracked = maybeAttribute.withAttribute(attribute);
+      attributes.put(maybeAttribute.id, newlyTracked);
+      return newlyTracked;
     }
     
     return maybeAttribute;
+  }
+
+  @Override
+  public int hashCode() {
+    return 31 * this.name.hashCode() + this.attributes.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other == null || other.getClass() != AttributeSet.class) {
+      return false;
+    }
+    
+    AttributeSet otherAttributeSet = (AttributeSet) other;
+    
+    return this.name.equals(otherAttributeSet.name) &&
+            this.attributes.equals(otherAttributeSet.attributes);
+  }
+
+  @Override
+  public String toString() {
+    return "AttributeSet[name=" + this.name + ", attributes=[" + this.attributes + "]]";
   }
   
   private AttributeSet(final String name) {
     this.name = name;
-    this.attributes = new HashMap<>();
+    this.attributes = new ConcurrentHashMap<>(128, 0.75f, 16);
   }
   
-  private TrackedAttribute find(final Attribute attribute) {
+  private TrackedAttribute find(final Attribute<?> attribute) {
     return find(attribute.name);
   }
   
@@ -72,6 +96,6 @@ public final class AttributeSet {
       }
     }
     
-    return TrackedAttribute.absent;
+    return TrackedAttribute.Absent;
   }
 }

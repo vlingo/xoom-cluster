@@ -10,13 +10,13 @@ package io.vlingo.cluster.model.application.attributes;
 import java.util.UUID;
 
 final class TrackedAttribute {
-  protected static final TrackedAttribute absent = new TrackedAttribute(null);
+  protected static final TrackedAttribute Absent = new TrackedAttribute(null);
   
-  protected final Attribute attribute;
+  protected final Attribute<?> attribute;
   protected final boolean distributed;
   protected final String id;
   
-  protected static TrackedAttribute of(final Attribute attribute) {
+  protected static TrackedAttribute of(final Attribute<?> attribute) {
     return new TrackedAttribute(attribute);
   }
   
@@ -32,17 +32,40 @@ final class TrackedAttribute {
     return !isAbsent();
   }
   
-  protected TrackedAttribute withAttribute(final Attribute attribute) {
+  protected TrackedAttribute withAttribute(final Attribute<?> attribute) {
     return new TrackedAttribute(this.id, attribute, false);
   }
-  
-  private TrackedAttribute(final Attribute attribute) {
+
+  @Override
+  public int hashCode() {
+    return 31 * this.attribute.hashCode() + Boolean.hashCode(this.distributed) + this.id.hashCode();
+  }
+
+  @Override
+  public boolean equals(final Object other) {
+    if (other == null || other.getClass() != TrackedAttribute.class) {
+      return false;
+    }
+    
+    TrackedAttribute otherTracked = (TrackedAttribute) other;
+    
+    return this.attribute.equals(otherTracked.attribute) &&
+            this.distributed == otherTracked.distributed &&
+            this.id.equals(otherTracked.id);
+  }
+
+  @Override
+  public String toString() {
+    return "Attribute[attribute=" + this.attribute + ", distributed=" + this.distributed + ", id=" + this.id + "]";
+  }
+
+  private TrackedAttribute(final Attribute<?> attribute) {
     this.attribute = attribute;
     this.distributed = false;
-    this.id = UUID.randomUUID().toString();
+    this.id = attribute == null ? null : UUID.randomUUID().toString();
   }
   
-  private TrackedAttribute(final String id, final Attribute attribute, final boolean distributed) {
+  private TrackedAttribute(final String id, final Attribute<?> attribute, final boolean distributed) {
     this.attribute = attribute;
     this.distributed = distributed;
     this.id = id;

@@ -7,63 +7,74 @@
 
 package io.vlingo.cluster.model.application.attributes;
 
-public final class Attribute {
+public final class Attribute<T> {
   public static enum Type {
-    Byte,
-    Short,
-    Integer,
-    Long,
-    Character,
-    Float,
-    Double,
-    Boolean,
-    String
+    Byte { @Override public boolean isByte() { return true; } },
+    Short { @Override public boolean isShort() { return true; } },
+    Integer { @Override public boolean isInteger() { return true; } },
+    Long { @Override public boolean isLong() { return true; } },
+    Character { @Override public boolean isCharacter() { return true; } },
+    Float { @Override public boolean isFloat() { return true; } },
+    Double { @Override public boolean isDouble() { return true; } },
+    Boolean { @Override public boolean isBoolean() { return true; } },
+    String { @Override public boolean isString() { return true; } };
+    
+    public boolean isByte() { return false; }
+    public boolean isShort() { return false; }
+    public boolean isInteger() { return false; }
+    public boolean isLong() { return false; }
+    public boolean isCharacter() { return false; }
+    public boolean isFloat() { return false; }
+    public boolean isDouble() { return false; }
+    public boolean isBoolean() { return false; }
+    public boolean isString() { return false; }
+  }
+  
+  public static <T> Attribute<T> from(final String name, final T value) {
+    return new Attribute<T>(name, value, typeOf(value.getClass()));
+  }
+  
+  private static Type typeOf(final Class<?> type) {
+    switch (type.getName()) {
+    case "java.lang.String":
+      return Type.String;
+    case "int":
+    case "java.lang.Integer":
+      return Type.Integer;
+    case "long":
+    case "java.lang.Long":
+      return Type.Long;
+    case "boolean":
+    case "java.lang.Boolean":
+      return Type.Boolean;
+    case "byte":
+    case "java.lang.Byte":
+      return Type.Byte;
+    case "double":
+    case "java.lang.Double":
+      return Type.Double;
+    case "float":
+    case "java.lang.Float":
+      return Type.Float;
+    case "short":
+    case "java.lang.Short":
+      return Type.Short;
+    case "char":
+    case "java.lang.Character":
+      return Type.Character;
+    }
+    
+    throw new IllegalArgumentException("The type '" + type.getName() + "' is not recognized.");
   }
   
   public final String name;
   public final Type type;
-  public final String value;
+  public final T value;
   
-  public Attribute(final String name, final String value, final Type type) {
+  public Attribute(final String name, final T value, final Type type) {
     this.name = name;
     this.value = value;
     this.type = type;
-  }
-
-  public byte toByteValue() {
-    return (byte) Integer.parseInt(value);
-  }
-
-  public short toShortValue() {
-    return Short.parseShort(value);
-  }
-
-  public int toIntegerValue() {
-    return Integer.parseInt(value);
-  }
-
-  public long toLongValue() {
-    return Long.parseLong(value);
-  }
-
-  public char toCharacterValue() {
-    return value.charAt(0);
-  }
-
-  public float toFloatValue() {
-    return Float.parseFloat(value);
-  }
-
-  public double toDoubleValue() {
-    return Double.parseDouble(value);
-  }
-
-  public boolean toBooleanValue() {
-    return Boolean.parseBoolean(value);
-  }
-
-  public String toStringValue() {
-    return value;
   }
 
   @Override
@@ -72,12 +83,13 @@ public final class Attribute {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   public boolean equals(final Object other) {
     if (other == null || other.getClass() != Attribute.class) {
       return false;
     }
     
-    Attribute otherAttribute = (Attribute) other;
+    Attribute<T> otherAttribute = (Attribute<T>) other;
     
     return this.name.equals(otherAttribute.name) &&
             this.value.equals(otherAttribute.value) &&
@@ -86,6 +98,6 @@ public final class Attribute {
 
   @Override
   public String toString() {
-    return "Attribute[name=" + this.name + ", value=" + this.value + ", type" + this.type + "]";
+    return "Attribute[name=" + this.name + ", value=" + this.value + ", type=" + this.type + "]";
   }
 }
