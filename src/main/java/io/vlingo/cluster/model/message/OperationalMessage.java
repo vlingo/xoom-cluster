@@ -13,12 +13,17 @@ import io.vlingo.common.message.Message;
 public abstract class OperationalMessage implements Message {
 
   /**
+   * APP<lf>id=x nm=name<lf>...
+   */
+  public static final String APP = "APP";
+
+  /**
    * CHECKHEALTH<lf>id=x ***internal only*** to check health
    */
   public static final String CHECKHEALTH = "CHECKHEALTH";
 
   /**
-   * DIR=<lf>id=x nm=name<lf>addr=...<lf>...
+   * DIR<lf>id=x nm=name<lf>addr=...<lf>...
    */
   public static final String DIR = "DIR";
 
@@ -68,7 +73,9 @@ public abstract class OperationalMessage implements Message {
    * @return OperationalMessage
    */
   public static OperationalMessage messageFrom(final String content) {
-    if (content.startsWith(DIR)) {
+    if (content.startsWith(APP)) {
+      return ApplicationSaid.from(content);
+    } else if (content.startsWith(DIR)) {
       return Directory.from(content);
     } else if (content.startsWith(ELECT)) {
       return Elect.from(content);
@@ -91,6 +98,10 @@ public abstract class OperationalMessage implements Message {
   }
 
   protected final Id id;
+
+  public boolean isApp() {
+    return false;
+  }
 
   public boolean isDirectory() {
     return false;

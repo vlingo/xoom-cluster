@@ -63,6 +63,16 @@ class OperationalMessagePartsBuilder {
     return nameFromRecord(parts[1]);
   }
 
+  public static String payloadFrom(String content) {
+    final String[] parts = content.split("\n");
+
+    if (parts.length < 3) {
+      return "";
+    }
+
+    return parts[2];
+  }
+
   private static final Address addressFromRecord(final String record, final AddressType type) {
     final String text = parseField(record, type == AddressType.OP ? "op=" : "msg=");
 

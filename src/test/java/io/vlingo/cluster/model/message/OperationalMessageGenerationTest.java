@@ -7,6 +7,7 @@
 
 package io.vlingo.cluster.model.message;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.nio.ByteBuffer;
@@ -27,6 +28,21 @@ public class OperationalMessageGenerationTest {
   private static final int BYTES = 4096;
   private ByteBuffer expectedBuffer = ByteBuffer.allocate(BYTES);
   private ByteBuffer messageBuffer = ByteBuffer.allocate(BYTES);
+
+  @Test
+  public void testGenerateApplicationSaidMessage() {
+    final Id id = Id.of(1);
+    final Name name = new Name("node1");
+    final String payload = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis risus quis nulla blandit, a euismod massa egestas. Vivamus facilisis.";
+    
+    final ApplicationSaid app = new ApplicationSaid(id, name, payload);
+    final String raw = OperationalMessage.APP + "\n" + "id=1 nm=node1\n" + payload;
+    expectedBuffer.put(Converters.textToBytes(raw));
+    MessageConverters.messageToBytes(app, messageBuffer);
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(app, ApplicationSaid.from(raw));
+  }
 
   @Test
   public void testGenerateDirectoryMessge() {
@@ -51,20 +67,27 @@ public class OperationalMessageGenerationTest {
         Address.from(appAddresses[3], AddressType.APP)));
     Directory dir = new Directory(Id.of(1), new Name("node1"), nodeEntries);
     MessageConverters.messageToBytes(dir, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.DIR + "\n"
-        + "id=1 nm=node1\n"
-        + "id=1 nm=node1 op=" + opAddresses[1] + " msg=" + appAddresses[1] + "\n"
-        + "id=2 nm=node2 op=" + opAddresses[2] + " msg=" + appAddresses[2] + "\n"
-        + "id=3 nm=node3 op=" + opAddresses[3] + " msg=" + appAddresses[3]));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw =
+            OperationalMessage.DIR + "\n"
+                    + "id=1 nm=node1\n"
+                    + "id=1 nm=node1 op=" + opAddresses[1] + " msg=" + appAddresses[1] + "\n"
+                    + "id=2 nm=node2 op=" + opAddresses[2] + " msg=" + appAddresses[2] + "\n"
+                    + "id=3 nm=node3 op=" + opAddresses[3] + " msg=" + appAddresses[3];
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(dir, Directory.from(raw));
   }
 
   @Test
   public void testGenerateElectMessage() {
     Elect elect = new Elect(Id.of(1));
     MessageConverters.messageToBytes(elect, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.ELECT + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.ELECT + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(elect, Elect.from(raw));
   }
 
   @Test
@@ -75,56 +98,77 @@ public class OperationalMessageGenerationTest {
         Address.from("localhost:37371", AddressType.OP),
         Address.from("localhost:37372", AddressType.APP)));
     MessageConverters.messageToBytes(join, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:37371 msg=localhost:37372"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:37371 msg=localhost:37372";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(join, Join.from(raw));
   }
 
   @Test
   public void testGenerateLeaderMessage() {
     Leader leader = new Leader(Id.of(1));
     MessageConverters.messageToBytes(leader, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.LEADER + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.LEADER + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(leader, Leader.from(raw));
   }
 
   @Test
   public void testGenerateLeaveMessage() {
     Leave leave = new Leave(Id.of(1));
     MessageConverters.messageToBytes(leave, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.LEAVE + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.LEAVE + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(leave, Leave.from(raw));
   }
 
   @Test
   public void testGeneratePingMessage() {
     Ping ping = new Ping(Id.of(1));
     MessageConverters.messageToBytes(ping, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.PING + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.PING + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(ping, Ping.from(raw));
   }
 
   @Test
   public void testGeneratePulseMessage() {
     Pulse pulse = new Pulse(Id.of(1));
     MessageConverters.messageToBytes(pulse, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.PULSE + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.PULSE + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(pulse, Pulse.from(raw));
   }
 
   @Test
   public void testGenerateSplitMessage() {
     Split split = new Split(Id.of(1));
     MessageConverters.messageToBytes(split, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.SPLIT + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.SPLIT + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(split, Split.from(raw));
   }
 
   @Test
   public void testGenerateVoteMessage() {
     Vote vote = new Vote(Id.of(1));
     MessageConverters.messageToBytes(vote, messageBuffer);
-    expectedBuffer.put(Converters.textToBytes(OperationalMessage.VOTE + "\nid=1"));
-    assertEquals(expectedBuffer, messageBuffer);
+    final String raw = OperationalMessage.VOTE + "\nid=1";
+    expectedBuffer.put(Converters.textToBytes(raw));
+    assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
+    
+    assertEquals(vote, Vote.from(raw));
   }
 
   @Before
