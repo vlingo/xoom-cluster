@@ -80,22 +80,22 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
   }
 
   @Override
-  public void informAttributesClient(AttributesClient client) {
+  public void informAttributesClient(final AttributesClient client) {
   }
 
   @Override
-  public void informAttributeSetCreated(String attributeSetName) {
+  public void informAttributeSetCreated(final String attributeSetName) {
   }
 
   @Override
-  public void informAttributeAdded(String attributeSetName, String attributeName) {
+  public void informAttributeAdded(final String attributeSetName, final String attributeName) {
   }
 
   @Override
-  public void informAttributeRemoved(String attributeSetName, String attributeName) {
+  public void informAttributeRemoved(final String attributeSetName, final String attributeName) {
   }
 
   @Override
-  public void informAttributeReplaced(String attributeSetName, String attributeName) {
+  public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
   }
 }
