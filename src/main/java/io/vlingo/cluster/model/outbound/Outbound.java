@@ -42,7 +42,11 @@ public class Outbound {
 
   protected void broadcast(final Collection<Node> selectNodes, final RawMessage message) {
     final PooledByteBuffer buffer = pool.access();
-    broadcast(provider.channelsFor(selectNodes), bytesFrom(message, buffer));
+    broadcast(selectNodes, bytesFrom(message, buffer));
+  }
+
+  protected void broadcast(final Collection<Node> selectNodes, final PooledByteBuffer buffer) {
+    broadcast(provider.channelsFor(selectNodes), buffer);
   }
 
   protected PooledByteBuffer bytesFrom(final RawMessage message, final PooledByteBuffer buffer) {

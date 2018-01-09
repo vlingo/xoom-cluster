@@ -5,10 +5,9 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
@@ -26,6 +25,19 @@ public class AttributeSetRepositoryTest {
     assertEquals(set1, repository.attributeSetOf("add"));
   }
   
+  @Test
+  public void testAll() {
+    final AttributeSet set1 = attributeSetFixture("set1");
+    final AttributeSet set2 = attributeSetFixture("set2");
+    final AttributeSet set3 = attributeSetFixture("set3");
+    
+    repository.add(set1);
+    repository.add(set2);
+    repository.add(set3);
+    
+    assertEquals(3, repository.all().size());
+  }
+
   @Test
   public void testAttributeSetOf() {
     final AttributeSet set1 = attributeSetFixture("set1");
@@ -52,19 +64,19 @@ public class AttributeSetRepositoryTest {
     repository.add(set3);
     
     repository.remove("set1");
-    assertNull(repository.attributeSetOf("set1"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set1"));
     assertNotNull(repository.attributeSetOf("set2"));
     assertNotNull(repository.attributeSetOf("set3"));
     
     repository.remove("set2");
-    assertNull(repository.attributeSetOf("set1"));
-    assertNull(repository.attributeSetOf("set2"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set1"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set2"));
     assertNotNull(repository.attributeSetOf("set3"));
     
     repository.remove("set3");
-    assertNull(repository.attributeSetOf("set1"));
-    assertNull(repository.attributeSetOf("set2"));
-    assertNull(repository.attributeSetOf("set3"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set1"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set2"));
+    assertEquals(AttributeSet.None, repository.attributeSetOf("set3"));
   }
   
   private AttributeSet attributeSetFixture(final String name) {

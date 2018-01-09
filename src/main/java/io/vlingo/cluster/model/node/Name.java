@@ -13,6 +13,10 @@ public final class Name {
 
   private final String value;
 
+  public static Name of(final String name) {
+    return new Name(name);
+  }
+
   public Name(final String name) {
     this.value = name;
   }

@@ -13,7 +13,7 @@ import io.vlingo.common.message.Message;
 public abstract class OperationalMessage implements Message {
 
   /**
-   * APP<lf>id=x nm=name<lf>...
+   * APP<lf>id=x nm=name si=y<lf>...
    */
   public static final String APP = "APP";
 
@@ -74,7 +74,7 @@ public abstract class OperationalMessage implements Message {
    */
   public static OperationalMessage messageFrom(final String content) {
     if (content.startsWith(APP)) {
-      return ApplicationSaid.from(content);
+      return ApplicationSays.from(content);
     } else if (content.startsWith(DIR)) {
       return Directory.from(content);
     } else if (content.startsWith(ELECT)) {

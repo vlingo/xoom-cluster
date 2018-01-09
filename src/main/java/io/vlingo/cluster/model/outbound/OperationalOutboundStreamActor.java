@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Set;
 
 import io.vlingo.actors.Actor;
+import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.message.Directory;
 import io.vlingo.cluster.model.message.MessageConverters;
 import io.vlingo.cluster.model.message.OperationalMessage;
@@ -48,6 +49,16 @@ public class OperationalOutboundStreamActor extends Actor
   @Override
   public void close(final Id id) {
     outbound.close(id);
+  }
+
+  @Override
+  public void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes) {
+    final PooledByteBuffer buffer = outbound.pooledByteBuffer();
+    MessageConverters.messageToBytes(says, buffer.buffer());
+
+    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.buffer());
+    
+    outbound.broadcast(unconfirmedNodes, outbound.bytesFrom(message, buffer));
   }
 
   @Override

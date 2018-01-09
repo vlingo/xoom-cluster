@@ -13,10 +13,14 @@ import io.vlingo.cluster.model.node.Node;
 import io.vlingo.common.message.Converters;
 
 public class MessageConverters {
-  public static void messageToBytes(final ApplicationSaid app, final ByteBuffer buffer) {
+  public static void messageToBytes(final ApplicationSays app, final ByteBuffer buffer) {
     final StringBuilder builder = new StringBuilder(OperationalMessage.APP).append("\n");
     
-    builder.append("id=").append(app.id().value()).append(" nm=").append(app.name().value()).append("\n").append(app.payload());
+    builder
+      .append("id=").append(app.id().value())
+      .append(" nm=").append(app.name().value())
+      .append(" si=").append(app.saysId())
+      .append("\n").append(app.payload());
     
     final byte[] bytes = Converters.textToBytes(builder.toString());
 

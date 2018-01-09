@@ -26,7 +26,7 @@ public class RawMessageTest {
   @Test
   public void testKnownSizeWithAppend() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.local(Id.of(1), new Name("node1"));
+    final Node node1 = Node.from(Id.of(1), new Name("node1"));
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -43,7 +43,7 @@ public class RawMessageTest {
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.local(Id.of(1), new Name("node1"));
+    final Node node1 = Node.from(Id.of(1), new Name("node1"));
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -62,7 +62,7 @@ public class RawMessageTest {
   @Test
   public void testCopyBytesTo() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.local(Id.of(1), new Name("node1"));
+    final Node node1 = Node.from(Id.of(1), new Name("node1"));
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -94,7 +94,7 @@ public class RawMessageTest {
   @Test
   public void testPut() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.local(Id.of(1), new Name("node1"));
+    final Node node1 = Node.from(Id.of(1), new Name("node1"));
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     final RawMessage message = new RawMessage(1000);

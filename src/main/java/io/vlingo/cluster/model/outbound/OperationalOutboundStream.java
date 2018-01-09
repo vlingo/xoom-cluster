@@ -13,6 +13,7 @@ import java.util.Set;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
+import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.Node;
 import io.vlingo.common.message.ByteBufferPool;
@@ -37,6 +38,7 @@ public interface OperationalOutboundStream extends Stoppable {
   }
 
   void close(final Id id);
+  void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes);
   void directory(final Set<Node> allLiveNodes);
   void elect(final Collection<Node> allGreaterNodes);
   void join();

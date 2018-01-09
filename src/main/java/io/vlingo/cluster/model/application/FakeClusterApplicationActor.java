@@ -9,12 +9,14 @@ package io.vlingo.cluster.model.application;
 
 import java.util.Collection;
 
+import io.vlingo.cluster.model.attribute.Attribute;
+import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.Node;
 import io.vlingo.common.message.RawMessage;
 
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
-
+  private AttributesClient client;
   private final Node localNode;
   
   public FakeClusterApplicationActor(final Node localNode) {
@@ -97,6 +99,46 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   public void informQuorumLost() {
     System.out.println("APP: Quorum lost");
     printHealthy(false);
+  }
+
+  @Override
+  public void informAttributesClient(final AttributesClient client) {
+    System.out.println("APP: Attributes Client received.");
+    this.client = client;
+    if (localNode.id().value() == 1) {
+      client.add("fake.set", "fake.attribute.name1", "value1");
+      client.add("fake.set", "fake.attribute.name2", "value2");
+    }
+  }
+
+  @Override
+  public void informAttributeSetCreated(final String attributeSetName) {
+    System.out.println("APP: Attributes Set Created: " + attributeSetName);
+  }
+
+  @Override
+  public void informAttributeAdded(final String attributeSetName, final String attributeName) {
+    final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
+    System.out.println("APP: Attribute Set " + attributeSetName + " Attribute Added: " + attributeName + " Value: " + attr.value);
+    if (localNode.id().value() == 1) {
+      client.replace("fake.set", "fake.attribute.name1", "value-replaced-2");
+      client.replace("fake.set", "fake.attribute.name2", "value-replaced-20");
+    }
+  }
+
+  @Override
+  public void informAttributeRemoved(final String attributeSetName, final String attributeName) {
+    final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
+    System.out.println("APP: Attribute Set " + attributeSetName + " Attribute Removed: " + attributeName + " Attribute: " + attr);
+  }
+
+  @Override
+  public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
+    final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
+    System.out.println("APP: Attribute Set " + attributeSetName + " Attribute Replaced: " + attributeName + " Value: " + attr.value);
+    if (localNode.id().value() == 1) {
+      client.remove("fake.set", "fake.attribute.name1");
+    }
   }
 
   private void printHealthy(final boolean isHealthyCluster) {

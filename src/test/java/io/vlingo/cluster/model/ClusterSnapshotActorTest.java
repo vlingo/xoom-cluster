@@ -9,31 +9,35 @@ package io.vlingo.cluster.model;
 
 import static org.junit.Assert.assertEquals;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.testkit.TestActor;
-import io.vlingo.actors.testkit.TestWorld;
 import io.vlingo.cluster.model.inbound.InboundStreamInterest;
+import io.vlingo.cluster.model.message.MessageConverters;
+import io.vlingo.cluster.model.message.Pulse;
 import io.vlingo.cluster.model.node.AddressType;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.MergeResult;
 import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.node.RegistryInterest;
+import io.vlingo.common.message.Converters;
 import io.vlingo.common.message.RawMessage;
 
 public class ClusterSnapshotActorTest extends AbstractClusterTest {
+  private RawMessage opMessage;
   private ClusterSnapshotInitializer intializer;
-  private TestWorld world;
   
   @Test
   public void testClusterSnapshot() throws Exception {
     final TestActor<ClusterSnapshot> snapshot =
-            world.actorFor(
+            testWorld.actorFor(
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     ClusterSnapshot.class);
     
@@ -47,7 +51,7 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   @Test
   public void testClusterSnapshotControl() throws Exception {
     final TestActor<ClusterSnapshotControl> control =
-            world.actorFor(
+            testWorld.actorFor(
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     ClusterSnapshotControl.class);
     
@@ -58,21 +62,22 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   @Test
   public void testInboundStreamInterest() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
-            world.actorFor(
+            testWorld.actorFor(
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     InboundStreamInterest.class);
 
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, new RawMessage(32), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, opMessage, null);
     assertEquals(0, application.handleApplicationMessage);
     
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.APP, new RawMessage(32), null);
+    final RawMessage appMessage = RawMessage.from(1, 0, "app-test");
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.APP, appMessage, null);
     assertEquals(1, application.handleApplicationMessage);
   }
 
   @Test
   public void testRegistryInterest() throws Exception {
     final TestActor<RegistryInterest> registryInterest =
-            world.actorFor(
+            testWorld.actorFor(
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     RegistryInterest.class);
     
@@ -114,8 +119,16 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    world = TestWorld.start("test-cluster-snapshot-actor");
-    
     intializer = new ClusterSnapshotInitializer("node1", properties);
+    
+    final ByteBuffer messageBuffer = ByteBuffer.allocate(4096);
+    final Pulse pulse = new Pulse(Id.of(1));
+    MessageConverters.messageToBytes(pulse, messageBuffer);
+    opMessage = Converters.toRawMessage(Id.of(1).value(), messageBuffer);
+  }
+  
+  @After
+  public void tearDown() {
+    super.tearDown();
   }
 }

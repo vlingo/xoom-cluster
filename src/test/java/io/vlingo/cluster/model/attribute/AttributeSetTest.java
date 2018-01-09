@@ -5,7 +5,7 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

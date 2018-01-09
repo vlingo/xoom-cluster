@@ -15,6 +15,7 @@ import io.vlingo.actors.Startable;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.Properties;
+import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.Node;
 import io.vlingo.common.message.RawMessage;
@@ -30,6 +31,7 @@ public interface ClusterApplication extends Startable, Stoppable {
   }
 
   void handleApplicationMessage(final RawMessage message, final ClusterApplicationOutboundStream responder);
+  
   void informAllLiveNodes(final Collection<Id> liveNodes, final boolean isHealthyCluster);
   void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading);
   void informLeaderLost(final Id lostLeaderId, final boolean isHealthyCluster);
@@ -40,4 +42,10 @@ public interface ClusterApplication extends Startable, Stoppable {
   void informNodeLeftCluster(final Id nodeId, final boolean isHealthyCluster);
   void informQuorumAchieved();
   void informQuorumLost();
+
+  void informAttributesClient(final AttributesClient client);
+  void informAttributeSetCreated(final String attributeSetName);
+  void informAttributeAdded(final String attributeSetName, final String attributeName);
+  void informAttributeRemoved(final String attributeSetName, final String attributeName);
+  void informAttributeReplaced(final String attributeSetName, final String attributeName);
 }

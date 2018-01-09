@@ -5,12 +5,15 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class AttributeSet {
+  protected static final AttributeSet None = named("__none");
+  
   public final String name;
   private final Map<String, TrackedAttribute> attributes;
   
@@ -22,7 +25,7 @@ public final class AttributeSet {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isAbsent()) {
-      final TrackedAttribute nowPresent = TrackedAttribute.of(attribute);
+      final TrackedAttribute nowPresent = TrackedAttribute.of(this, attribute);
       
       attributes.put(nowPresent.id, nowPresent);
       
@@ -31,9 +34,21 @@ public final class AttributeSet {
     
     return maybeAttribute;
   }
-  
+
+  protected Collection<TrackedAttribute> all() {
+    return attributes.values();
+  }
+
   protected TrackedAttribute attributeNamed(final String name) {
     return find(name);
+  }
+  
+  protected boolean isDefined() {
+    return !isNone();
+  }
+  
+  protected boolean isNone() {
+    return this == None;
   }
   
   protected TrackedAttribute remove(final Attribute<?> attribute) {

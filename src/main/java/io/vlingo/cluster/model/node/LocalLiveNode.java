@@ -34,9 +34,7 @@ public interface LocalLiveNode extends Stoppable {
     
     return localLiveNode;
   }
-  public static LocalLiveNode instance() {
-    return null;
-  }
   
   void handle(final OperationalMessage message);
+  void registerNodeSynchronizer(final NodeSynchronizer nodeSynchronizer);
 }

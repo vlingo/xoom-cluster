@@ -5,19 +5,22 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
-import java.util.UUID;
+public final class TrackedAttribute {
+  public static final TrackedAttribute Absent = new TrackedAttribute(null, null);
+  
+  public final Attribute<?> attribute;
+  public final boolean distributed;
+  public final String id;
 
-final class TrackedAttribute {
-  protected static final TrackedAttribute Absent = new TrackedAttribute(null);
+  protected static TrackedAttribute of(final AttributeSet set, final Attribute<?> attribute) {
+    final String tid = trackedIdFor(set, attribute);
+    return new TrackedAttribute(tid, attribute);
+  }
   
-  protected final Attribute<?> attribute;
-  protected final boolean distributed;
-  protected final String id;
-  
-  protected static TrackedAttribute of(final Attribute<?> attribute) {
-    return new TrackedAttribute(attribute);
+  private static String trackedIdFor(final AttributeSet set, final Attribute<?> attribute) {
+    return set.name + ":" + attribute.name;
   }
   
   protected TrackedAttribute asDistributed() {
@@ -28,10 +31,22 @@ final class TrackedAttribute {
     return this.attribute == null;
   }
   
+  protected boolean isDistributed() {
+    return distributed;
+  }
+  
   protected boolean isPresent() {
     return !isAbsent();
   }
-  
+
+  protected Attribute<?> replacingValueWith(final Attribute<?> other) {
+    return attribute.replacingValueWith(other);
+  }
+
+  protected boolean sameAs(final Attribute<?> other) {
+    return attribute.equals(other);
+  }
+
   protected TrackedAttribute withAttribute(final Attribute<?> attribute) {
     return new TrackedAttribute(this.id, attribute, false);
   }
@@ -56,13 +71,13 @@ final class TrackedAttribute {
 
   @Override
   public String toString() {
-    return "Attribute[attribute=" + this.attribute + ", distributed=" + this.distributed + ", id=" + this.id + "]";
+    return "TrackedAttribute[attribute=" + this.attribute + ", distributed=" + this.distributed + ", id=" + this.id + "]";
   }
 
-  private TrackedAttribute(final Attribute<?> attribute) {
+  private TrackedAttribute(final String id, final Attribute<?> attribute) {
     this.attribute = attribute;
     this.distributed = false;
-    this.id = attribute == null ? null : UUID.randomUUID().toString();
+    this.id = attribute == null ? null : id;
   }
   
   private TrackedAttribute(final String id, final Attribute<?> attribute, final boolean distributed) {

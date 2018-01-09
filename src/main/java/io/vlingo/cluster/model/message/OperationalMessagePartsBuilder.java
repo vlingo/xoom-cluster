@@ -63,14 +63,26 @@ class OperationalMessagePartsBuilder {
     return nameFromRecord(parts[1]);
   }
 
-  public static String payloadFrom(String content) {
+  public static String payloadFrom(final String content) {
+    final int index1 = content.indexOf('\n');
+    if (index1 == -1) return "";
+    final int index2 = content.indexOf('\n', index1+1);
+    if (index2 == -1) return "";
+    final String payload = content.substring(index2+1);
+    
+    return payload;
+  }
+
+  public static String saysIdFrom(final String content) {
     final String[] parts = content.split("\n");
 
     if (parts.length < 3) {
       return "";
     }
 
-    return parts[2];
+    final String saysId = parseField(parts[2], "si=");
+    
+    return saysId;
   }
 
   private static final Address addressFromRecord(final String record, final AddressType type) {

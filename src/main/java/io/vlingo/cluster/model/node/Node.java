@@ -7,6 +7,9 @@
 
 package io.vlingo.cluster.model.node;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import io.vlingo.cluster.model.Properties;
 
 public final class Node implements Comparable<Node> {
@@ -16,7 +19,7 @@ public final class Node implements Comparable<Node> {
                   Address.NO_NODE_ADDRESS,
                   Address.NO_NODE_ADDRESS);
 
-  public static Node local(final Id id, final Name name) {
+  public static Node from(final Id id, final Name name) {
     final Address operationalAddress =
         new Address(
             Properties.instance.host(name.value()),
@@ -49,6 +52,10 @@ public final class Node implements Comparable<Node> {
     this.applicationAddress = applicationAddress;
   }
 
+  public Collection<Node> collected() {
+    return Arrays.asList(this);
+  }
+
   public boolean hasMissingPart() {
     return id().hasNoId() ||
         name().hasNoName() ||
@@ -60,7 +67,9 @@ public final class Node implements Comparable<Node> {
     return applicationAddress;
   }
 
-  public final Address operationalAddress() { return operationalAddress; }
+  public final Address operationalAddress() {
+    return operationalAddress;
+  }
 
   public final Id id() {
     return id;

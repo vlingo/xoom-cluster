@@ -35,13 +35,13 @@ public class OperationalMessageGenerationTest {
     final Name name = new Name("node1");
     final String payload = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis risus quis nulla blandit, a euismod massa egestas. Vivamus facilisis.";
     
-    final ApplicationSaid app = new ApplicationSaid(id, name, payload);
-    final String raw = OperationalMessage.APP + "\n" + "id=1 nm=node1\n" + payload;
+    final ApplicationSays app = ApplicationSays.from(id, name, payload);
+    final String raw = OperationalMessage.APP + "\n" + "id=1 nm=node1 si=" + app.saysId + "\n" + payload;
     expectedBuffer.put(Converters.textToBytes(raw));
     MessageConverters.messageToBytes(app, messageBuffer);
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
     
-    assertEquals(app, ApplicationSaid.from(raw));
+    assertEquals(app, ApplicationSays.from(raw));
   }
 
   @Test

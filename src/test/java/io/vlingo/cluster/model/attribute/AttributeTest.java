@@ -5,7 +5,7 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -13,7 +13,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import io.vlingo.cluster.model.application.attributes.Attribute;
+import io.vlingo.cluster.model.attribute.Attribute.Type;
 
 public class AttributeTest {
 
@@ -168,5 +168,12 @@ public class AttributeTest {
     assertNotEquals(attribute1, attribute2);
     
     assertEquals(attribute2, Attribute.from("string2", new String("B")));
+  }
+
+  @Test
+  public void testFromAttributeType() {
+    final Attribute<?> attribute1 = Attribute.from("int1", Type.Integer, "101");
+    
+    assertEquals(101, attribute1.value);
   }
 }

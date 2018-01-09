@@ -58,7 +58,7 @@ public class OperationalMessageCache {
   }
 
   private void cacheJoin(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Join(Node.local(id, name)), buffer);
+    MessageConverters.messageToBytes(new Join(Node.from(id, name)), buffer);
     cacheMessagePair(buffer, OperationalMessage.JOIN);
   }
 

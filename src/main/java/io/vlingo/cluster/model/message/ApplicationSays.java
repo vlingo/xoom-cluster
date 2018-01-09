@@ -7,25 +7,42 @@
 
 package io.vlingo.cluster.model.message;
 
+import java.util.UUID;
+
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.Name;
 
-public final class ApplicationSaid extends OperationalMessage {
-  private final Name name;
-  private final String payload;
+public final class ApplicationSays extends OperationalMessage {
+  public final Name name;
+  public final String payload;
+  public final String saysId;
 
-  public static final ApplicationSaid from(final String content) {
+  public static final ApplicationSays from(final String content) {
     final Id id = OperationalMessagePartsBuilder.idFrom(content);
     final Name name = OperationalMessagePartsBuilder.nameFrom(content);
+    final String saysId = OperationalMessagePartsBuilder.saysIdFrom(content);
     final String payload = OperationalMessagePartsBuilder.payloadFrom(content);
 
-    return new ApplicationSaid(id, name, payload);
+    return new ApplicationSays(id, name, saysId, payload);
   }
 
-  public ApplicationSaid(final Id id, final Name name, final String payload) {
+  public static ApplicationSays from(final Id id, final Name name, final String payload) {
+    return new ApplicationSays(id, name, payload);
+  }
+
+  private ApplicationSays(final Id id, final Name name, final String payload) {
     super(id);
     
     this.name = name;
+    this.payload = payload;
+    this.saysId = UUID.randomUUID().toString();
+  }
+
+  private ApplicationSays(final Id id, final Name name, final String saysId, final String payload) {
+    super(id);
+    
+    this.name = name;
+    this.saysId = saysId;
     this.payload = payload;
   }
 
@@ -42,13 +59,17 @@ public final class ApplicationSaid extends OperationalMessage {
     return payload;
   }
 
+  public final String saysId() {
+    return saysId;
+  }
+
   @Override
   public boolean equals(final Object other) {
-    if (other == null || other.getClass() != ApplicationSaid.class) {
+    if (other == null || other.getClass() != ApplicationSays.class) {
       return false;
     }
     
-    final ApplicationSaid otherAppSaid = (ApplicationSaid) other;
+    final ApplicationSays otherAppSaid = (ApplicationSays) other;
 
     return this.name.equals(otherAppSaid.name) && this.payload.equals(otherAppSaid.payload);
   }
@@ -60,6 +81,6 @@ public final class ApplicationSaid extends OperationalMessage {
 
   @Override
   public String toString() {
-    return "ApplicationSaid[" + id() + "," + name + "," + payload + "]";
+    return "ApplicationSays[" + id() + "," + name + "," + payload + "]";
   }
 }

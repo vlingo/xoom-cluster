@@ -5,7 +5,7 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
 public final class Attribute<T> {
   public static enum Type {
@@ -28,10 +28,28 @@ public final class Attribute<T> {
     public boolean isDouble() { return false; }
     public boolean isBoolean() { return false; }
     public boolean isString() { return false; }
+    
+    public String typeClassname() { return "java.lang." + this.name(); }
   }
   
+  public static final Attribute<?> Undefined = from("__undefined", Type.String, ""); 
+  
   public static <T> Attribute<T> from(final String name, final T value) {
-    return new Attribute<T>(name, value, typeOf(value.getClass()));
+    return new Attribute<>(name, value, typeOf(value.getClass()));
+  }
+  
+  public static Attribute<?> from(final String name, final Type type, final String value) {
+    final Object typedValue = typeValue(type, value);
+    return new Attribute<>(name, typedValue, type);
+  }
+
+  protected static Type typeOfAttribute(final String classnameOfType) {
+    try {
+      final Class<?> classOfType = Class.forName(classnameOfType);
+      return typeOf(classOfType);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("The type '" + classnameOfType + "' is not recognized.");
+    }
   }
   
   private static Type typeOf(final Class<?> type) {
@@ -67,6 +85,31 @@ public final class Attribute<T> {
     throw new IllegalArgumentException("The type '" + type.getName() + "' is not recognized.");
   }
   
+  private static Object typeValue(final Type type, String value) {
+    switch (type) {
+    case String:
+      return value;
+    case Integer:
+      return Integer.parseInt(value);
+    case Long:
+      return Long.parseLong(value);
+    case Boolean:
+      return Boolean.parseBoolean(value);
+    case Byte:
+      return Byte.parseByte(value);
+    case Double:
+      return Double.parseDouble(value);
+    case Float:
+      return Float.parseFloat(value);
+    case Short:
+      return Short.parseShort(value);
+    case Character:
+      return new Character(value.charAt(0));
+    }
+    
+    throw new IllegalArgumentException();
+  }
+
   public final String name;
   public final Type type;
   public final T value;
@@ -75,6 +118,17 @@ public final class Attribute<T> {
     this.name = name;
     this.value = value;
     this.type = type;
+  }
+
+  public boolean isUndefined() {
+    return this == Undefined;
+  }
+
+  public Attribute<?> replacingValueWith(final Attribute<?> other) {
+    if (this.type != other.type) {
+      throw new IllegalArgumentException("Source and target attributes have different types.");
+    }
+    return new Attribute<>(this.name, other.value, this.type);
   }
 
   @Override

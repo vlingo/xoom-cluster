@@ -92,8 +92,8 @@ public class RawMessageBuilderTest {
   public void setUp() {
     buffer = ByteBuffer.allocate(1000);
     builder = new RawMessageBuilder(1000);
-    node1 = Node.local(Id.of(1), new Name("node1"));
-    node2 = Node.local(Id.of(2), new Name("node2"));
+    node1 = Node.from(Id.of(1), new Name("node1"));
+    node2 = Node.from(Id.of(2), new Name("node2"));
     join = new Join(node1);
     leader = new Leader(node2.id());
   }

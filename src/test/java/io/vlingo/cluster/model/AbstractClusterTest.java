@@ -9,6 +9,7 @@ package io.vlingo.cluster.model;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,5 +81,10 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     this.testWorld = TestWorld.start("cluster-test-world");
     
     this.application = new MockClusterApplication();
+  }
+  
+  @After
+  public void tearDown() {
+    testWorld.terminate();
   }
 }

@@ -64,6 +64,8 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
 
   @Override
   public void start() {
+    if (isStopped()) return;
+    
     System.out.println("vlingo/cluster: Inbound stream listening: for '" + reader.inboundName() + "'");
     
     try {
@@ -81,9 +83,14 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
 
   @Override
   public void stop() {
-    cancellable.cancel();
+    if (cancellable != null) {
+      cancellable.cancel();
+      cancellable = null;
+    }
     
-    reader.close();
+    if (reader != null) {
+      reader.close();
+    }
     
     super.stop();
   }

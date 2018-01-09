@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -84,6 +85,11 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
                             ApplicationOutboundStreamActor.class,
                             Definition.parameters(channelProvider, pool)),
                     ClusterApplicationOutboundStream.class);
+  }
+  
+  @After
+  public void tearDown() {
+    world.terminate();
   }
   
   private MockManagedOutboundChannel mock(final ManagedOutboundChannel channel) {

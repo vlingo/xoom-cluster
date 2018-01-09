@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -183,6 +184,11 @@ public class OperationalOutboundStreamTest extends AbstractClusterTest {
                     OperationalOutboundStream.class);
   }
   
+  @After
+  public void tearDown() {
+    world.terminate();
+  }
+
   private MockManagedOutboundChannel mock(final ManagedOutboundChannel channel) {
     return (MockManagedOutboundChannel) channel;
   }

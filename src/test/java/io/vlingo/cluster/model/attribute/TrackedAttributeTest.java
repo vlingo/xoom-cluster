@@ -5,7 +5,7 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,31 +15,32 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 public class TrackedAttributeTest {
-
+  private final AttributeSet set = AttributeSet.named("test");
+  
   @Test
   public void testTrackedAttributeOf() {
     final Attribute<Integer> attr1 = Attribute.from("attr1", 1);
     
-    final TrackedAttribute tracked1 = TrackedAttribute.of(attr1);
+    final TrackedAttribute tracked1 = TrackedAttribute.of(set, attr1);
     
     assertEquals(attr1, tracked1.attribute);
 
     final Attribute<Integer> attr2 = Attribute.from("attr1", 1);
     
-    final TrackedAttribute tracked2 = TrackedAttribute.of(attr2);
+    final TrackedAttribute tracked2 = TrackedAttribute.of(set, attr2);
     
     assertEquals(attr1, attr2);
     
     assertEquals(attr2, tracked2.attribute);
     
-    assertNotEquals(tracked1, tracked2); // beware, id differs
+    assertEquals(tracked1, tracked2);
   }
   
   @Test
   public void testAsDistributed() {
     final Attribute<Integer> attr1 = Attribute.from("attr1", 1);
     
-    final TrackedAttribute tracked1 = TrackedAttribute.of(attr1);
+    final TrackedAttribute tracked1 = TrackedAttribute.of(set, attr1);
     
     assertFalse(tracked1.distributed);
     
@@ -55,7 +56,7 @@ public class TrackedAttributeTest {
   public void testAbsentPresent() {
     final Attribute<Integer> attr1 = Attribute.from("attr1", 1);
     
-    final TrackedAttribute tracked1 = TrackedAttribute.of(attr1);
+    final TrackedAttribute tracked1 = TrackedAttribute.of(set, attr1);
     
     assertFalse(tracked1.isAbsent());
     assertTrue(tracked1.isPresent());
@@ -68,7 +69,7 @@ public class TrackedAttributeTest {
   public void testWithAttribute() {
     final Attribute<Integer> attr1 = Attribute.from("attr1", 1);
     
-    final TrackedAttribute tracked1 = TrackedAttribute.of(attr1);
+    final TrackedAttribute tracked1 = TrackedAttribute.of(set, attr1);
     
     final Attribute<Integer> attr1ValueModified = Attribute.from("attr1", 2);
     

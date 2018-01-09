@@ -87,6 +87,11 @@ public final class Properties {
     return classname;
   }
   
+  public long clusterAttributesRedistributionInterval() {
+    final int interval = getInteger("cluster.attributes.redistribution.interval", 1000);
+    return interval;
+  }
+  
   public long clusterHealthCheckInterval() {
     final int interval = getInteger("cluster.health.check.interval", 3000);
     return interval;

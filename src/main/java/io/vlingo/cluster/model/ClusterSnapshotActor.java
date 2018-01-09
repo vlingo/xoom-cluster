@@ -13,6 +13,7 @@ import java.util.TreeSet;
 
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.application.ClusterApplication;
+import io.vlingo.cluster.model.attribute.AttributesAgent;
 import io.vlingo.cluster.model.inbound.InboundResponder;
 import io.vlingo.cluster.model.inbound.InboundStreamInterest;
 import io.vlingo.cluster.model.message.OperationalMessage;
@@ -28,6 +29,7 @@ public class ClusterSnapshotActor
   extends Actor
   implements ClusterSnapshot, ClusterSnapshotControl, InboundStreamInterest, RegistryInterest {
   
+  private final AttributesAgent attributesAgent;
   private final ClusterApplication clusterApplication;
   private final ClusterApplicationBroadcaster broadcaster;
   private final CommunicationsHub communicationsHub;
@@ -45,7 +47,15 @@ public class ClusterSnapshotActor
     clusterApplication.start();
     
     initializer.registry().registerRegistryInterest(selfAs(RegistryInterest.class));
-     
+    
+    this.attributesAgent =
+            AttributesAgent.instance(
+                    stage(),
+                    this.localNode,
+                    this.broadcaster,
+                    communicationsHub.operationalOutboundStream(),
+                    initializer.configuration());
+    
     this.localLiveNode =
             LocalLiveNode.instance(
                     stage(),
@@ -55,6 +65,8 @@ public class ClusterSnapshotActor
                     communicationsHub.operationalOutboundStream(),
                     initializer.configuration());
 
+    this.localLiveNode.registerNodeSynchronizer(this.attributesAgent);
+    
     this.communicationsHub.start();
   }
 
@@ -93,6 +105,7 @@ public class ClusterSnapshotActor
 
     localLiveNode.stop();
     clusterApplication.stop();
+    attributesAgent.stop();
     
     // one more time to fully stop myself and terminate world (see above)
     stopping = true;
@@ -101,7 +114,7 @@ public class ClusterSnapshotActor
 
 
   //=========================================
-  // InboundStreamInterest (operations)
+  // InboundStreamInterest (operations and application)
   //=========================================
 
   @Override
@@ -113,7 +126,11 @@ public class ClusterSnapshotActor
     if (addressType.isOperational()) {
       final String textMessage = message.asTextMessage();
       final OperationalMessage typedMessage = OperationalMessage.messageFrom(textMessage);
-      localLiveNode.handle(typedMessage);
+      if (typedMessage.isApp()) {
+        attributesAgent.handleInboundStreamMessage(addressType, message, responder);
+      } else {
+        localLiveNode.handle(typedMessage);
+      }
     } else if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message, communicationsHub.clusterApplicationOutboundStream()); // TODO
     } else {

@@ -7,6 +7,8 @@
 
 package io.vlingo.cluster.model.node;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -37,6 +39,7 @@ public class LocalLiveNodeActor extends Actor
   private final Configuration configuration;
   private LiveNodeState state;
   private final Node node;
+  private final List<NodeSynchronizer> nodeSynchronizers;
   private final OperationalOutboundStream outbound;
   private boolean quorumAchieved;
   private final LocalLiveNode selfLocalLiveNode;
@@ -55,6 +58,7 @@ public class LocalLiveNodeActor extends Actor
     this.registry = registry;
     this.outbound = outbound;
     this.configuration = configuration;
+    this.nodeSynchronizers = new ArrayList<>();
     this.selfLocalLiveNode = selfAs(LocalLiveNode.class);
     this.checkHealth = new CheckHealth(node.id());
     this.cancellable = scheduleHealthCheck();
@@ -83,6 +87,12 @@ public class LocalLiveNodeActor extends Actor
       informHealth();
     }
   }
+
+  @Override
+  public void registerNodeSynchronizer(final NodeSynchronizer nodeSynchronizer) {
+    nodeSynchronizers.add(nodeSynchronizer);
+  }
+
 
   //================================================
   //== LiveNodeMaintainer
@@ -156,10 +166,12 @@ public class LocalLiveNodeActor extends Actor
     if (state.isLeader()) {
       declareLeadership();
     }
+
+    synchronize(joiningNode);
   }
   
   public void joinLocalWith(final Node remoteNode) {
-    join(Node.local(node.id(), node.name()));
+    join(node);
     join(remoteNode);
   }
   
@@ -184,7 +196,14 @@ public class LocalLiveNodeActor extends Actor
   public void providePulseTo(final Id id) {
     outbound.pulse(id);
   }
-  
+
+  @Override
+  public void synchronize(final Node node) {
+    for (final NodeSynchronizer syncher : this.nodeSynchronizers) {
+      syncher.synchronize(node);
+    }
+  }
+
   public void updateLastHealthIndication(final Id id) {
     registry.updateLastHealthIndication(id);
   }

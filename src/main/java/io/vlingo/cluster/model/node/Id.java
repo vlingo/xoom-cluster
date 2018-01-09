@@ -37,6 +37,10 @@ public final class Id implements Comparable<Id> {
     return value;
   }
 
+  public String valueString() {
+    return String.valueOf(value);
+  }
+
   public boolean isValid() {
     return !hasNoId();
   }

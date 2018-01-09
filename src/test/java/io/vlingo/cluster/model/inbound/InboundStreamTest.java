@@ -10,6 +10,7 @@ package io.vlingo.cluster.model.inbound;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -60,5 +61,10 @@ public class InboundStreamTest extends AbstractClusterTest {
                     "cluster-test-inbound");
     
     inboundStream = world.actorFor(definition, InboundStream.class);
+  }
+  
+  @After
+  public void tearDown() {
+    world.terminate();
   }
 }

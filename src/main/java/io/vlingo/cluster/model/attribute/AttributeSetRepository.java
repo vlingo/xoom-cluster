@@ -5,8 +5,10 @@
 // was not distributed with this file, You can obtain
 // one at https://mozilla.org/MPL/2.0/.
 
-package io.vlingo.cluster.model.application.attributes;
+package io.vlingo.cluster.model.attribute;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,11 +23,19 @@ public final class AttributeSetRepository {
     all.put(set.name, set);
   }
 
+  protected Collection<AttributeSet> all() {
+    return new ArrayList<>(all.values());
+  }
+
   protected AttributeSet attributeSetOf(final String name) {
-    return all.get(name);
+    return all.getOrDefault(name, AttributeSet.None);
   }
 
   protected void remove(final String name) {
     all.remove(name);
+  }
+
+  protected void removeAll() {
+    all.clear();
   }
 }

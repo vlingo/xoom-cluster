@@ -9,7 +9,7 @@ package io.vlingo.cluster.model.node;
 
 import java.util.Set;
 
-interface LiveNodeMaintainer {
+interface LiveNodeMaintainer extends NodeSynchronizer {
   void assertNewLeadership(final Id id);
   void declareLeadership();
   void declareNodeSplit(final Id leaderNodeId);

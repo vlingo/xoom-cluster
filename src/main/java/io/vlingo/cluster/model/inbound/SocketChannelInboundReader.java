@@ -21,6 +21,7 @@ import io.vlingo.common.message.RawMessageBuilder;
 
 public class SocketChannelInboundReader implements InboundReader {
   private final ServerSocketChannel channel;
+  private boolean closed;
   private InboundReaderConsumer consumer;
   private final String inboundName;
   private final int maxMessageSize;
@@ -41,6 +42,10 @@ public class SocketChannelInboundReader implements InboundReader {
 
   @Override
   public void close() {
+    if (closed) return;
+    
+    closed = true;
+    
     try {
       selector.close();
     } catch (Exception e) {
@@ -61,6 +66,8 @@ public class SocketChannelInboundReader implements InboundReader {
 
   @Override
   public void openFor(final InboundReaderConsumer consumer) throws IOException {
+    if (closed) return; // for some tests it's possible to receive close() before start()
+    
     this.consumer = consumer;
     
     channel.socket().bind(new InetSocketAddress(port));
@@ -70,6 +77,8 @@ public class SocketChannelInboundReader implements InboundReader {
 
   @Override
   public void probeChannel() {
+    if (closed) return;
+    
     try {
       if (selector.select(10L) > 0) {
         final Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();

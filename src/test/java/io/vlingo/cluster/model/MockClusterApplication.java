@@ -11,12 +11,14 @@ import java.util.Collection;
 
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
+import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.common.message.RawMessage;
 
 public class MockClusterApplication implements ClusterApplication {
   public int allLiveNodes;
   public int handleApplicationMessage;
+  
   public int informLeaderElected;
   public int informLeaderLost;
   public int informLocalNodeShutDown;
@@ -26,6 +28,13 @@ public class MockClusterApplication implements ClusterApplication {
   public int informNodeLeftCluster;
   public int informQuorumAchieved;
   public int informQuorumLost;
+  
+  public int informAttributesClient;
+  public int informAttributeSetCreated;
+  public int informAttributeAdded;
+  public int informAttributeRemoved;
+  public int informAttributeReplaced;
+  
   public int stop;
   
   @Override
@@ -101,5 +110,30 @@ public class MockClusterApplication implements ClusterApplication {
   @Override
   public void informQuorumLost() {
     ++informQuorumLost;
+  }
+
+  @Override
+  public void informAttributesClient(AttributesClient client) {
+    ++informAttributesClient;
+  }
+
+  @Override
+  public void informAttributeSetCreated(String attributeSetName) {
+    ++informAttributeSetCreated;
+  }
+
+  @Override
+  public void informAttributeAdded(String attributeSetName, String attributeName) {
+    ++informAttributeAdded;
+  }
+
+  @Override
+  public void informAttributeRemoved(String attributeSetName, String attributeName) {
+    ++informAttributeRemoved;
+  }
+
+  @Override
+  public void informAttributeReplaced(String attributeSetName, String attributeName) {
+    ++informAttributeReplaced;
   }
 }
