@@ -9,6 +9,7 @@ package io.vlingo.cluster.model.application;
 
 import java.util.Collection;
 
+import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.common.message.RawMessage;
 
@@ -76,5 +77,25 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
 
   @Override
   public void informQuorumLost() {
+  }
+
+  @Override
+  public void informAttributesClient(AttributesClient client) {
+  }
+
+  @Override
+  public void informAttributeSetCreated(String attributeSetName) {
+  }
+
+  @Override
+  public void informAttributeAdded(String attributeSetName, String attributeName) {
+  }
+
+  @Override
+  public void informAttributeRemoved(String attributeSetName, String attributeName) {
+  }
+
+  @Override
+  public void informAttributeReplaced(String attributeSetName, String attributeName) {
   }
 }
