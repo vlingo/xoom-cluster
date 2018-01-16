@@ -109,11 +109,6 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public boolean isStarted() {
-    return false;
-  }
-
-  @Override
   public void start() {
   }
 

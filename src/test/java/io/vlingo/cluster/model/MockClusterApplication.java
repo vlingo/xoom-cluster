@@ -38,11 +38,6 @@ public class MockClusterApplication implements ClusterApplication {
   public int stop;
   
   @Override
-  public boolean isStarted() {
-    return true;
-  }
-
-  @Override
   public void start() {
     
   }

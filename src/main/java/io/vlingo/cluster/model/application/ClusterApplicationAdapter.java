@@ -18,11 +18,6 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
   public ClusterApplicationAdapter() { }
 
   @Override
-  public boolean isStarted() {
-    return true;
-  }
-
-  @Override
   public void start() {
   }
 

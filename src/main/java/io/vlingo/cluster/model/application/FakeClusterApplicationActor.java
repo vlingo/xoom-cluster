@@ -24,11 +24,6 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public boolean isStarted() {
-    return !isStopped();
-  }
-
-  @Override
   public void start() {
     System.out.println("APP: ClusterApplication started on node: " + localNode);
   }

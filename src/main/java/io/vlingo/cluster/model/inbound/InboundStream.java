@@ -39,5 +39,5 @@ public interface InboundStream extends Startable, Stoppable {
     return inboundStream;
   }
 
-  void respondWith(final InboundClientReference clientReference, final ByteBuffer buffer) throws Exception;
+  void respondWith(final InboundClientReference clientReference, final ByteBuffer buffer);
 }

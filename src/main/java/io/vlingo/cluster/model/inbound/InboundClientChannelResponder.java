@@ -19,7 +19,7 @@ final class InboundClientChannelResponder implements InboundResponder, InboundCl
   }
 
   @Override
-  public void respondWith(final ByteBuffer buffer) throws Exception {
+  public void respondWith(final ByteBuffer buffer) {
     inboundStream.respondWith(this, buffer);
   }
 
