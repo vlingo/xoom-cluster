@@ -44,47 +44,47 @@ abstract class LiveNodeState {
   }
 
   protected void handle(final Directory dir) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " DIRECTORY: " + dir);
+    logger.log("" + type + " " + node.id() + " DIRECTORY: " + dir);
     liveNodeMaintainer.mergeAllDirectoryEntries(dir.nodes());
   }
 
   protected void handle(final Elect elect) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " ELECT: " + elect);
+    logger.log("" + type + " " + node.id() + " ELECT: " + elect);
     liveNodeMaintainer.escalateElection(elect.id());
   }
 
   protected void handle(final Join join) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " JOIN: " + join);
+    logger.log("" + type + " " + node.id() + " JOIN: " + join);
     liveNodeMaintainer.joinLocalWith(join.node());
   }
 
   protected void handle(final Leader leader) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " LEADER: " + leader);
+    logger.log("" + type + " " + node.id() + " LEADER: " + leader);
     liveNodeMaintainer.assertNewLeadership(leader.id());
   }
   
   protected void handle(final Leave leave) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " LEAVE: " + leave);
+    logger.log("" + type + " " + node.id() + " LEAVE: " + leave);
     liveNodeMaintainer.dropNode(leave.id());
   }
 
   protected void handle(final Ping ping) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " PING: " + ping);
+    logger.log("" + type + " " + node.id() + " PING: " + ping);
     liveNodeMaintainer.providePulseTo(ping.id());
   }
 
   protected void handle(final Pulse pulse) {
-    // logger.log("vlingo/cluster: " + type + " " + node.id() + " PULSE: " + pulse);
+    // logger.log("" + type + " " + node.id() + " PULSE: " + pulse);
     liveNodeMaintainer.updateLastHealthIndication(pulse.id());
   }
 
   protected void handle(final Split split) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " SPLIT: " + split);
+    logger.log("" + type + " " + node.id() + " SPLIT: " + split);
     liveNodeMaintainer.declareNodeSplit(split.id());
   }
 
   protected void handle(final Vote vote) {
-    logger.log("vlingo/cluster: " + type + " " + node.id() + " VOTE: " + vote);
+    logger.log("" + type + " " + node.id() + " VOTE: " + vote);
     liveNodeMaintainer.placeVote(node.id());
   }
 

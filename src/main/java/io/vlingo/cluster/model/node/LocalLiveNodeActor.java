@@ -253,7 +253,7 @@ public class LocalLiveNodeActor extends Actor
 
   private void declareFollower() {
     if (state == null || !state.isFollower()) {
-      logger().log("vlingo/cluster: Cluster follower: " + node);
+      logger().log("Cluster follower: " + node);
       
       state = new FollowerState(node, this, logger());
     }
@@ -261,7 +261,7 @@ public class LocalLiveNodeActor extends Actor
 
   private void declareIdle() {
     if (state == null || !state.isIdle()) {
-      logger().log("vlingo/cluster: Cluster idle: " + node);
+      logger().log("Cluster idle: " + node);
       
       state = new IdleState(node, this, logger());
       
@@ -272,7 +272,7 @@ public class LocalLiveNodeActor extends Actor
   }
 
   private void declareLeader() {
-    logger().log("vlingo/cluster: Cluster leader: " + node);
+    logger().log("Cluster leader: " + node);
 
     state = new LeaderState(node, this, logger());
 
@@ -310,7 +310,7 @@ public class LocalLiveNodeActor extends Actor
     watchForQuorumRelinquished();
 
     if (state.noQuorumTracker.hasTimedOut()) {
-      logger().log("vlingo/cluster: No quorum; leaving cluster to become idle node.");
+      logger().log("No quorum; leaving cluster to become idle node.");
       registry.leave(node.id());
       declareIdle();
     }

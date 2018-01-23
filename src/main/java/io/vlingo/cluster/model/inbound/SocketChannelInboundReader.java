@@ -52,13 +52,13 @@ public class SocketChannelInboundReader implements InboundReader {
     try {
       selector.close();
     } catch (Exception e) {
-      // TODO: log
+      logger.log("Failed to close selctor for: '" + inboundName + "'", e);
     }
     
     try {
       channel.close();
     } catch (Exception e) {
-      // TODO: log
+      logger.log("Failed to close channel for: '" + inboundName + "'", e);
     }
   }
 
@@ -100,8 +100,7 @@ public class SocketChannelInboundReader implements InboundReader {
         }
       }
     } catch (IOException e) {
-      // TODO: log
-      e.printStackTrace(System.err);
+      logger.log("Failed to read channel selector for: '" + inboundName + "'", e);
     }
   }
 
@@ -122,7 +121,7 @@ public class SocketChannelInboundReader implements InboundReader {
       clientChannelKey.attach(new InboundChannelInfo(new RawMessageBuilder(maxMessageSize)));
   
       logger.log(
-              "vlingo/cluster: Accepted new connection for '"
+              "Accepted new connection for '"
               + inboundName
               + "' from: "
               + clientChannel.getRemoteAddress());
@@ -147,7 +146,7 @@ public class SocketChannelInboundReader implements InboundReader {
         consumer.consume(message, new InboundClientSocketChannel(clientChannel));
       } catch (Exception e) {
         // TODO: deal with this
-        logger.log("vlingo/cluster: Cannot dispatch message for: '" + inboundName + "'", e);
+        logger.log("Cannot dispatch message for: '" + inboundName + "'", e);
       }
 
       builder.prepareForNextMessage();
@@ -168,7 +167,7 @@ public class SocketChannelInboundReader implements InboundReader {
     dispatchMessages(builder, clientChannel);
     
     if (!continueReading) {
-      logger.log("vlingo/cluster: Inbound client stream closed: for '" + inboundName + "'");
+      logger.log("Inbound client stream closed: for '" + inboundName + "'");
       closeClient(clientChannel, key);
     }
   }

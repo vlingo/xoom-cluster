@@ -10,11 +10,16 @@ package io.vlingo.cluster.model.node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
+
+import io.vlingo.actors.Logger;
 
 public class RegistryInterestBroadcaster implements RegistryInterest {
+  private final Logger logger;
   private final List<RegistryInterest> registryInterests;
   
-  RegistryInterestBroadcaster() {
+  RegistryInterestBroadcaster(final Logger logger) {
+    this.logger = logger;
     this.registryInterests = new ArrayList<RegistryInterest>();
   }
 
@@ -28,100 +33,56 @@ public class RegistryInterestBroadcaster implements RegistryInterest {
   
   @Override
   public void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informAllLiveNodes(liveNodes, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informAllLiveNodes(liveNodes, isHealthyCluster));
   }
 
   @Override
   public void informConfirmedByLeader(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informConfirmedByLeader(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informConfirmedByLeader(node, isHealthyCluster));
   }
 
   @Override
   public void informCurrentLeader(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informCurrentLeader(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informCurrentLeader(node, isHealthyCluster));
   }
 
   @Override
   public void informMergedAllDirectoryEntries(final Collection<Node> liveNodes, Collection<MergeResult> mergeResults, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informMergedAllDirectoryEntries(liveNodes, mergeResults, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informMergedAllDirectoryEntries(liveNodes, mergeResults, isHealthyCluster));
   }
 
   @Override
   public void informLeaderDemoted(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informLeaderDemoted(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informLeaderDemoted(node, isHealthyCluster));
   }
 
   @Override
   public void informNodeIsHealthy(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informNodeIsHealthy(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informNodeIsHealthy(node, isHealthyCluster));
   }
 
   @Override
   public void informNodeJoinedCluster(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informNodeJoinedCluster(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informNodeJoinedCluster(node, isHealthyCluster));
   }
 
   @Override
   public void informNodeLeftCluster(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informNodeLeftCluster(node, isHealthyCluster);
-      }
-    } catch (Exception e) {
-      // TODO: Log
-    }
+    broadcast((interest) -> interest.informNodeLeftCluster(node, isHealthyCluster));
   }
 
   @Override
   public void informNodeTimedOut(final Node node, final boolean isHealthyCluster) {
-    try {
-      for (final RegistryInterest interest : registryInterests) {
-        interest.informNodeTimedOut(node, isHealthyCluster);
+    broadcast((interest) -> interest.informNodeTimedOut(node, isHealthyCluster));
+  }
+  
+  private void broadcast(final Consumer<RegistryInterest> inform) {
+    for (final RegistryInterest interest : registryInterests) {
+      try {
+        inform.accept(interest);
+      } catch (Exception e) {
+        logger.log("Cannot inform because: " + e.getMessage(), e);
       }
-    } catch (Exception e) {
-      // TODO: Log
     }
   }
 }

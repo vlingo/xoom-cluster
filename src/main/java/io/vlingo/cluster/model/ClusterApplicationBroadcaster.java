@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
 import io.vlingo.cluster.model.attribute.AttributesClient;
@@ -20,8 +21,10 @@ import io.vlingo.common.message.RawMessage;
 
 class ClusterApplicationBroadcaster implements ClusterApplication {
   private List<ClusterApplication> clusterApplications;
+  private final Logger logger;
 
-  ClusterApplicationBroadcaster() {
+  ClusterApplicationBroadcaster(final Logger logger) {
+    this.logger = logger;
     this.clusterApplications = new ArrayList<ClusterApplication>();
   }
 
@@ -130,7 +133,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
       try {
         inform.accept(app);
       } catch (Exception e) {
-        // TODO: Log
+        logger.log("Cannot inform because: " + e.getMessage(), e);
       }
     }
   }

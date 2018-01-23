@@ -38,7 +38,7 @@ public class ClusterSnapshotActor
   private boolean stopping;
 
   public ClusterSnapshotActor(final ClusterSnapshotInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
-    this.broadcaster = new ClusterApplicationBroadcaster();
+    this.broadcaster = new ClusterApplicationBroadcaster(logger());
     this.communicationsHub = initializer.communicationsHub();
     this.communicationsHub.open(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
     this.localNode = initializer.localNode();
@@ -135,7 +135,7 @@ public class ClusterSnapshotActor
       clusterApplication.handleApplicationMessage(message, communicationsHub.clusterApplicationOutboundStream()); // TODO
     } else {
       logger().log(
-              "vlingo/cluster: ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
+              "ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
               addressType +
               " for message: " +
               message.asTextMessage());

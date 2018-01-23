@@ -28,7 +28,7 @@ public class LocalRegistry implements Registry {
     this.localNode = localNode;
     this.configuration = confirguration;
     this.logger = logger;
-    this.broadcaster = new RegistryInterestBroadcaster();
+    this.broadcaster = new RegistryInterestBroadcaster(logger);
     this.registry = new TreeMap<Id, RegisteredNodeStatus>();
   }
 
@@ -47,7 +47,7 @@ public class LocalRegistry implements Registry {
         nodesToKeep.put(status.node().id(), status);
       } else {
         broadcaster.informNodeTimedOut(status.node(), isClusterHealthy());
-        logger.log("vlingo/cluster: Node cleaned from registry due to timeout: " + status.node());
+        logger.log("Node cleaned from registry due to timeout: " + status.node());
       }
     }
 
@@ -92,7 +92,7 @@ public class LocalRegistry implements Registry {
       broadcaster.informCurrentLeader(status.node(), isClusterHealthy());
       demotePreviousLeader(id);
     } else {
-      logger.log("vlingo/cluster: Cannot declare leader because missing node: '" + id + "'");
+      logger.log("Cannot declare leader because missing node: '" + id + "'");
     }
   }
 
@@ -164,7 +164,7 @@ public class LocalRegistry implements Registry {
       broadcaster.informNodeLeftCluster(status.node(), isClusterHealthy());
       broadcaster.informAllLiveNodes(liveNodes(), isClusterHealthy());
     } else {
-      logger.log("vlingo/cluster: Cannot leave because missing node: '" + id + "'");
+      logger.log("Cannot leave because missing node: '" + id + "'");
     }
   }
 

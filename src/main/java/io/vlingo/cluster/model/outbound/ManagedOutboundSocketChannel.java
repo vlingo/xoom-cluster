@@ -34,7 +34,6 @@ public class ManagedOutboundSocketChannel implements ManagedOutboundChannel {
         channel.close();
       } catch (Exception e) {
         logger.log("vlingo/cluster: Close of channel to " + node.id() + " failed for because: " + e.getMessage(), e);
-        // TODO: log
       }
     }
     channel = null;
@@ -50,8 +49,6 @@ public class ManagedOutboundSocketChannel implements ManagedOutboundChannel {
         }
       } catch (Exception e) {
         logger.log("vlingo/cluster: Write to " + node + " failed because: " + e.getMessage(), e);
-        e.printStackTrace();
-        // TODO: log
         close();
       }
     }

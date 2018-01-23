@@ -25,10 +25,10 @@ final class ShutdownHook {
       @Override
       public void run() {
         control._2.log("\n==========");
-        control._2.log("vlingo/cluster: Stopping node: '" + nodeName + "' ...");
+        control._2.log("Stopping node: '" + nodeName + "' ...");
         control._1.shutDown();
         pause();
-        control._2.log("vlingo/cluster: Stopped node: '" + nodeName + "'");
+        control._2.log("Stopped node: '" + nodeName + "'");
       }
     });
   }

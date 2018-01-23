@@ -108,7 +108,7 @@ public class ClusterApplicationBroadcasterTest extends AbstractClusterTest {
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    broadcaster = new ClusterApplicationBroadcaster();
+    broadcaster = new ClusterApplicationBroadcaster(testWorld.defaultLogger());
     broadcaster.registerClusterApplication(application);
   }
 }

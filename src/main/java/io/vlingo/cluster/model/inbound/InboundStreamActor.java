@@ -44,7 +44,7 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
       final InboundClientChannel channel = clientReference.reference();
       channel.writeBackResponse(buffer);
     } catch (Exception e) {
-      throw new IllegalArgumentException("vlingo/cluster: Exception on client reference channel because: " + e.getMessage(), e);
+      throw new IllegalArgumentException("Exception on client reference channel because: " + e.getMessage(), e);
     }
   }
   
@@ -65,7 +65,7 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
   public void start() {
     if (isStopped()) return;
     
-    logger().log("vlingo/cluster: Inbound stream listening: for '" + reader.inboundName() + "'");
+    logger().log("Inbound stream listening: for '" + reader.inboundName() + "'");
     
     try {
       reader.openFor(this);
