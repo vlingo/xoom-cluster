@@ -45,7 +45,7 @@ public final class NodeBootstrap {
       
       NodeBootstrap.instance = new NodeBootstrap(control, nodeName);
       
-      control._2.log("vlingo/cluster: Successfully started cluster node: '" + nodeName + "'");
+      control._2.log("Successfully started cluster node: '" + nodeName + "'");
       
       if (!embedded) {
         control._2.log("==========");
