@@ -90,10 +90,10 @@ public class InboundSocketChannelTest extends AbstractClusterTest {
     super.setUp();
     
     node = config.configuredNodeMatching(Id.of(2));
-    opChannel = new ManagedOutboundSocketChannel(node, node.operationalAddress());
-    appChannel = new ManagedOutboundSocketChannel(node, node.applicationAddress());
-    opReader = new SocketChannelInboundReader(node.operationalAddress().port(), "test-op", properties.operationalBufferSize());
-    appReader = new SocketChannelInboundReader(node.applicationAddress().port(), "test-app", properties.applicationBufferSize());
+    opChannel = new ManagedOutboundSocketChannel(node, node.operationalAddress(), testWorld.defaultLogger());
+    appChannel = new ManagedOutboundSocketChannel(node, node.applicationAddress(), testWorld.defaultLogger());
+    opReader = new SocketChannelInboundReader(node.operationalAddress().port(), "test-op", properties.operationalBufferSize(), testWorld.defaultLogger());
+    appReader = new SocketChannelInboundReader(node.applicationAddress().port(), "test-app", properties.applicationBufferSize(), testWorld.defaultLogger());
   }
   
   @After

@@ -7,6 +7,7 @@
 
 package io.vlingo.cluster.model;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.LocalRegistry;
 import io.vlingo.cluster.model.node.Node;
@@ -19,16 +20,16 @@ class ClusterSnapshotInitializer {
   private final Id localNodeId;
   private final Registry registry;
   
-  ClusterSnapshotInitializer(final String nodeNameText, final Properties properties) {
+  ClusterSnapshotInitializer(final String nodeNameText, final Properties properties, final Logger logger) {
     this.localNodeId = Id.of(properties.nodeId(nodeNameText));
     
-    this.configuration = new ClusterConfiguration();
+    this.configuration = new ClusterConfiguration(logger);
     
     this.localNode = configuration.configuredNodeMatching(localNodeId);
     
     this.communicationsHub = new NetworkCommunicationsHub();
     
-    this.registry = new LocalRegistry(this.localNode, this.configuration);
+    this.registry = new LocalRegistry(this.localNode, this.configuration, logger);
   }
 
   protected CommunicationsHub communicationsHub() {

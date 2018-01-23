@@ -103,6 +103,6 @@ public class ManagedOutboundSocketChannelProvider implements ManagedOutboundChan
     final Address address = (type == AddressType.OP ?
         node.operationalAddress() : node.applicationAddress());
 
-    return new ManagedOutboundSocketChannel(node, address);
+    return new ManagedOutboundSocketChannel(node, address, configuration.logger());
   }
 }

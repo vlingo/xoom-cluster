@@ -14,17 +14,20 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.vlingo.actors.Logger;
+import io.vlingo.common.fn.Tuple2;
+
 public class ClusterTest extends AbstractClusterTest {
 
   @Test
   public void testClusterSnapshotControl() throws Exception {
-    ClusterSnapshotControl control = Cluster.controlFor("node1");
+    final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor("node1");
     
     pause();
     assertNotNull(control);
     assertTrue(Cluster.isRunning());
     
-    control.shutDown();
+    control._1.shutDown();
     pause();
     assertFalse(Cluster.isRunning());
   }

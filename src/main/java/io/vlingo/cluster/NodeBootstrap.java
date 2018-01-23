@@ -7,14 +7,16 @@
 
 package io.vlingo.cluster;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.Cluster;
 import io.vlingo.cluster.model.ClusterSnapshotControl;
 import io.vlingo.cluster.model.Properties;
+import io.vlingo.common.fn.Tuple2;
 
 public final class NodeBootstrap {
   private static NodeBootstrap instance;
 
-  private final ClusterSnapshotControl clusterSnapshotControl;
+  private final Tuple2<ClusterSnapshotControl, Logger> clusterSnapshotControl;
   private final ShutdownHook shutdownHook;
 
   public static void main(final String[] args) throws Exception {
@@ -39,14 +41,14 @@ public final class NodeBootstrap {
     if (mustBoot) {
       Properties.instance.validateRequired(nodeName);
       
-      System.out.println("vlingo/cluster: Starting node named: '" + nodeName + "'");
+      final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(nodeName);
       
-      NodeBootstrap.instance = new NodeBootstrap(Cluster.controlFor(nodeName), nodeName);
+      NodeBootstrap.instance = new NodeBootstrap(control, nodeName);
       
-      System.out.println("vlingo/cluster: Successfully started cluster node: '" + nodeName + "'");
+      control._2.log("vlingo/cluster: Successfully started cluster node: '" + nodeName + "'");
       
       if (!embedded) {
-        System.out.println("==========");
+        control._2.log("==========");
       }
     }
 
@@ -58,10 +60,10 @@ public final class NodeBootstrap {
   }
   
   public ClusterSnapshotControl clusterSnapshotControl() {
-    return clusterSnapshotControl;
+    return clusterSnapshotControl._1;
   }
 
-  private NodeBootstrap(final ClusterSnapshotControl control, final String nodeName) throws Exception {
+  private NodeBootstrap(final Tuple2<ClusterSnapshotControl, Logger> control, final String nodeName) throws Exception {
     this.clusterSnapshotControl = control;
 
     this.shutdownHook = new ShutdownHook(nodeName, control);

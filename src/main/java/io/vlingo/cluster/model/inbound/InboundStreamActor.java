@@ -65,7 +65,7 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
   public void start() {
     if (isStopped()) return;
     
-    System.out.println("vlingo/cluster: Inbound stream listening: for '" + reader.inboundName() + "'");
+    logger().log("vlingo/cluster: Inbound stream listening: for '" + reader.inboundName() + "'");
     
     try {
       reader.openFor(this);

@@ -7,7 +7,9 @@
 
 package io.vlingo.cluster.model;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.actors.World;
+import io.vlingo.common.fn.Tuple2;
 
 public class Cluster {
   
@@ -15,12 +17,14 @@ public class Cluster {
   
   private static ClusterSnapshotControl control = null;
   
-  public static final synchronized ClusterSnapshotControl controlFor(final String name) throws Exception {
+  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(final String name) throws Exception {
     if (control != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
     
-    control = ClusterSnapshotControl.instance(world, name);
+    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, name);
+    
+    Cluster.control = control._1;
     
     return control;
   }

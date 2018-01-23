@@ -31,7 +31,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
           final Configuration configuration) {
-    this(node, application, outbound, configuration, new NoOpConfirmationInterest());
+    this(node, application, outbound, configuration, new NoOpConfirmationInterest(configuration));
   }
 
   public AttributesAgentActor(

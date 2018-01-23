@@ -26,7 +26,7 @@ public interface InboundStream extends Startable, Stoppable {
   throws Exception {
     
     final InboundReader reader =
-            new SocketChannelInboundReader(port, inboundName, maxMessageSize);
+            new SocketChannelInboundReader(port, inboundName, maxMessageSize, stage.world().defaultLogger());
     
     final Definition definition =
             Definition.has(

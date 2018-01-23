@@ -134,7 +134,7 @@ public class ClusterSnapshotActor
     } else if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message, communicationsHub.clusterApplicationOutboundStream()); // TODO
     } else {
-      System.out.println(
+      logger().log(
               "vlingo/cluster: ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
               addressType +
               " for message: " +

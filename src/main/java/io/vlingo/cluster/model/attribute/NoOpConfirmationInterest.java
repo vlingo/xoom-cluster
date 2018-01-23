@@ -7,12 +7,19 @@
 
 package io.vlingo.cluster.model.attribute;
 
+import io.vlingo.actors.Logger;
+import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 
 public class NoOpConfirmationInterest implements ConfirmationInterest {
+  private final Logger logger;
+  
+  public NoOpConfirmationInterest(final Configuration configuration) {
+    this.logger = configuration.logger();
+  }
 
   @Override
   public void confirm(final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
-    System.out.println("ATTR CONFIRMATION: SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
+    logger.log("ATTR CONFIRMATION: SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
   }
 }

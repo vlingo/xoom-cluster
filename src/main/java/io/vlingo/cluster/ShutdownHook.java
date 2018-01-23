@@ -7,13 +7,15 @@
 
 package io.vlingo.cluster;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.ClusterSnapshotControl;
+import io.vlingo.common.fn.Tuple2;
 
 final class ShutdownHook {
-  private final ClusterSnapshotControl control;
+  private final Tuple2<ClusterSnapshotControl, Logger> control;
   private final String nodeName;
 
-  protected ShutdownHook(final String nodeName, final ClusterSnapshotControl control) {
+  protected ShutdownHook(final String nodeName, final Tuple2<ClusterSnapshotControl, Logger> control) {
     this.nodeName = nodeName;
     this.control = control;
   }
@@ -22,11 +24,11 @@ final class ShutdownHook {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        System.out.println("\n==========");
-        System.out.println("vlingo/cluster: Stopping node: '" + nodeName + "' ...");
-        control.shutDown();
+        control._2.log("\n==========");
+        control._2.log("vlingo/cluster: Stopping node: '" + nodeName + "' ...");
+        control._1.shutDown();
         pause();
-        System.out.println("vlingo/cluster: Stopped node: '" + nodeName + "'");
+        control._2.log("vlingo/cluster: Stopped node: '" + nodeName + "'");
       }
     });
   }

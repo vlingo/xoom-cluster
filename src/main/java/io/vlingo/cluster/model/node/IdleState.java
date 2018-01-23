@@ -7,8 +7,10 @@
 
 package io.vlingo.cluster.model.node;
 
+import io.vlingo.actors.Logger;
+
 final class IdleState extends LiveNodeState {
-  protected IdleState(final Node node, final LiveNodeMaintainer liveNodeMaintainer) {
-    super(node, liveNodeMaintainer, Type.IDLE);
+  protected IdleState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {
+    super(node, liveNodeMaintainer, Type.IDLE, logger);
   }
 }

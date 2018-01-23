@@ -9,6 +9,7 @@ package io.vlingo.cluster.model.attribute;
 
 import java.util.Collection;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
@@ -28,11 +29,13 @@ public final class ConfirmingDistributor {
   private final Confirmables confirmables;
   
   protected final Collection<Node> allOtherNodes;
+  private final Logger logger;
   protected final Node node;
   protected final OperationalOutboundStream outbound;
 
   protected ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
     this.application = application;
+    this.logger = configuration.logger();
     this.node = node;
     this.outbound = outbound;
     this.allOtherNodes = configuration.allOtherConfiguredNodes(node.id());
@@ -131,7 +134,7 @@ public final class ConfirmingDistributor {
 
   protected void redistributeUnconfirmed() {
     for (final Confirmable confirmable : confirmables.allRedistributable()) {
-      System.out.println("REDIST: " + confirmable);
+      logger.log("REDIST: " + confirmable);
       outbound.application(ApplicationSays.from(
               node.id(), node.name(),
               confirmable.message().toPayload()),

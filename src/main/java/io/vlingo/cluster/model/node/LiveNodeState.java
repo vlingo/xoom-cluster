@@ -7,11 +7,21 @@
 
 package io.vlingo.cluster.model.node;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.Properties;
-import io.vlingo.cluster.model.message.*;
+import io.vlingo.cluster.model.message.Directory;
+import io.vlingo.cluster.model.message.Elect;
+import io.vlingo.cluster.model.message.Join;
+import io.vlingo.cluster.model.message.Leader;
+import io.vlingo.cluster.model.message.Leave;
+import io.vlingo.cluster.model.message.Ping;
+import io.vlingo.cluster.model.message.Pulse;
+import io.vlingo.cluster.model.message.Split;
+import io.vlingo.cluster.model.message.Vote;
 
 abstract class LiveNodeState {
   protected final LiveNodeMaintainer liveNodeMaintainer;
+  protected final Logger logger;
   protected final Node node;
   protected final Type type;
 
@@ -26,54 +36,55 @@ abstract class LiveNodeState {
     return this.getClass().getSimpleName() + "[type=" + type + " node=" + node + "]";
   }
 
-  protected LiveNodeState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Type type) {
+  protected LiveNodeState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Type type, final Logger logger) {
     this.node = node;
     this.liveNodeMaintainer = liveNodeMaintainer;
     this.type = type;
+    this.logger = logger;
   }
 
   protected void handle(final Directory dir) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " DIRECTORY: " + dir);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " DIRECTORY: " + dir);
     liveNodeMaintainer.mergeAllDirectoryEntries(dir.nodes());
   }
 
   protected void handle(final Elect elect) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " ELECT: " + elect);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " ELECT: " + elect);
     liveNodeMaintainer.escalateElection(elect.id());
   }
 
   protected void handle(final Join join) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " JOIN: " + join);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " JOIN: " + join);
     liveNodeMaintainer.joinLocalWith(join.node());
   }
 
   protected void handle(final Leader leader) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " LEADER: " + leader);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " LEADER: " + leader);
     liveNodeMaintainer.assertNewLeadership(leader.id());
   }
   
   protected void handle(final Leave leave) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " LEAVE: " + leave);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " LEAVE: " + leave);
     liveNodeMaintainer.dropNode(leave.id());
   }
 
   protected void handle(final Ping ping) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " PING: " + ping);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " PING: " + ping);
     liveNodeMaintainer.providePulseTo(ping.id());
   }
 
   protected void handle(final Pulse pulse) {
-    // System.out.println("vlingo/cluster: " + type + " " + node.id() + " PULSE: " + pulse);
+    // logger.log("vlingo/cluster: " + type + " " + node.id() + " PULSE: " + pulse);
     liveNodeMaintainer.updateLastHealthIndication(pulse.id());
   }
 
   protected void handle(final Split split) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " SPLIT: " + split);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " SPLIT: " + split);
     liveNodeMaintainer.declareNodeSplit(split.id());
   }
 
   protected void handle(final Vote vote) {
-    System.out.println("vlingo/cluster: " + type + " " + node.id() + " VOTE: " + vote);
+    logger.log("vlingo/cluster: " + type + " " + node.id() + " VOTE: " + vote);
     liveNodeMaintainer.placeVote(node.id());
   }
 

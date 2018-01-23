@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.node.Address;
 import io.vlingo.cluster.model.node.AddressType;
 import io.vlingo.cluster.model.node.Id;
@@ -21,10 +22,12 @@ import io.vlingo.cluster.model.node.Name;
 import io.vlingo.cluster.model.node.Node;
 
 public class ClusterConfiguration implements Configuration {
+  private final Logger logger;
   private final Set<Node> nodes;
 
-  public ClusterConfiguration() {
-    nodes = new TreeSet<Node>();
+  public ClusterConfiguration(final Logger logger) {
+    this.logger = logger;
+    this.nodes = new TreeSet<Node>();
 
     initializeConfiguredNodeEntries(Properties.instance);
   }
@@ -102,6 +105,11 @@ public class ClusterConfiguration implements Configuration {
   }
 
   @Override
+  public Logger logger() {
+    return logger;
+  }
+
+  @Override
   public boolean equals(Object other) {
     if (other == null || other.getClass() != ClusterConfiguration.class) {
       return false;
@@ -120,8 +128,9 @@ public class ClusterConfiguration implements Configuration {
     return "ConfiguredCluster[" + nodes + "]";
   }
 
-  protected ClusterConfiguration(Properties properties) {
-    nodes = new TreeSet<Node>();
+  protected ClusterConfiguration(Properties properties, final Logger logger) {
+    this.logger = logger;
+    this.nodes = new TreeSet<Node>();
 
     initializeConfiguredNodeEntries(properties);
   }

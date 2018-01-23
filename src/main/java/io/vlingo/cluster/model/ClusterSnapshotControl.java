@@ -8,12 +8,14 @@
 package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Definition;
+import io.vlingo.actors.Logger;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.application.ClusterApplication;
+import io.vlingo.common.fn.Tuple2;
 
 public interface ClusterSnapshotControl {
-  public static ClusterSnapshotControl instance(final World world, final String name) {
-    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(name, Properties.instance);
+  public static Tuple2<ClusterSnapshotControl, Logger> instance(final World world, final String name) {
+    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(name, Properties.instance, world.defaultLogger());
     
     final ClusterApplication application = ClusterApplication.instance(world, initializer.localNode());
     
@@ -25,7 +27,7 @@ public interface ClusterSnapshotControl {
     
     ClusterSnapshotControl control = world.actorFor(definition, ClusterSnapshotControl.class);
     
-    return control;
+    return Tuple2.from(control, world.defaultLogger());
   }
 
   void shutDown();

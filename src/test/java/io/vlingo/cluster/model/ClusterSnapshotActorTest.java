@@ -119,7 +119,7 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    intializer = new ClusterSnapshotInitializer("node1", properties);
+    intializer = new ClusterSnapshotInitializer("node1", properties, testWorld.defaultLogger());
     
     final ByteBuffer messageBuffer = ByteBuffer.allocate(4096);
     final Pulse pulse = new Pulse(Id.of(1));

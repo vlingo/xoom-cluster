@@ -16,7 +16,7 @@ public class ClusterSnapshotInitializerTest extends AbstractClusterTest {
 
   @Test
   public void testCreate() throws Exception {
-    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer("node1", properties);
+    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer("node1", properties, testWorld.defaultLogger());
     
     assertNotNull(initializer);
     assertNotNull(initializer.communicationsHub());

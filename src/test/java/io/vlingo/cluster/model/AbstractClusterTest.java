@@ -76,9 +76,9 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     
     this.properties = Properties.openForTest(properties);
     
-    this.config = new ClusterConfiguration(this.properties);
-    
     this.testWorld = TestWorld.start("cluster-test-world");
+    
+    this.config = new ClusterConfiguration(this.properties, testWorld.defaultLogger());
     
     this.application = new MockClusterApplication();
   }

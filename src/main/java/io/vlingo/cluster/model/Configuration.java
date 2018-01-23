@@ -10,6 +10,7 @@ package io.vlingo.cluster.model;
 import java.util.Collection;
 import java.util.Set;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.Node;
 
@@ -22,4 +23,5 @@ public interface Configuration {
   Id greatestConfiguredNodeId();
   boolean hasConfiguredNode(final Id id);
   int totalConfiguredNodes();
+  Logger logger();
 }

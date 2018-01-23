@@ -16,6 +16,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.common.message.RawMessage;
 import io.vlingo.common.message.RawMessageBuilder;
 
@@ -24,15 +25,17 @@ public class SocketChannelInboundReader implements InboundReader {
   private boolean closed;
   private InboundReaderConsumer consumer;
   private final String inboundName;
+  private final Logger logger;
   private final int maxMessageSize;
   private final int port;
   private final Selector selector;
 
-  public SocketChannelInboundReader(final int port, final String inboundName, final int maxMessageSize) throws Exception {
+  public SocketChannelInboundReader(final int port, final String inboundName, final int maxMessageSize, final Logger logger) throws Exception {
     this.port = port;
     this.inboundName = inboundName;
     this.channel = ServerSocketChannel.open();
     this.maxMessageSize = maxMessageSize;
+    this.logger = logger;
     this.selector = Selector.open();
   }
 
@@ -118,7 +121,7 @@ public class SocketChannelInboundReader implements InboundReader {
   
       clientChannelKey.attach(new InboundChannelInfo(new RawMessageBuilder(maxMessageSize)));
   
-      System.out.println(
+      logger.log(
               "vlingo/cluster: Accepted new connection for '"
               + inboundName
               + "' from: "
@@ -144,8 +147,7 @@ public class SocketChannelInboundReader implements InboundReader {
         consumer.consume(message, new InboundClientSocketChannel(clientChannel));
       } catch (Exception e) {
         // TODO: deal with this
-        // TODO: log
-        e.printStackTrace(System.err);
+        logger.log("vlingo/cluster: Cannot dispatch message for: '" + inboundName + "'", e);
       }
 
       builder.prepareForNextMessage();
@@ -166,7 +168,7 @@ public class SocketChannelInboundReader implements InboundReader {
     dispatchMessages(builder, clientChannel);
     
     if (!continueReading) {
-      System.out.println("vlingo/cluster: Inbound client stream closed: for '" + inboundName + "'");
+      logger.log("vlingo/cluster: Inbound client stream closed: for '" + inboundName + "'");
       closeClient(clientChannel, key);
     }
   }
