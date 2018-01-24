@@ -48,7 +48,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     
     application.informAttributesClient(AttributesClient.with(selfAs(AttributesAgent.class), repository));
     
-    stage().world().scheduler()
+    stage().scheduler()
       .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance.clusterAttributesRedistributionInterval());
   }
 

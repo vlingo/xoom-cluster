@@ -73,7 +73,7 @@ public class InboundStreamActor extends Actor implements InboundReaderConsumer, 
       throw new IllegalStateException(e.getMessage(), e);
     }
     
-    cancellable = this.stage().world().scheduler().schedule(selfAs(Scheduled.class), null, 0, 100L);
+    cancellable = this.stage().scheduler().schedule(selfAs(Scheduled.class), null, 0, 100L);
   }
 
   //=========================================

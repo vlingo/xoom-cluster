@@ -362,7 +362,6 @@ public class LocalLiveNodeActor extends Actor
   private Cancellable scheduleHealthCheck() {
     return
       stage()
-      .world()
       .scheduler()
       .schedule(
               selfAs(Scheduled.class),
