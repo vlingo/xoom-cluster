@@ -29,7 +29,7 @@ enable it to re-join the cluster.
 
 You can develop JVM applications with vlingo-cluster. See the following package and sample ClusterApplication:
 
-```  io.vlingo.cluster.model.application
+```io.vlingo.cluster.model.application
     ClusterApplication
     ClusterApplicationAdapter
     FakeClusterApplicationActor
@@ -37,7 +37,7 @@ You can develop JVM applications with vlingo-cluster. See the following package 
 
 Try it out. As the cluster changes states all of the activity and health conditions will be reported to the registered ClusterApplication. You can see how to configure your own ClusterApplication by changing the vlingo-cluster.properties file:
 
-```  cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor
+```cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor
 ```
 
 Have fun!
