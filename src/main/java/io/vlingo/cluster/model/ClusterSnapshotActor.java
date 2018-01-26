@@ -14,16 +14,16 @@ import java.util.TreeSet;
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesAgent;
-import io.vlingo.cluster.model.inbound.InboundResponder;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
 import io.vlingo.cluster.model.message.OperationalMessage;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.LocalLiveNode;
 import io.vlingo.cluster.model.node.MergeResult;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.node.RegistryInterest;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.inbound.InboundResponder;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class ClusterSnapshotActor
   extends Actor
@@ -132,7 +132,7 @@ public class ClusterSnapshotActor
         localLiveNode.handle(typedMessage);
       }
     } else if (addressType.isApplication()) {
-      clusterApplication.handleApplicationMessage(message, communicationsHub.clusterApplicationOutboundStream()); // TODO
+      clusterApplication.handleApplicationMessage(message, communicationsHub.applicationOutboundStream()); // TODO
     } else {
       logger().log(
               "ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +

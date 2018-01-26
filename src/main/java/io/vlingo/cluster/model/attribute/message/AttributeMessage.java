@@ -9,7 +9,7 @@ package io.vlingo.cluster.model.attribute.message;
 
 import io.vlingo.cluster.model.attribute.AttributeSet;
 import io.vlingo.cluster.model.attribute.TrackedAttribute;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Node;
 
 public abstract class AttributeMessage extends ApplicationMessage {
   public final String attributeSetName;

@@ -17,12 +17,14 @@ import io.vlingo.cluster.model.message.MessageConverters;
 import io.vlingo.cluster.model.message.OperationalMessage;
 import io.vlingo.cluster.model.message.OperationalMessageCache;
 import io.vlingo.cluster.model.message.Split;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.ByteBufferPool;
-import io.vlingo.common.message.ByteBufferPool.PooledByteBuffer;
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
+import io.vlingo.wire.fdx.outbound.Outbound;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.ByteBufferPool.PooledByteBuffer;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {
@@ -38,7 +40,7 @@ public class OperationalOutboundStreamActor extends Actor
     
     this.node = node;
     this.outbound = new Outbound(provider, byteBufferPool);
-    this.cache = new OperationalMessageCache(node.id(), node.name());
+    this.cache = new OperationalMessageCache(node);
   }
 
 

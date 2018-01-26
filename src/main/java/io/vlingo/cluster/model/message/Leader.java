@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model.message;
 
-import io.vlingo.cluster.model.node.Id;
+import io.vlingo.wire.node.Id;
 
 public final class Leader extends OperationalMessage {
   public static final Leader from(final String content) {

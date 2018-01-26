@@ -21,10 +21,12 @@ import io.vlingo.actors.Definition;
 import io.vlingo.actors.testkit.TestActor;
 import io.vlingo.actors.testkit.TestWorld;
 import io.vlingo.cluster.model.AbstractClusterTest;
-import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.common.message.ByteBufferPool;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStreamActor;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
 
 public class ApplicationOutboundStreamTest extends AbstractClusterTest {
   private static final String Message1 = "Message1";
@@ -32,7 +34,7 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
   private MockManagedOutboundChannelProvider channelProvider;
   private Id localNodeId;
   private ByteBufferPool pool;
-  private TestActor<ClusterApplicationOutboundStream> outboundStream;
+  private TestActor<ApplicationOutboundStream> outboundStream;
   private TestWorld world;
 
   @Test
@@ -84,7 +86,7 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
                     Definition.has(
                             ApplicationOutboundStreamActor.class,
                             Definition.parameters(channelProvider, pool)),
-                    ClusterApplicationOutboundStream.class);
+                    ApplicationOutboundStream.class);
   }
   
   @After

@@ -19,8 +19,8 @@ import io.vlingo.cluster.model.AbstractClusterTest;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.cluster.model.attribute.message.AddAttribute;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class ConfirmablesTest extends AbstractClusterTest {
   private Confirmables consumables;
@@ -91,16 +91,16 @@ public class ConfirmablesTest extends AbstractClusterTest {
     
     localNodeId = Id.of(1);
     
-    localNode = config.configuredNodeMatching(localNodeId);
+    localNode = config.nodeMatching(localNodeId);
     
-    remoteNode2 = config.configuredNodeMatching(Id.of(2));
+    remoteNode2 = config.nodeMatching(Id.of(2));
     
-    remoteNode3 = config.configuredNodeMatching(Id.of(3));
+    remoteNode3 = config.nodeMatching(Id.of(3));
 
     set = AttributeSet.named("test-set");
     
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
     
-    consumables = new Confirmables(config.allOtherConfiguredNodes(localNodeId));
+    consumables = new Confirmables(config.allOtherNodes(localNodeId));
   }
 }

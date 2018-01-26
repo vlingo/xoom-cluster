@@ -9,8 +9,8 @@ package io.vlingo.cluster.model.message;
 
 import java.nio.ByteBuffer;
 
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.Converters;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.node.Node;
 
 public class MessageConverters {
   public static void messageToBytes(final ApplicationSays app, final ByteBuffer buffer) {
@@ -39,9 +39,9 @@ public class MessageConverters {
           .append(lf)
           .append("id=").append(node.id().value())
           .append(" nm=").append(node.name().value())
-          .append(" op=").append(node.operationalAddress().host())
+          .append(" op=").append(node.operationalAddress().hostName())
                             .append(":").append(node.operationalAddress().port())
-          .append(" msg=").append(node.applicationAddress().host())
+          .append(" msg=").append(node.applicationAddress().hostName())
                             .append(":").append(node.applicationAddress().port());
 
       lf = "\n";
@@ -65,11 +65,11 @@ public class MessageConverters {
             .append(" nm=")
             .append(join.node().name().value())
             .append(" op=")
-            .append(join.node().operationalAddress().host())
+            .append(join.node().operationalAddress().hostName())
             .append(":")
             .append(join.node().operationalAddress().port())
             .append(" msg=")
-            .append(join.node().applicationAddress().host())
+            .append(join.node().applicationAddress().hostName())
             .append(":")
             .append(join.node().applicationAddress().port());
 

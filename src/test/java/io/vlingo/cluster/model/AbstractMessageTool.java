@@ -9,10 +9,14 @@ package io.vlingo.cluster.model;
 
 import java.nio.ByteBuffer;
 
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.actors.plugin.logging.jdk.JDKLogger;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Configuration;
 
 public class AbstractMessageTool {
+  protected Configuration config = new ClusterConfiguration(JDKLogger.testInstance());
+  
   public RawMessage buildRawMessageBuffer(final ByteBuffer buffer, final String message) {
     buffer.clear();
     buffer.put(Converters.textToBytes(message));

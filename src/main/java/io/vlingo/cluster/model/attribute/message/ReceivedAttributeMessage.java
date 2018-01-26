@@ -12,14 +12,15 @@ import java.util.Map;
 
 import io.vlingo.cluster.model.attribute.Attribute;
 import io.vlingo.cluster.model.message.ApplicationSays;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
 
 public final class ReceivedAttributeMessage {
   private static final String SourceNodeIdKey = "sourceNodeIdKey";
   private static final String SourceNodeNameKey = "sourceNodeNameKey";
+  private static final String SourceNodeOpPortKey = "sourceNodeOpPortKey";
+  private static final String SourceNodeAppPortKey = "sourceNodeAppPortKey";
   
   private static final String ClassOfMessageKey = "classOfMessage";
   private static final String CorrelatingMessageIdKey = "correlatingMessageId";
@@ -38,16 +39,20 @@ public final class ReceivedAttributeMessage {
     this.payloadMap = parsePayload(message);
   }
 
-  public final Node sourceNode() {
-    return Node.from(sourceNodeId(), sourceNodeName());
-  }
-
   public final Id sourceNodeId() {
     return Id.of(Integer.parseInt(payloadMap.get(SourceNodeIdKey)));
   }
 
   public final Name sourceNodeName() {
     return Name.of(payloadMap.get(SourceNodeNameKey));
+  }
+
+  public final Id sourceNodeOpPort() {
+    return Id.of(Integer.parseInt(payloadMap.get(SourceNodeOpPortKey)));
+  }
+
+  public final Id sourceNodeAppPort() {
+    return Id.of(Integer.parseInt(payloadMap.get(SourceNodeAppPortKey)));
   }
 
   public final String classOfMessage() {

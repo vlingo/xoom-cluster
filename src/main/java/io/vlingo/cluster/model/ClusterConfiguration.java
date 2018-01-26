@@ -7,19 +7,19 @@
 
 package io.vlingo.cluster.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.node.Address;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Address;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class ClusterConfiguration implements Configuration {
   private final Logger logger;
@@ -32,11 +32,18 @@ public class ClusterConfiguration implements Configuration {
     initializeConfiguredNodeEntries(Properties.instance);
   }
 
-  public Collection<Node> allConfiguredNodes() {
+  public Set<Node> allNodes() {
     return Collections.unmodifiableSet(nodes);
   }
 
-  public final Set<Node> allOtherConfiguredNodes(Id nodeId) {
+  @Override
+  public Set<Node> allNodesOf(final Collection<Id> ids) {
+    final Set<Node> nodes = new TreeSet<Node>();
+    
+    return nodes;
+  }
+
+  public final Set<Node> allOtherNodes(Id nodeId) {
     final Set<Node> except = new TreeSet<Node>();
 
     for (final Node node : nodes) {
@@ -48,7 +55,18 @@ public class ClusterConfiguration implements Configuration {
     return except;
   }
 
-  public final Set<Node> allGreaterConfiguredNodes(Id nodeId) {
+  @Override
+  public Set<Id> allOtherNodesId(final Id nodeId) {
+    final Set<Id> ids = new TreeSet<Id>();
+    
+    for (final Node node : allOtherNodes(nodeId)) {
+      ids.add(node.id());
+    }
+    
+    return ids;
+  }
+
+  public final Set<Node> allGreaterNodes(Id nodeId) {
     final Set<Node> greater = new TreeSet<Node>();
 
     for (final Node node : nodes) {
@@ -60,8 +78,8 @@ public class ClusterConfiguration implements Configuration {
     return greater;
   }
 
-  public Collection<String> allConfiguredNodeNames() {
-    final List<String> names = new ArrayList<String>();
+  public Set<String> allNodeNames() {
+    final Set<String> names = new TreeSet<String>();
 
     for (final Node node : nodes) {
       names.add(node.name().value());
@@ -70,7 +88,7 @@ public class ClusterConfiguration implements Configuration {
     return names;
   }
 
-  public final Node configuredNodeMatching(Id nodeId) {
+  public final Node nodeMatching(Id nodeId) {
     for (final Node node : nodes) {
       if (node.id().equals(nodeId)) {
         return node;
@@ -79,7 +97,7 @@ public class ClusterConfiguration implements Configuration {
     return Node.NO_NODE;
   }
 
-  public final Id greatestConfiguredNodeId() {
+  public final Id greatestNodeId() {
     Id greatest = Id.NO_ID;
 
     for (final Node node : nodes) {
@@ -91,7 +109,7 @@ public class ClusterConfiguration implements Configuration {
     return greatest;
   }
 
-  public boolean hasConfiguredNode(Id nodeId) {
+  public boolean hasNode(Id nodeId) {
     for (final Node node : nodes) {
       if (node.id().equals(nodeId)) {
         return true;
@@ -100,7 +118,7 @@ public class ClusterConfiguration implements Configuration {
     return false;
   }
 
-  public int totalConfiguredNodes() {
+  public int totalNodes() {
     return nodes.size();
   }
 
@@ -139,7 +157,7 @@ public class ClusterConfiguration implements Configuration {
     for (String configuredNodeName : Properties.instance.seedNodes()) {
       final Id nodeId = Id.of(properties.nodeId(configuredNodeName));
       final Name nodeName = new Name(configuredNodeName);
-      final String host = properties.host(configuredNodeName);
+      final Host host = Host.of(properties.host(configuredNodeName));
       final Address opNodeAddress = Address.from(host, properties.operationalPort(configuredNodeName), AddressType.OP);
       final Address appNodeAddress = Address.from(host, properties.applicationPort(configuredNodeName), AddressType.APP);
 

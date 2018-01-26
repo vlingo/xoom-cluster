@@ -10,6 +10,9 @@ package io.vlingo.cluster.model.node;
 import java.util.Collection;
 import java.util.Set;
 
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
+
 public interface Registry {
   void cleanTimedOutNodes();
   void confirmAllLiveNodesByLeader();

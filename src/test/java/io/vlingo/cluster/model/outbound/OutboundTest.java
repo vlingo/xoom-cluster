@@ -17,11 +17,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.cluster.model.AbstractClusterTest;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.ByteBufferPool;
-import io.vlingo.common.message.ByteBufferPool.PooledByteBuffer;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.fdx.outbound.Outbound;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.ByteBufferPool.PooledByteBuffer;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class OutboundTest extends AbstractClusterTest {
   private static final String Message1 = "Message1";
@@ -90,7 +92,7 @@ public class OutboundTest extends AbstractClusterTest {
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);
     final RawMessage rawMessage3 = buildRawMessageBuffer(buffer, Message3);
     
-    final List<Node> selectNodes = asList(config.configuredNodeMatching(Id.of(3)));
+    final List<Node> selectNodes = asList(config.nodeMatching(Id.of(3)));
     
     outbound.broadcast(selectNodes, rawMessage1);
     outbound.broadcast(selectNodes, rawMessage2);

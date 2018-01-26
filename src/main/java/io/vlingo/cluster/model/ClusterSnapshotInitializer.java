@@ -8,10 +8,11 @@
 package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.LocalRegistry;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.node.Registry;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 class ClusterSnapshotInitializer {
   private final CommunicationsHub communicationsHub;
@@ -25,7 +26,7 @@ class ClusterSnapshotInitializer {
     
     this.configuration = new ClusterConfiguration(logger);
     
-    this.localNode = configuration.configuredNodeMatching(localNodeId);
+    this.localNode = configuration.nodeMatching(localNodeId);
     
     this.communicationsHub = new NetworkCommunicationsHub();
     

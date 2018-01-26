@@ -10,10 +10,10 @@ package io.vlingo.cluster.model;
 import java.util.Collection;
 
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
 import io.vlingo.cluster.model.attribute.AttributesClient;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
 
 public class MockClusterApplication implements ClusterApplication {
   public int allLiveNodes;
@@ -53,7 +53,7 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(RawMessage message, ClusterApplicationOutboundStream responder) {
+  public void handleApplicationMessage(RawMessage message, ApplicationOutboundStream responder) {
     ++handleApplicationMessage;
   }
 

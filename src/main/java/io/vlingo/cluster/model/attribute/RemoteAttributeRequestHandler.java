@@ -8,13 +8,16 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.cluster.model.attribute.message.ReceivedAttributeMessage;
+import io.vlingo.wire.node.Configuration;
 
 final class RemoteAttributeRequestHandler {
+  private final Configuration configuration;
   private final ConfirmingDistributor confirmingDistributor;
   private final AttributeSetRepository repository;
   
-  RemoteAttributeRequestHandler(final ConfirmingDistributor confirmingDistributor, final AttributeSetRepository repository) {
+  RemoteAttributeRequestHandler(final ConfirmingDistributor confirmingDistributor, final Configuration configuration, final AttributeSetRepository repository) {
     this.confirmingDistributor = confirmingDistributor;
+    this.configuration = configuration;
     this.repository = repository;
   }
 
@@ -25,7 +28,7 @@ final class RemoteAttributeRequestHandler {
       repository.add(attributeSet);
     }
     final TrackedAttribute tracked = attributeSet.addIfAbsent(request.attribute());
-    confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), request.sourceNode());
+    confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), configuration.nodeMatching(request.sourceNodeId()));
   }
 
   protected void createAttributeSet(final ReceivedAttributeMessage request) {
@@ -34,7 +37,7 @@ final class RemoteAttributeRequestHandler {
       attributeSet = AttributeSet.named(request.attributeSetName());
       repository.add(attributeSet);
     }
-    confirmingDistributor.confirm(request.trackingId(), attributeSet, request.sourceNode());
+    confirmingDistributor.confirm(request.trackingId(), attributeSet, configuration.nodeMatching(request.sourceNodeId()));
   }
 
   protected void replaceAttribute(final ReceivedAttributeMessage request) {
@@ -42,7 +45,7 @@ final class RemoteAttributeRequestHandler {
     if (attributeSet.isDefined()) {
       final TrackedAttribute tracked = attributeSet.replace(request.attribute());
       if (tracked.isPresent()) { // was both present and replaced
-        confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), request.sourceNode());
+        confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), configuration.nodeMatching(request.sourceNodeId()));
       }
     }
   }
@@ -52,7 +55,7 @@ final class RemoteAttributeRequestHandler {
     if (attributeSet.isDefined()) {
       final TrackedAttribute tracked = attributeSet.remove(request.attribute());
       if (tracked.isPresent()) { // actually was present, now removed
-        confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), request.sourceNode());
+        confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), configuration.nodeMatching(request.sourceNodeId()));
       }
     }
   }

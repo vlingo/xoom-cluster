@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model.attribute.message;
 
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Node;
 
 public abstract class ApplicationMessage {
   public static final String NoCorrelatingMessageId = "-";

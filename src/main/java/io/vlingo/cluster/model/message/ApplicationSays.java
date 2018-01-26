@@ -9,8 +9,8 @@ package io.vlingo.cluster.model.message;
 
 import java.util.UUID;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
 
 public final class ApplicationSays extends OperationalMessage {
   public final Name name;

@@ -18,6 +18,7 @@ import io.vlingo.cluster.model.message.Ping;
 import io.vlingo.cluster.model.message.Pulse;
 import io.vlingo.cluster.model.message.Split;
 import io.vlingo.cluster.model.message.Vote;
+import io.vlingo.wire.node.Node;
 
 abstract class LiveNodeState {
   protected final LiveNodeMaintainer liveNodeMaintainer;

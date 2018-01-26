@@ -7,6 +7,8 @@
 
 package io.vlingo.cluster.model.node;
 
+import io.vlingo.wire.node.Node;
+
 public class MergeResult implements Comparable<MergeResult> {
   private final boolean joined;
   private final Node node;

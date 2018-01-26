@@ -26,21 +26,21 @@ import io.vlingo.cluster.model.attribute.message.ConfirmAttributeSet;
 import io.vlingo.cluster.model.attribute.message.CreateAttributeSet;
 import io.vlingo.cluster.model.attribute.message.RemoveAttribute;
 import io.vlingo.cluster.model.attribute.message.ReplaceAttribute;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
 import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.message.MessageConverters;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.cluster.model.outbound.ManagedOutboundChannel;
 import io.vlingo.cluster.model.outbound.MockManagedOutboundChannel;
 import io.vlingo.cluster.model.outbound.MockManagedOutboundChannelProvider;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStreamActor;
-import io.vlingo.common.message.ByteBufferPool;
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class AttributesAgentActorTest extends AbstractClusterTest {
   private MockManagedOutboundChannelProvider channelProvider;
@@ -63,7 +63,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     agent.actor().add("test=set", "test-attr", "test-value");
     
-    final Iterator<Node> iter = config.allOtherConfiguredNodes(localNodeId).iterator();
+    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
     final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
     assertEquals(2, mock(channel2).writes.size());
@@ -84,7 +84,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     agent.actor().add("test=set", "test-attr", "test-value1");
     agent.actor().replace("test=set", "test-attr", "test-value2");
     
-    final Iterator<Node> iter = config.allOtherConfiguredNodes(localNodeId).iterator();
+    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
     final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
     assertEquals(3, mock(channel2).writes.size());
@@ -105,7 +105,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     agent.actor().add("test=set", "test-attr", "test-value1");
     agent.actor().remove("test=set", "test-attr");
     
-    final Iterator<Node> iter = config.allOtherConfiguredNodes(localNodeId).iterator();
+    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
     final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
     assertEquals(3, mock(channel2).writes.size());
@@ -245,7 +245,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     localNodeId = Id.of(1);
     
-    localNode = config.configuredNodeMatching(localNodeId);
+    localNode = config.nodeMatching(localNodeId);
     
     set = AttributeSet.named("test-set");
     

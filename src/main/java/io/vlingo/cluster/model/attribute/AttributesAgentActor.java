@@ -9,18 +9,19 @@ package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.actors.Actor;
 import io.vlingo.actors.Scheduled;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.attribute.message.ReceivedAttributeMessage;
-import io.vlingo.cluster.model.inbound.InboundResponder;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.inbound.InboundResponder;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
 
 public class AttributesAgentActor extends Actor implements AttributesAgent {
+  private final Configuration configuration;
   private final ConfirmationInterest confirmationInterest;
   private final ConfirmingDistributor confirmingDistributor;
   private final RemoteAttributeRequestHandler remoteRequestHandler;
@@ -41,10 +42,11 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final Configuration configuration,
           final ConfirmationInterest confirmationInterest) {
     
+    this.configuration = configuration;
     this.confirmationInterest = confirmationInterest;
     this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, configuration);
     this.repository = new AttributeSetRepository();
-    this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, repository);
+    this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, configuration, repository);
     
     application.informAttributesClient(AttributesClient.with(selfAs(AttributesAgent.class), repository));
     
@@ -153,7 +155,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       case ConfirmAddAttribute:
       case ConfirmReplaceAttribute:
       case ConfirmRemoveAttribute:
-        confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), request.sourceNode());
+        confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), configuration.nodeMatching(request.sourceNodeId()));
         confirmationInterest.confirm(request.attributeSetName(), request.attributeName(), type);
         break;
       }

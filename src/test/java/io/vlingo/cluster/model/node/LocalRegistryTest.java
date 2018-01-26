@@ -18,12 +18,18 @@ import java.util.List;
 import org.junit.Test;
 
 import io.vlingo.cluster.model.AbstractClusterTest;
+import io.vlingo.wire.node.Address;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class LocalRegistryTest extends AbstractClusterTest {
 
   @Test
   public void testNoLiveNodes() {
-    final LocalRegistry registry = new LocalRegistry(config.configuredNodeMatching(Id.of(3)), config, testWorld.defaultLogger());
+    final LocalRegistry registry = new LocalRegistry(config.nodeMatching(Id.of(3)), config, testWorld.defaultLogger());
     assertTrue(registry.liveNodes().isEmpty());
   }
   
@@ -242,7 +248,7 @@ public class LocalRegistryTest extends AbstractClusterTest {
   // Note: join() is tested by nearly every test
   
   private LocalRegistry join3Nodes() {
-    final LocalRegistry registry = new LocalRegistry(config.configuredNodeMatching(Id.of(3)), config, testWorld.defaultLogger());
+    final LocalRegistry registry = new LocalRegistry(config.nodeMatching(Id.of(3)), config, testWorld.defaultLogger());
     final Node node1 = nodeOf(1);
     final Node node2 = nodeOf(2);
     final Node node3 = nodeOf(3);
@@ -257,8 +263,8 @@ public class LocalRegistryTest extends AbstractClusterTest {
   private Node nodeOf(final int idValue) {
     final Id id = Id.of(idValue);
     final Name name = new Name("node" + idValue);
-    final Address opAddress = new Address("localhost", 1111+idValue, AddressType.OP);
-    final Address appAddress = new Address("localhost", 1111+idValue+1, AddressType.APP);
+    final Address opAddress = new Address(Host.of("localhost"), 1111+idValue, AddressType.OP);
+    final Address appAddress = new Address(Host.of("localhost"), 1111+idValue+1, AddressType.APP);
     final Node node = new Node(id, name, opAddress, appAddress);
     
     return node;

@@ -8,17 +8,18 @@
 package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Stage;
-import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
-import io.vlingo.cluster.model.inbound.InboundStream;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.wire.fdx.inbound.InboundStream;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
 
 public interface CommunicationsHub {
   void close();
   void open(final Stage stage, final Node node, final InboundStreamInterest interest, final Configuration configuration) throws Exception;
   InboundStream applicationInboundStream();
-  ClusterApplicationOutboundStream clusterApplicationOutboundStream();
+  ApplicationOutboundStream applicationOutboundStream();
   InboundStream operationalInboundStream();
   OperationalOutboundStream operationalOutboundStream();
   void start();

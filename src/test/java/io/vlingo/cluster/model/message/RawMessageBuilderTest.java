@@ -15,12 +15,13 @@ import java.nio.ByteBuffer;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.RawMessage;
-import io.vlingo.common.message.RawMessageBuilder;
-import io.vlingo.common.message.RawMessageHeader;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.message.RawMessageBuilder;
+import io.vlingo.wire.message.RawMessageHeader;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class RawMessageBuilderTest {
   private ByteBuffer buffer;
@@ -92,8 +93,8 @@ public class RawMessageBuilderTest {
   public void setUp() {
     buffer = ByteBuffer.allocate(1000);
     builder = new RawMessageBuilder(1000);
-    node1 = Node.from(Id.of(1), new Name("node1"));
-    node2 = Node.from(Id.of(2), new Name("node2"));
+    node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
+    node2 = Node.with(Id.of(2), Name.of("node2"), Host.of("localhost"), 37373, 37374);
     join = new Join(node1);
     leader = new Leader(node2.id());
   }

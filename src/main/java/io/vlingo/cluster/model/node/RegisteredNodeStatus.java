@@ -7,6 +7,8 @@
 
 package io.vlingo.cluster.model.node;
 
+import io.vlingo.wire.node.Node;
+
 public class RegisteredNodeStatus {
   private boolean confirmedByLeader;
   private long lastHealthIndication;

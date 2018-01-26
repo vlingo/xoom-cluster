@@ -14,19 +14,20 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
-import io.vlingo.common.message.RawMessageHeader;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.message.RawMessageHeader;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class RawMessageTest {
 
   @Test
   public void testKnownSizeWithAppend() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.from(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -43,7 +44,7 @@ public class RawMessageTest {
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.from(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -62,7 +63,7 @@ public class RawMessageTest {
   @Test
   public void testCopyBytesTo() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.from(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -94,7 +95,7 @@ public class RawMessageTest {
   @Test
   public void testPut() {
     final ByteBuffer buffer = ByteBuffer.allocate(1000);
-    final Node node1 = Node.from(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     final RawMessage message = new RawMessage(1000);

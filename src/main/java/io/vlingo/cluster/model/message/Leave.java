@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model.message;
 
-import io.vlingo.cluster.model.node.Id;
+import io.vlingo.wire.node.Id;
 
 public final class Leave extends OperationalMessage {
   public static final Leave from(final String content) {

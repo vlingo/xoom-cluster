@@ -11,15 +11,18 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class OperationalMessageCacheTest {
 
   @Test
   public void testCachedMessages() {
-    final OperationalMessageCache cache = new OperationalMessageCache(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(2), Name.of("node2"), Host.of("localhost"), 37373, 37374);
+    final OperationalMessageCache cache = new OperationalMessageCache(node1);
     
     final RawMessage elect = cache.cachedRawMessage(OperationalMessage.ELECT);
     assertTrue(OperationalMessage.messageFrom(elect.asTextMessage()).isElect());
@@ -45,7 +48,8 @@ public class OperationalMessageCacheTest {
 
   @Test
   public void testNonCachedMessages() {
-    final OperationalMessageCache cache = new OperationalMessageCache(Id.of(1), new Name("node1"));
+    final Node node1 = Node.with(Id.of(2), Name.of("node2"), Host.of("localhost"), 37373, 37374);
+    final OperationalMessageCache cache = new OperationalMessageCache(node1);
     
     boolean caught;
     

@@ -11,21 +11,17 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Node;
 
 public class OperationalMessageCache {
   private final Map<String, RawMessage> messages;
-  private final Id id;
-  private final Name name;
+  private final Node node;
 
-  public OperationalMessageCache(final Id id, final Name name) {
+  public OperationalMessageCache(final Node node) {
     this.messages = new HashMap<String, RawMessage>();
-    this.id = id;
-    this.name = name;
+    this.node = node;
 
     cacheValidTypes();
   }
@@ -53,42 +49,42 @@ public class OperationalMessageCache {
   }
 
   private void cacheElect(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Elect(id), buffer);
+    MessageConverters.messageToBytes(new Elect(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.ELECT);
   }
 
   private void cacheJoin(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Join(Node.from(id, name)), buffer);
+    MessageConverters.messageToBytes(new Join(node), buffer);
     cacheMessagePair(buffer, OperationalMessage.JOIN);
   }
 
   private void cacheLeader(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Leader(id), buffer);
+    MessageConverters.messageToBytes(new Leader(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.LEADER);
   }
 
   private void cacheLeave(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Leave(id), buffer);
+    MessageConverters.messageToBytes(new Leave(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.LEAVE);
   }
 
   private void cachePing(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Ping(id), buffer);
+    MessageConverters.messageToBytes(new Ping(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.PING);
   }
 
   private void cachePulse(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Pulse(id), buffer);
+    MessageConverters.messageToBytes(new Pulse(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.PULSE);
   }
 
   private void cacheVote(final ByteBuffer buffer) {
-    MessageConverters.messageToBytes(new Vote(id), buffer);
+    MessageConverters.messageToBytes(new Vote(node.id()), buffer);
     cacheMessagePair(buffer, OperationalMessage.VOTE);
   }
 
   private void cacheMessagePair(final ByteBuffer buffer, final String typeKey) {
-    final RawMessage cachedMessage = Converters.toRawMessage(id.value(), buffer);
+    final RawMessage cachedMessage = Converters.toRawMessage(node.id().value(), buffer);
     messages.put(typeKey, cachedMessage);
   }
 }

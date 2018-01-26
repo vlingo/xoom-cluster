@@ -9,9 +9,9 @@ package io.vlingo.cluster.model.message;
 
 import java.nio.ByteBuffer;
 
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
-import io.vlingo.common.message.RawMessageHeader;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.message.RawMessageHeader;
 
 public class MessageFixtures {
 

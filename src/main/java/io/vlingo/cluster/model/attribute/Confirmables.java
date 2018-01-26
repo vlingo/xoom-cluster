@@ -13,7 +13,7 @@ import java.util.List;
 
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessage;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Node;
 
 final class Confirmables {
   private final Collection<Node> allOtherNodes;

@@ -8,8 +8,8 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
+import io.vlingo.wire.node.Configuration;
 
 public class NoOpConfirmationInterest implements ConfirmationInterest {
   private final Logger logger;

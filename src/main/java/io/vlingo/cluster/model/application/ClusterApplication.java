@@ -16,9 +16,10 @@ import io.vlingo.actors.Stoppable;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.AttributesClient;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public interface ClusterApplication extends Startable, Stoppable {
   public static ClusterApplication instance(final World world, final Node node) {
@@ -30,7 +31,7 @@ public interface ClusterApplication extends Startable, Stoppable {
             ClusterApplication.class);
   }
 
-  void handleApplicationMessage(final RawMessage message, final ClusterApplicationOutboundStream responder);
+  void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder);
   
   void informAllLiveNodes(final Collection<Id> liveNodes, final boolean isHealthyCluster);
   void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading);

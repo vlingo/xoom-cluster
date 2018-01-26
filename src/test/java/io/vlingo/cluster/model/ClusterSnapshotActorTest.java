@@ -19,16 +19,16 @@ import org.junit.Test;
 
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.testkit.TestActor;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
 import io.vlingo.cluster.model.message.MessageConverters;
 import io.vlingo.cluster.model.message.Pulse;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Id;
 import io.vlingo.cluster.model.node.MergeResult;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.node.RegistryInterest;
-import io.vlingo.common.message.Converters;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class ClusterSnapshotActorTest extends AbstractClusterTest {
   private RawMessage opMessage;
@@ -81,37 +81,37 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     RegistryInterest.class);
     
-    registryInterest.actor().informAllLiveNodes(config.allConfiguredNodes(), true);
+    registryInterest.actor().informAllLiveNodes(config.allNodes(), true);
     assertEquals(1, application.allLiveNodes);
     
-    registryInterest.actor().informConfirmedByLeader(config.configuredNodeMatching(Id.of(1)), true);
+    registryInterest.actor().informConfirmedByLeader(config.nodeMatching(Id.of(1)), true);
     assertEquals(1, application.informNodeIsHealthy);
     
-    registryInterest.actor().informCurrentLeader(config.configuredNodeMatching(Id.of(3)), true);
+    registryInterest.actor().informCurrentLeader(config.nodeMatching(Id.of(3)), true);
     assertEquals(1, application.informLeaderElected);
     
     List<Node> nodes = new ArrayList<>();
-    nodes.add(config.configuredNodeMatching(Id.of(3)));
+    nodes.add(config.nodeMatching(Id.of(3)));
     List<MergeResult> mergeResult = new ArrayList<>();
-    mergeResult.add(new MergeResult(config.configuredNodeMatching(Id.of(2)), true));
-    mergeResult.add(new MergeResult(config.configuredNodeMatching(Id.of(1)), false));
+    mergeResult.add(new MergeResult(config.nodeMatching(Id.of(2)), true));
+    mergeResult.add(new MergeResult(config.nodeMatching(Id.of(1)), false));
     registryInterest.actor().informMergedAllDirectoryEntries(nodes, mergeResult, true);
     assertEquals(1, application.informNodeJoinedCluster);
     assertEquals(1, application.informNodeLeftCluster);
     
-    registryInterest.actor().informLeaderDemoted(config.configuredNodeMatching(Id.of(2)), true);
+    registryInterest.actor().informLeaderDemoted(config.nodeMatching(Id.of(2)), true);
     assertEquals(1, application.informLeaderLost);
     
-    registryInterest.actor().informNodeIsHealthy(config.configuredNodeMatching(Id.of(2)), true);
+    registryInterest.actor().informNodeIsHealthy(config.nodeMatching(Id.of(2)), true);
     assertEquals(2, application.informNodeIsHealthy);
     
-    registryInterest.actor().informNodeJoinedCluster(config.configuredNodeMatching(Id.of(2)), true);
+    registryInterest.actor().informNodeJoinedCluster(config.nodeMatching(Id.of(2)), true);
     assertEquals(2, application.informNodeJoinedCluster);
     
-    registryInterest.actor().informNodeLeftCluster(config.configuredNodeMatching(Id.of(2)), true);
+    registryInterest.actor().informNodeLeftCluster(config.nodeMatching(Id.of(2)), true);
     assertEquals(2, application.informNodeLeftCluster);
     
-    registryInterest.actor().informNodeTimedOut(config.configuredNodeMatching(Id.of(2)), true);
+    registryInterest.actor().informNodeTimedOut(config.nodeMatching(Id.of(2)), true);
     assertEquals(3, application.informNodeLeftCluster);
   }
   

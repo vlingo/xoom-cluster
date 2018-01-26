@@ -11,9 +11,9 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public final class Directory extends OperationalMessage {
   private final Name name;

@@ -8,6 +8,7 @@
 package io.vlingo.cluster.model.node;
 
 import io.vlingo.actors.Logger;
+import io.vlingo.wire.node.Node;
 
 final class FollowerState extends LiveNodeState {
   protected FollowerState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {

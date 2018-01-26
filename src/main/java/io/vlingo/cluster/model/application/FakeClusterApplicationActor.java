@@ -11,9 +11,10 @@ import java.util.Collection;
 
 import io.vlingo.cluster.model.attribute.Attribute;
 import io.vlingo.cluster.model.attribute.AttributesClient;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   private AttributesClient client;
@@ -29,7 +30,7 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ClusterApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
      logger().log("APP: Received application message: " + message.asTextMessage());
   }
 

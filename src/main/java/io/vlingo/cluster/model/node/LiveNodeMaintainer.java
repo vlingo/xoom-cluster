@@ -9,6 +9,10 @@ package io.vlingo.cluster.model.node;
 
 import java.util.Set;
 
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
+import io.vlingo.wire.node.NodeSynchronizer;
+
 interface LiveNodeMaintainer extends NodeSynchronizer {
   void assertNewLeadership(final Id id);
   void declareLeadership();

@@ -8,7 +8,13 @@
 package io.vlingo.cluster.model.node;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.message.*;
+import io.vlingo.cluster.model.message.Directory;
+import io.vlingo.cluster.model.message.Elect;
+import io.vlingo.cluster.model.message.Join;
+import io.vlingo.cluster.model.message.Leader;
+import io.vlingo.cluster.model.message.Leave;
+import io.vlingo.cluster.model.message.Vote;
+import io.vlingo.wire.node.Node;
 
 final class LeaderState extends LiveNodeState {
   protected LeaderState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {

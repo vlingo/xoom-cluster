@@ -11,12 +11,12 @@ import io.vlingo.actors.Definition;
 import io.vlingo.actors.Scheduled;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.cluster.model.node.NodeSynchronizer;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
+import io.vlingo.wire.node.NodeSynchronizer;
 
 public interface AttributesAgent extends AttributesProtocol, NodeSynchronizer, InboundStreamInterest, Scheduled, Stoppable {
   public static AttributesAgent instance(

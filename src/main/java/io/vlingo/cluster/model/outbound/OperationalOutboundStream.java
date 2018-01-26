@@ -14,9 +14,10 @@ import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.cluster.model.message.ApplicationSays;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.ByteBufferPool;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public interface OperationalOutboundStream extends Stoppable {
   public static OperationalOutboundStream instance(

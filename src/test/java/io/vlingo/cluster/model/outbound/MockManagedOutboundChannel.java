@@ -11,8 +11,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
 
 public class MockManagedOutboundChannel implements ManagedOutboundChannel {
   public final Id id;

@@ -15,14 +15,14 @@ import java.util.stream.Collectors;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vlingo.cluster.model.node.Id;
+import io.vlingo.wire.node.Id;
 
 public class ClusterApplicationBroadcasterTest extends AbstractClusterTest {
   private ClusterApplicationBroadcaster broadcaster;
 
   @Test
   public void testInformAllLiveNodes() throws Exception {
-    final List<Id> ids = config.allConfiguredNodes().stream().map(node -> node.id()).collect(Collectors.toList());
+    final List<Id> ids = config.allNodes().stream().map(node -> node.id()).collect(Collectors.toList());
     broadcaster.informAllLiveNodes(ids, true);
     assertEquals(1, application.allLiveNodes);
   }

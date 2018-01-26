@@ -10,7 +10,6 @@ package io.vlingo.cluster.model.attribute;
 import java.util.Collection;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.cluster.model.attribute.message.AddAttribute;
@@ -21,8 +20,9 @@ import io.vlingo.cluster.model.attribute.message.CreateAttributeSet;
 import io.vlingo.cluster.model.attribute.message.RemoveAttribute;
 import io.vlingo.cluster.model.attribute.message.ReplaceAttribute;
 import io.vlingo.cluster.model.message.ApplicationSays;
-import io.vlingo.cluster.model.node.Node;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
 
 public final class ConfirmingDistributor {
   private final ClusterApplication application;
@@ -38,7 +38,7 @@ public final class ConfirmingDistributor {
     this.logger = configuration.logger();
     this.node = node;
     this.outbound = outbound;
-    this.allOtherNodes = configuration.allOtherConfiguredNodes(node.id());
+    this.allOtherNodes = configuration.allOtherNodes(node.id());
     this.confirmables = new Confirmables(allOtherNodes);
   }
 

@@ -14,8 +14,10 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.Properties;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class LocalRegistry implements Registry {
   private final RegistryInterestBroadcaster broadcaster;
@@ -143,7 +145,7 @@ public class LocalRegistry implements Registry {
 
   @Override
   public boolean hasQuorum() {
-    final int quorum = (configuration.totalConfiguredNodes() / 2) + 1;
+    final int quorum = (configuration.totalNodes() / 2) + 1;
 
     return liveNodes().size() >= quorum;
   }
@@ -210,7 +212,7 @@ public class LocalRegistry implements Registry {
       }
       
       if (!hasMember(leaderNodeId)) {
-        join(configuration.configuredNodeMatching(leaderNodeId));
+        join(configuration.nodeMatching(leaderNodeId));
       }
       
       declareLeaderAs(leaderNodeId);

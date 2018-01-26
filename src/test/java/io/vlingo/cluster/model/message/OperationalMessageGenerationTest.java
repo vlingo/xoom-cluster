@@ -17,12 +17,12 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vlingo.cluster.model.node.Address;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Name;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.Converters;
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.node.Address;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public class OperationalMessageGenerationTest {
   private static final int BYTES = 4096;

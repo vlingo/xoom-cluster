@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model.message;
 
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.node.Node;
 
 public final class Join extends OperationalMessage {
   private final Node node;

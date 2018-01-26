@@ -23,9 +23,10 @@ import io.vlingo.actors.testkit.TestActor;
 import io.vlingo.actors.testkit.TestWorld;
 import io.vlingo.cluster.model.AbstractClusterTest;
 import io.vlingo.cluster.model.message.OperationalMessage;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.common.message.ByteBufferPool;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class OperationalOutboundStreamTest extends AbstractClusterTest {
   private MockManagedOutboundChannelProvider channelProvider;
@@ -37,7 +38,7 @@ public class OperationalOutboundStreamTest extends AbstractClusterTest {
   
   @Test
   public void testDirectory() throws Exception {
-    outboundStream.actor().directory(new HashSet<Node>(config.allConfiguredNodes()));
+    outboundStream.actor().directory(new HashSet<Node>(config.allNodes()));
     
     for (final ManagedOutboundChannel channel : allTargetChannels()) {
       final OperationalMessage message = OperationalMessage.messageFrom(mock(channel).writes.get(0));
@@ -48,7 +49,7 @@ public class OperationalOutboundStreamTest extends AbstractClusterTest {
   
   @Test
   public void testElect() throws Exception {
-    outboundStream.actor().elect(config.allGreaterConfiguredNodes(localNodeId));
+    outboundStream.actor().elect(config.allGreaterNodes(localNodeId));
     
     for (final ManagedOutboundChannel channel : allTargetChannels()) {
       final OperationalMessage message = OperationalMessage.messageFrom(mock(channel).writes.get(0));
@@ -170,7 +171,7 @@ public class OperationalOutboundStreamTest extends AbstractClusterTest {
     
     localNodeId = Id.of(1);
     
-    localNode = config.configuredNodeMatching(localNodeId);
+    localNode = config.nodeMatching(localNodeId);
     
     channelProvider = new MockManagedOutboundChannelProvider(localNodeId, config);
     

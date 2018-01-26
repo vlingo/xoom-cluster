@@ -14,10 +14,10 @@ import java.util.function.Consumer;
 
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
 import io.vlingo.cluster.model.attribute.AttributesClient;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.common.message.RawMessage;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.message.RawMessage;
+import io.vlingo.wire.node.Id;
 
 class ClusterApplicationBroadcaster implements ClusterApplication {
   private List<ClusterApplication> clusterApplications;
@@ -125,7 +125,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ClusterApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
   }
   
   private void broadcast(final Consumer<ClusterApplication> inform) {

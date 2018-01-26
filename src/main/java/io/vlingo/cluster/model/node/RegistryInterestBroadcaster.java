@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import io.vlingo.actors.Logger;
+import io.vlingo.wire.node.Node;
 
 public class RegistryInterestBroadcaster implements RegistryInterest {
   private final Logger logger;

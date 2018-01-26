@@ -13,14 +13,21 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import io.vlingo.wire.node.Address;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
+
 public class RegisteredNodeStatusTest {
 
   @Test
   public void testStatusCreationState() {
     final Id id1 = Id.of(1);
     final Name name1 = new Name("name1");
-    final Address opAddress1 = new Address("localhost", 11111, AddressType.OP);
-    final Address appAddress1 = new Address("localhost", 11112, AddressType.APP);
+    final Address opAddress1 = new Address(Host.of("localhost"), 11111, AddressType.OP);
+    final Address appAddress1 = new Address(Host.of("localhost"), 11112, AddressType.APP);
     final Node node1 = new Node(id1, name1, opAddress1, appAddress1);
 
     final RegisteredNodeStatus status = new RegisteredNodeStatus(node1, true, true);
@@ -37,8 +44,8 @@ public class RegisteredNodeStatusTest {
   public void testStatusTimeout() {
     final Id id1 = Id.of(1);
     final Name name1 = new Name("name1");
-    final Address opAddress1 = new Address("localhost", 11111, AddressType.OP);
-    final Address appAddress1 = new Address("localhost", 11112, AddressType.APP);
+    final Address opAddress1 = new Address(Host.of("localhost"), 11111, AddressType.OP);
+    final Address appAddress1 = new Address(Host.of("localhost"), 11112, AddressType.APP);
     final Node node1 = new Node(id1, name1, opAddress1, appAddress1);
 
     final RegisteredNodeStatus status = new RegisteredNodeStatus(node1, true, true);

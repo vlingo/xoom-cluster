@@ -9,6 +9,8 @@ package io.vlingo.cluster.model.node;
 
 import java.util.Collection;
 
+import io.vlingo.wire.node.Node;
+
 public interface RegistryInterest {
   void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster);
   void informConfirmedByLeader(final Node node, final boolean isHealthyCluster);

@@ -16,7 +16,6 @@ import io.vlingo.actors.Actor;
 import io.vlingo.actors.Cancellable;
 import io.vlingo.actors.Scheduled;
 import io.vlingo.cluster.model.ClusterSnapshot;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.message.CheckHealth;
 import io.vlingo.cluster.model.message.Directory;
@@ -30,6 +29,10 @@ import io.vlingo.cluster.model.message.Pulse;
 import io.vlingo.cluster.model.message.Split;
 import io.vlingo.cluster.model.message.Vote;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
+import io.vlingo.wire.node.NodeSynchronizer;
 
 public class LocalLiveNodeActor extends Actor
   implements LocalLiveNode, LiveNodeMaintainer, Scheduled {
@@ -133,7 +136,7 @@ public class LocalLiveNodeActor extends Actor
     if (node.id().greaterThan(electId)) {
       if (!state.leaderElectionTracker.hasStarted()) {
         state.leaderElectionTracker.start(true);
-        outbound.elect(configuration.allGreaterConfiguredNodes(node.id()));
+        outbound.elect(configuration.allGreaterNodes(node.id()));
       }
       outbound.vote(electId);
     }
@@ -151,7 +154,7 @@ public class LocalLiveNodeActor extends Actor
 
     if (droppedLeader) {
       state.leaderElectionTracker.start(true);
-      outbound.elect(configuration.allGreaterConfiguredNodes(node.id()));
+      outbound.elect(configuration.allGreaterNodes(node.id()));
     }
 
     if (state.isLeader()) {
@@ -324,7 +327,7 @@ public class LocalLiveNodeActor extends Actor
     if (!registry.hasLeader()) {
       if (!state.leaderElectionTracker.hasStarted()) {
         state.leaderElectionTracker.start();
-        outbound.elect(configuration.allGreaterConfiguredNodes(node.id()));
+        outbound.elect(configuration.allGreaterNodes(node.id()));
       } else if (state.leaderElectionTracker.hasTimedOut()) {
         declareLeader();
       }
@@ -352,7 +355,7 @@ public class LocalLiveNodeActor extends Actor
       }
       
       if (!registry.hasMember(leaderNodeId)) {
-        registry.join(configuration.configuredNodeMatching(leaderNodeId));
+        registry.join(configuration.nodeMatching(leaderNodeId));
       }
       
       registry.declareLeaderAs(leaderNodeId);

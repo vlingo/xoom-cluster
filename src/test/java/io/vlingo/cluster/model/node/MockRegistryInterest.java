@@ -9,6 +9,8 @@ package io.vlingo.cluster.model.node;
 
 import java.util.Collection;
 
+import io.vlingo.wire.node.Node;
+
 public class MockRegistryInterest implements RegistryInterest {
   public int informAllLiveNodes;
   public int informConfirmedByLeader;

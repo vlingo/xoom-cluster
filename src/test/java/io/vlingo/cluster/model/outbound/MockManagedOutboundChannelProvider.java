@@ -11,9 +11,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vlingo.cluster.model.Configuration;
-import io.vlingo.cluster.model.node.Id;
-import io.vlingo.cluster.model.node.Node;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class MockManagedOutboundChannelProvider implements ManagedOutboundChannelProvider {
   private final Map<Id, ManagedOutboundChannel> allChannels = new HashMap<>();
@@ -24,7 +26,7 @@ public class MockManagedOutboundChannelProvider implements ManagedOutboundChanne
     this.localNodeId = localNodeId;
     this.configuration = configuration;
     
-    for (final Node node : configuration.allConfiguredNodes()) {
+    for (final Node node : configuration.allNodes()) {
       allChannels.put(node.id(), new MockManagedOutboundChannel(node.id()));
     }
   }
@@ -33,7 +35,7 @@ public class MockManagedOutboundChannelProvider implements ManagedOutboundChanne
   public Map<Id, ManagedOutboundChannel> allOtherNodeChannels() {
     final Map<Id, ManagedOutboundChannel> others = new HashMap<>();
     
-    for (final Node node : configuration.allConfiguredNodes()) {
+    for (final Node node : configuration.allNodes()) {
       if (!node.id().equals(localNodeId)) {
         others.put(node.id(), allChannels.get(node.id()));
       }

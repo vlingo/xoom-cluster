@@ -8,21 +8,22 @@
 package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Stage;
-import io.vlingo.cluster.model.application.ClusterApplicationOutboundStream;
-import io.vlingo.cluster.model.inbound.InboundStream;
-import io.vlingo.cluster.model.inbound.InboundStreamInterest;
-import io.vlingo.cluster.model.node.AddressType;
-import io.vlingo.cluster.model.node.Node;
-import io.vlingo.cluster.model.outbound.ManagedOutboundSocketChannelProvider;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
-import io.vlingo.common.message.ByteBufferPool;
+import io.vlingo.wire.fdx.inbound.InboundStream;
+import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
+import io.vlingo.wire.fdx.outbound.ManagedOutboundSocketChannelProvider;
+import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
 
 class NetworkCommunicationsHub implements CommunicationsHub {
   protected static final String APP_NAME = "APP";
   protected static final String OP_NAME = "OP";
   
   private InboundStream applicationInboundStream;
-  private ClusterApplicationOutboundStream applicationOutboundStream;
+  private ApplicationOutboundStream applicationOutboundStream;
   private InboundStream operationalInboundStream;
   private OperationalOutboundStream operationalOutboundStream;
 
@@ -71,7 +72,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     Properties.instance.applicationBufferSize());
     
     this.applicationOutboundStream =
-            ClusterApplicationOutboundStream.instance(
+            ApplicationOutboundStream.instance(
                     stage,
                     new ManagedOutboundSocketChannelProvider(node, AddressType.APP, configuration),
                     new ByteBufferPool(
@@ -85,7 +86,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
   }
 
   @Override
-  public ClusterApplicationOutboundStream clusterApplicationOutboundStream() {
+  public ApplicationOutboundStream applicationOutboundStream() {
     return applicationOutboundStream;
   }
 

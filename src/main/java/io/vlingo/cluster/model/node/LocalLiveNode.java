@@ -11,9 +11,11 @@ import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.cluster.model.ClusterSnapshot;
-import io.vlingo.cluster.model.Configuration;
 import io.vlingo.cluster.model.message.OperationalMessage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Node;
+import io.vlingo.wire.node.NodeSynchronizer;
 
 public interface LocalLiveNode extends Stoppable {
   public static LocalLiveNode instance(
