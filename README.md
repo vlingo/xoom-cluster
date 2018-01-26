@@ -32,14 +32,15 @@ You can develop JVM applications with vlingo-cluster. See the following package 
 ```  io.vlingo.cluster.model.application
     ClusterApplication
     ClusterApplicationAdapter
-    FakeClusterApplicationActor```
+    FakeClusterApplicationActor
+```
 
 Try it out. As the cluster changes states all of the activity and health conditions will be reported to the registered ClusterApplication. You can see how to configure your own ClusterApplication by changing the vlingo-cluster.properties file:
 
-```  cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor```
+```  cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor
+```
 
 Have fun!
-
 
 License (See LICENSE file for full license)
 -------------------------------------------
