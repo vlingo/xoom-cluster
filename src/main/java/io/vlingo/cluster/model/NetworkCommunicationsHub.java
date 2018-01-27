@@ -52,7 +52,8 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     AddressType.OP,
                     OP_NAME,
                     Properties.instance.operationalBufferSize(),
-                    Properties.instance.operationalInboundProbeInterval());
+                    Properties.instance.operationalInboundProbeInterval(),
+                    Properties.instance.operationalInboundProbeTimeout());
     
     this.operationalOutboundStream =
             OperationalOutboundStream.instance(
@@ -71,7 +72,8 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     AddressType.APP,
                     APP_NAME,
                     Properties.instance.applicationBufferSize(),
-                    Properties.instance.applicationInboundProbeInterval());
+                    Properties.instance.applicationInboundProbeInterval(),
+                    Properties.instance.applicationInboundProbeTimeout());
     
     this.applicationOutboundStream =
             ApplicationOutboundStream.instance(
