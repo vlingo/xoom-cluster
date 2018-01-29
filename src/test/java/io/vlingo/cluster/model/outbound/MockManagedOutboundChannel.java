@@ -30,7 +30,7 @@ public class MockManagedOutboundChannel implements ManagedOutboundChannel {
 
   @Override
   public void write(final ByteBuffer buffer) {
-    final RawMessage message = RawMessage.from(buffer);
+    final RawMessage message = RawMessage.readFromWithHeader(buffer);
     writes.add(message.asTextMessage());
   }
 }

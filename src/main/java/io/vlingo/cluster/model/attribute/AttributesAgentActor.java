@@ -14,7 +14,6 @@ import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.attribute.message.ReceivedAttributeMessage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
-import io.vlingo.wire.fdx.inbound.InboundResponder;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
 import io.vlingo.wire.node.Configuration;
@@ -133,7 +132,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   //=========================================
 
   @Override
-  public void handleInboundStreamMessage(final AddressType addressType, final RawMessage message, final InboundResponder responder) {
+  public void handleInboundStreamMessage(final AddressType addressType, final RawMessage message) {
     if (addressType.isOperational()) {
       final ReceivedAttributeMessage request = new ReceivedAttributeMessage(message);
       final ApplicationMessageType type = request.type();

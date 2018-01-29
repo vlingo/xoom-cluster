@@ -122,7 +122,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
 
     final ApplicationMessage message = CreateAttributeSet.from(localNode, set);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(1, mock(channel1).writes.size());
@@ -137,7 +137,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
 
     final ApplicationMessage message = AddAttribute.from(localNode, set, tracked);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(1, mock(channel1).writes.size());
@@ -152,9 +152,9 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
     final ApplicationMessage replaceMessage = ReplaceAttribute.from(localNode, set, tracked);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), replaceMessage), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), replaceMessage));
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(2, mock(channel1).writes.size());
@@ -170,9 +170,9 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
     final ApplicationMessage removeMessage = RemoveAttribute.from(localNode, set, tracked);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), removeMessage), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), removeMessage));
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(2, mock(channel1).writes.size());
@@ -188,7 +188,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
     
     final ApplicationMessage confirm = new ConfirmAttributeSet("123", localNode, set);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
     assertEquals(1, interest.confirmed);
     assertEquals(set.name, interest.attributeSetName);
     assertEquals(confirm.type, interest.type);
@@ -202,7 +202,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmAddAttribute);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
     assertEquals(set.name, interest.attributeSetName);
     assertEquals(tracked.attribute.name, interest.attributeName);
     assertEquals(confirm.type, interest.type);
@@ -217,7 +217,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmReplaceAttribute);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
     assertEquals(set.name, interest.attributeSetName);
     assertEquals(tracked.attribute.name, interest.attributeName);
     assertEquals(confirm.type, interest.type);
@@ -232,7 +232,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmRemoveAttribute);
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm), null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
     assertEquals(set.name, interest.attributeSetName);
     assertEquals(tracked.attribute.name, interest.attributeName);
     assertEquals(confirm.type, interest.type);

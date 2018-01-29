@@ -18,7 +18,6 @@ import io.vlingo.cluster.model.message.OperationalMessage;
 import io.vlingo.cluster.model.node.LocalLiveNode;
 import io.vlingo.cluster.model.node.MergeResult;
 import io.vlingo.cluster.model.node.RegistryInterest;
-import io.vlingo.wire.fdx.inbound.InboundResponder;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
@@ -118,7 +117,7 @@ public class ClusterSnapshotActor
   //=========================================
 
   @Override
-  public void handleInboundStreamMessage(final AddressType addressType, final RawMessage message, final InboundResponder responder) {
+  public void handleInboundStreamMessage(final AddressType addressType, final RawMessage message) {
     if (isStopped()) {
       return;
     }
@@ -127,7 +126,7 @@ public class ClusterSnapshotActor
       final String textMessage = message.asTextMessage();
       final OperationalMessage typedMessage = OperationalMessage.messageFrom(textMessage);
       if (typedMessage.isApp()) {
-        attributesAgent.handleInboundStreamMessage(addressType, message, responder);
+        attributesAgent.handleInboundStreamMessage(addressType, message);
       } else {
         localLiveNode.handle(typedMessage);
       }

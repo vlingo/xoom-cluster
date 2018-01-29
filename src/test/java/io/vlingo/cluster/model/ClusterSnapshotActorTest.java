@@ -66,11 +66,11 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
                     InboundStreamInterest.class);
 
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, opMessage, null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, opMessage);
     assertEquals(0, application.handleApplicationMessage);
     
     final RawMessage appMessage = RawMessage.from(1, 0, "app-test");
-    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.APP, appMessage, null);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.APP, appMessage);
     assertEquals(1, application.handleApplicationMessage);
   }
 
