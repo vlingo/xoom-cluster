@@ -12,16 +12,16 @@ final class TimeoutTracker {
   private long startTime = -1L;
   private final long timeout;
 
-  protected TimeoutTracker(final long timeout) {
+  TimeoutTracker(final long timeout) {
     this.timeout = timeout;
   }
 
-  protected void clear() {
+  void clear() {
     cleared = true;
     reset();
   }
 
-  protected boolean hasTimedOut() {
+  boolean hasTimedOut() {
     if (!cleared && startTime > 0) {
       final long currentTime = System.currentTimeMillis();
 
@@ -30,19 +30,19 @@ final class TimeoutTracker {
     return false;
   }
 
-  protected void reset() {
+  void reset() {
     startTime = -1L;
   }
 
-  protected boolean hasStarted() {
+  boolean hasStarted() {
     return startTime > 0;
   }
 
-  protected void start() {
+  void start() {
     start(false);
   }
 
-  protected void start(final boolean force) {
+  void start(final boolean force) {
     if (force && startTime == -1L || !cleared && startTime == -1L) {
       cleared = false;
       startTime = System.currentTimeMillis();

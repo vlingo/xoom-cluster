@@ -12,16 +12,16 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public final class AttributeSet {
-  protected static final AttributeSet None = named("__none");
+  static final AttributeSet None = named("__none");
   
   public final String name;
   private final Map<String, TrackedAttribute> attributes;
   
-  protected static AttributeSet named(final String name) {
+  static AttributeSet named(final String name) {
     return new AttributeSet(name);
   }
   
-  protected TrackedAttribute addIfAbsent(final Attribute<?> attribute) {
+  TrackedAttribute addIfAbsent(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isAbsent()) {
@@ -35,23 +35,23 @@ public final class AttributeSet {
     return maybeAttribute;
   }
 
-  protected Collection<TrackedAttribute> all() {
+  Collection<TrackedAttribute> all() {
     return attributes.values();
   }
 
-  protected TrackedAttribute attributeNamed(final String name) {
+  TrackedAttribute attributeNamed(final String name) {
     return find(name);
   }
   
-  protected boolean isDefined() {
+  boolean isDefined() {
     return !isNone();
   }
   
-  protected boolean isNone() {
+  boolean isNone() {
     return this == None;
   }
   
-  protected TrackedAttribute remove(final Attribute<?> attribute) {
+  TrackedAttribute remove(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {
@@ -61,7 +61,7 @@ public final class AttributeSet {
     return maybeAttribute;
   }
   
-  protected TrackedAttribute replace(final Attribute<?> attribute) {
+  TrackedAttribute replace(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {

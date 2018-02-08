@@ -28,12 +28,12 @@ public final class ConfirmingDistributor {
   private final ClusterApplication application;
   private final Confirmables confirmables;
   
-  protected final Collection<Node> allOtherNodes;
+  private final Collection<Node> allOtherNodes;
   private final Logger logger;
-  protected final Node node;
-  protected final OperationalOutboundStream outbound;
+  private final Node node;
+  private final OperationalOutboundStream outbound;
 
-  protected ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
+  ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
     this.application = application;
     this.logger = configuration.logger();
     this.node = node;
@@ -42,19 +42,19 @@ public final class ConfirmingDistributor {
     this.confirmables = new Confirmables(allOtherNodes);
   }
 
-  protected void acknowledgeConfirmation(final String trackingId, final Node node) {
+  void acknowledgeConfirmation(final String trackingId, final Node node) {
     confirmables.confirm(trackingId, node);
   }
 
-  protected Collection<String> allTrackingIds() {
+  Collection<String> allTrackingIds() {
     return confirmables.allTrackingIds();
   }
 
-  protected void distribute(final AttributeSet set) {
+  void distribute(final AttributeSet set) {
     distributeTo(set, allOtherNodes);
   }
 
-  protected void distributeTo(final AttributeSet set, final Collection<Node> nodes) {
+  void distributeTo(final AttributeSet set, final Collection<Node> nodes) {
     final CreateAttributeSet create = new CreateAttributeSet(node, set);
     final Confirmable confirmable = confirmables.unconfirmedFor(create, nodes);
     outbound.application(ApplicationSays.from(node.id(), node.name(), create.toPayload()), confirmable.unconfirmedNodes());
@@ -65,11 +65,11 @@ public final class ConfirmingDistributor {
     }
   }
 
-  protected void distribute(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type) {
+  void distribute(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type) {
     distributeTo(set, tracked, type, allOtherNodes);
   }
 
-  protected void distributeTo(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type, final Collection<Node> nodes) {
+  void distributeTo(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type, final Collection<Node> nodes) {
     switch (type) {
     case AddAttribute:
       final AddAttribute add = AddAttribute.from(node, set, tracked);
@@ -94,7 +94,7 @@ public final class ConfirmingDistributor {
     }
   }
 
-  protected void confirm(
+  void confirm(
           final String correlatingMessageId,
           final AttributeSet set,
           final Node toOriginalSource) {
@@ -104,7 +104,7 @@ public final class ConfirmingDistributor {
     application.informAttributeSetCreated(set.name);
   }
   
-  protected void confirm(
+  void confirm(
           final String correlatingMessageId,
           final AttributeSet set,
           final TrackedAttribute tracked,
@@ -132,7 +132,7 @@ public final class ConfirmingDistributor {
     }
   }
 
-  protected void redistributeUnconfirmed() {
+  void redistributeUnconfirmed() {
     for (final Confirmable confirmable : confirmables.allRedistributable()) {
       logger.log("REDIST: " + confirmable);
       outbound.application(ApplicationSays.from(
@@ -142,7 +142,7 @@ public final class ConfirmingDistributor {
     }
   }
 
-  protected void synchronizeTo(final Collection<AttributeSet> sets, final Node targetNode) {
+  void synchronizeTo(final Collection<AttributeSet> sets, final Node targetNode) {
     final Collection<Node> onlyOneTargetNode = targetNode.collected();
     
     for (final AttributeSet set : sets) {
@@ -150,7 +150,7 @@ public final class ConfirmingDistributor {
     }
   }
 
-  protected Collection<Node> unconfirmedNodesFor(final String trackingId) {
+  Collection<Node> unconfirmedNodesFor(final String trackingId) {
     return confirmables.confirmableOf(trackingId).unconfirmedNodes();
   }
 }

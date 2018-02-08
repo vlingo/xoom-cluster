@@ -14,7 +14,7 @@ public final class TrackedAttribute {
   public final boolean distributed;
   public final String id;
 
-  protected static TrackedAttribute of(final AttributeSet set, final Attribute<?> attribute) {
+  static TrackedAttribute of(final AttributeSet set, final Attribute<?> attribute) {
     final String tid = trackedIdFor(set, attribute);
     return new TrackedAttribute(tid, attribute);
   }
@@ -23,31 +23,31 @@ public final class TrackedAttribute {
     return set.name + ":" + attribute.name;
   }
   
-  protected TrackedAttribute asDistributed() {
+  TrackedAttribute asDistributed() {
     return new TrackedAttribute(this.id, this.attribute, true);
   }
   
-  protected boolean isAbsent() {
+  boolean isAbsent() {
     return this.attribute == null;
   }
   
-  protected boolean isDistributed() {
+  boolean isDistributed() {
     return distributed;
   }
   
-  protected boolean isPresent() {
+  boolean isPresent() {
     return !isAbsent();
   }
 
-  protected Attribute<?> replacingValueWith(final Attribute<?> other) {
+  Attribute<?> replacingValueWith(final Attribute<?> other) {
     return attribute.replacingValueWith(other);
   }
 
-  protected boolean sameAs(final Attribute<?> other) {
+  boolean sameAs(final Attribute<?> other) {
     return attribute.equals(other);
   }
 
-  protected TrackedAttribute withAttribute(final Attribute<?> attribute) {
+  TrackedAttribute withAttribute(final Attribute<?> attribute) {
     return new TrackedAttribute(this.id, attribute, false);
   }
 

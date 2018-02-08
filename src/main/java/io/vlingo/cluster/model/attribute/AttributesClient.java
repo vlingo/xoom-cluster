@@ -7,21 +7,25 @@
 
 package io.vlingo.cluster.model.attribute;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public final class AttributesClient implements AttributesProtocol {
   private static AttributesClient client;
   
-  protected final AttributesAgent agent;
-  protected final AttributeSetRepository repository;
+  final AttributesAgent agent;
+  final AttributeSetRepository repository;
   
   public static AttributesClient instance() {
     return client;
   }
   
-  protected static void stop() {
+  static void stop() {
     client = null;
   }
 
-  protected static synchronized AttributesClient with(final AttributesAgent agent, final AttributeSetRepository repository) {
+  static synchronized AttributesClient with(final AttributesAgent agent, final AttributeSetRepository repository) {
     if (client == null) {
       client = new AttributesClient(agent, repository);
     }
@@ -31,6 +35,24 @@ public final class AttributesClient implements AttributesProtocol {
   @Override
   public <T> void add(final String attributeSetName, final String attributeName, final T value) {
     agent.add(attributeSetName, attributeName, value);
+  }
+  
+  public Collection<AttributeSet> all() {
+    return repository.all();
+  }
+
+  @Override
+  public Collection<Attribute<?>> allOf(final String attributeSetName) {
+    final List<Attribute<?>> all = new ArrayList<>();
+    final AttributeSet set = repository.attributeSetOf(attributeSetName);
+    if (set.isDefined()) {
+      for (final TrackedAttribute tracked : set.all()) {
+        if (tracked.isPresent()) {
+          all.add(tracked.attribute);
+        }
+      }
+    }
+    return all;
   }
 
   @Override

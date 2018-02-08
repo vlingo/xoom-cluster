@@ -17,7 +17,7 @@ import io.vlingo.cluster.model.message.Vote;
 import io.vlingo.wire.node.Node;
 
 final class LeaderState extends LiveNodeState {
-  protected LeaderState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {
+  LeaderState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {
     super(node, liveNodeMaintainer, Type.LEADER, logger);
   }
 

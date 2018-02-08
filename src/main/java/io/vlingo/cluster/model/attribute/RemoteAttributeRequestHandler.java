@@ -21,7 +21,7 @@ final class RemoteAttributeRequestHandler {
     this.repository = repository;
   }
 
-  protected void addAttribute(final ReceivedAttributeMessage request) {
+  void addAttribute(final ReceivedAttributeMessage request) {
     AttributeSet attributeSet = repository.attributeSetOf(request.attributeSetName());
     if (attributeSet.isNone()) {
       attributeSet = AttributeSet.named(request.attributeSetName());
@@ -31,7 +31,7 @@ final class RemoteAttributeRequestHandler {
     confirmingDistributor.confirm(request.trackingId(), attributeSet, tracked, request.type(), configuration.nodeMatching(request.sourceNodeId()));
   }
 
-  protected void createAttributeSet(final ReceivedAttributeMessage request) {
+  void createAttributeSet(final ReceivedAttributeMessage request) {
     AttributeSet attributeSet = repository.attributeSetOf(request.attributeSetName());
     if (attributeSet.isNone()) {
       attributeSet = AttributeSet.named(request.attributeSetName());
@@ -40,7 +40,7 @@ final class RemoteAttributeRequestHandler {
     confirmingDistributor.confirm(request.trackingId(), attributeSet, configuration.nodeMatching(request.sourceNodeId()));
   }
 
-  protected void replaceAttribute(final ReceivedAttributeMessage request) {
+  void replaceAttribute(final ReceivedAttributeMessage request) {
     final AttributeSet attributeSet = repository.attributeSetOf(request.attributeSetName());
     if (attributeSet.isDefined()) {
       final TrackedAttribute tracked = attributeSet.replace(request.attribute());
@@ -50,7 +50,7 @@ final class RemoteAttributeRequestHandler {
     }
   }
 
-  protected void removeAttribute(final ReceivedAttributeMessage request) {
+  void removeAttribute(final ReceivedAttributeMessage request) {
     final AttributeSet attributeSet = repository.attributeSetOf(request.attributeSetName());
     if (attributeSet.isDefined()) {
       final TrackedAttribute tracked = attributeSet.remove(request.attribute());

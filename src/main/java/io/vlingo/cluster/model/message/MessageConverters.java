@@ -41,7 +41,7 @@ public class MessageConverters {
           .append(" nm=").append(node.name().value())
           .append(" op=").append(node.operationalAddress().hostName())
                             .append(":").append(node.operationalAddress().port())
-          .append(" msg=").append(node.applicationAddress().hostName())
+          .append(" app=").append(node.applicationAddress().hostName())
                             .append(":").append(node.applicationAddress().port());
 
       lf = "\n";
@@ -68,7 +68,7 @@ public class MessageConverters {
             .append(join.node().operationalAddress().hostName())
             .append(":")
             .append(join.node().operationalAddress().port())
-            .append(" msg=")
+            .append(" app=")
             .append(join.node().applicationAddress().hostName())
             .append(":")
             .append(join.node().applicationAddress().port());

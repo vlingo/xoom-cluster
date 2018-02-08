@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model.message;
 
-import io.vlingo.common.message.Message;
+import io.vlingo.wire.message.Message;
 import io.vlingo.wire.node.Id;
 
 public abstract class OperationalMessage implements Message {

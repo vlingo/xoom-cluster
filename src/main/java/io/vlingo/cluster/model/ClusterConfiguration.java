@@ -146,7 +146,7 @@ public class ClusterConfiguration implements Configuration {
     return "ConfiguredCluster[" + nodes + "]";
   }
 
-  protected ClusterConfiguration(Properties properties, final Logger logger) {
+  ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
     this.nodes = new TreeSet<Node>();
 

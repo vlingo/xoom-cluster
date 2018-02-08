@@ -70,9 +70,9 @@ public class OperationalMessageGenerationTest {
     final String raw =
             OperationalMessage.DIR + "\n"
                     + "id=1 nm=node1\n"
-                    + "id=1 nm=node1 op=" + opAddresses[1] + " msg=" + appAddresses[1] + "\n"
-                    + "id=2 nm=node2 op=" + opAddresses[2] + " msg=" + appAddresses[2] + "\n"
-                    + "id=3 nm=node3 op=" + opAddresses[3] + " msg=" + appAddresses[3];
+                    + "id=1 nm=node1 op=" + opAddresses[1] + " app=" + appAddresses[1] + "\n"
+                    + "id=2 nm=node2 op=" + opAddresses[2] + " app=" + appAddresses[2] + "\n"
+                    + "id=3 nm=node3 op=" + opAddresses[3] + " app=" + appAddresses[3];
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
     
@@ -98,7 +98,7 @@ public class OperationalMessageGenerationTest {
         Address.from("localhost:37371", AddressType.OP),
         Address.from("localhost:37372", AddressType.APP)));
     MessageConverters.messageToBytes(join, messageBuffer);
-    final String raw = OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:37371 msg=localhost:37372";
+    final String raw = OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:37371 app=localhost:37372";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
     

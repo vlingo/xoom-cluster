@@ -48,14 +48,14 @@ public class RegisteredNodeStatus {
     this.lastHealthIndication = System.currentTimeMillis();
   }
 
-  protected RegisteredNodeStatus(final Node node, final boolean isLeader, final boolean confirmedByLeader) {
+  RegisteredNodeStatus(final Node node, final boolean isLeader, final boolean confirmedByLeader) {
     this.node = node;
     this.leader = isLeader;
     this.lastHealthIndication = System.currentTimeMillis();
     this.confirmedByLeader = confirmedByLeader;
   }
   
-  protected void setLastHealthIndication(final long millis) {
+  void setLastHealthIndication(final long millis) {
     this.lastHealthIndication = millis;
   }
 }

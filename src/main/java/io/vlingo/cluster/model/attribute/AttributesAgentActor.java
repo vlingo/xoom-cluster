@@ -7,6 +7,8 @@
 
 package io.vlingo.cluster.model.attribute;
 
+import java.util.Collection;
+
 import io.vlingo.actors.Actor;
 import io.vlingo.actors.Scheduled;
 import io.vlingo.cluster.model.Properties;
@@ -75,8 +77,18 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   }
 
   @Override
-  public <T> Attribute<T> attribute(String attributeSetName, String attributeName) {
-    return null; // unsupported here; see LocalAttributesAgent
+  public Collection<AttributeSet> all() {
+    return null;  // unsupported here; see AttributesClient
+  }
+
+  @Override
+  public Collection<Attribute<?>> allOf(final String attributeSetName) {
+    return null;  // unsupported here; see AttributesClient
+  }
+
+  @Override
+  public <T> Attribute<T> attribute(final String attributeSetName, final String attributeName) {
+    return null; // unsupported here; see AttributesClient
   }
 
   @Override

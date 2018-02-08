@@ -7,62 +7,14 @@
 
 package io.vlingo.cluster.model.message;
 
-import java.util.HashSet;
 import java.util.Set;
 
-import io.vlingo.wire.node.Address;
-import io.vlingo.wire.node.AddressType;
+import io.vlingo.wire.message.MessagePartsBuilder;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Name;
 import io.vlingo.wire.node.Node;
 
 class OperationalMessagePartsBuilder {
-  protected static final Set<Node> nodesFrom(String content) {
-    final Set<Node> nodeEntries = new HashSet<Node>();
-
-    final String[] parts = content.split("\n");
-
-    if (parts.length < 3) {
-      return nodeEntries;
-    }
-
-    for (int index = 2; index < parts.length; ++index) {
-      nodeEntries.add(nodeFromRecord(parts[index]));
-    }
-
-    return nodeEntries;
-  }
-
-  protected static final Node nodeFrom(final String content) {
-    final String[] parts = content.split("\n");
-
-    if (parts.length < 2) {
-      return Node.NO_NODE;
-    }
-
-    return nodeFromRecord(parts[1]);
-  }
-
-  protected static final Id idFrom(final String content) {
-    final String[] parts = content.split("\n");
-
-    if (parts.length < 2) {
-      return Id.NO_ID;
-    }
-
-    return idFromRecord(parts[1]);
-  }
-
-  protected static final Name nameFrom(final String content) {
-    final String[] parts = content.split("\n");
-
-    if (parts.length < 2) {
-      return Name.NO_NODE_NAME;
-    }
-
-    return nameFromRecord(parts[1]);
-  }
-
   public static String payloadFrom(final String content) {
     final int index1 = content.indexOf('\n');
     if (index1 == -1) return "";
@@ -80,66 +32,24 @@ class OperationalMessagePartsBuilder {
       return "";
     }
 
-    final String saysId = parseField(parts[2], "si=");
+    final String saysId = MessagePartsBuilder.parseField(parts[2], "si=");
     
     return saysId;
   }
 
-  private static final Address addressFromRecord(final String record, final AddressType type) {
-    final String text = parseField(record, type == AddressType.OP ? "op=" : "msg=");
-
-    if (text == null) {
-      return Address.NO_NODE_ADDRESS;
-    }
-
-    return Address.from(text, type);
+  static final Set<Node> nodesFrom(String content) {
+    return MessagePartsBuilder.nodesFrom(content);
   }
 
-  private static final Node nodeFromRecord(final String record) {
-    final Id id = idFromRecord(record);
-    final Name name = nameFromRecord(record);
-    final Address opAddress = addressFromRecord(record, AddressType.OP);
-    final Address appAddress = addressFromRecord(record, AddressType.APP);
-
-    return new Node(id, name, opAddress, appAddress);
+  static final Node nodeFrom(final String content) {
+    return MessagePartsBuilder.nodeFrom(content);
   }
 
-  private static final Id idFromRecord(final String record) {
-    final String text = parseField(record, "id=");
-
-    if (text == null) {
-      return Id.NO_ID;
-    }
-
-    return Id.of(Short.parseShort(text));
+  static final Id idFrom(final String content) {
+    return MessagePartsBuilder.idFrom(content);
   }
 
-  private static final Name nameFromRecord(final String record) {
-    final String text = parseField(record, "nm=");
-
-    if (text == null) {
-      return Name.NO_NODE_NAME;
-    }
-
-    return new Name(text);
-  }
-
-  private static final String parseField(final String record, final String fieldName) {
-    final String skinnyRecord = record.trim();
-
-    final int idIndex = skinnyRecord.indexOf(fieldName);
-
-    if (idIndex == -1) {
-      return null;
-    }
-
-    final int valueIndex = idIndex + fieldName.length();
-    final int space = skinnyRecord.indexOf(' ', valueIndex);
-
-    if (valueIndex >= space) {
-      return skinnyRecord.substring(valueIndex);
-    }
-
-    return skinnyRecord.substring(valueIndex, space);
+  static final Name nameFrom(final String content) {
+    return MessagePartsBuilder.nameFrom(content);
   }
 }

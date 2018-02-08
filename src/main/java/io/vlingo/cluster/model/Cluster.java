@@ -33,7 +33,7 @@ public class Cluster {
     return control != null;
   }
 
-  protected static final synchronized void reset() {
+  static final synchronized void reset() {
     control = null;
   }
 }

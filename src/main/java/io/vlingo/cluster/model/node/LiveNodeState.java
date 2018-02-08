@@ -21,15 +21,15 @@ import io.vlingo.cluster.model.message.Vote;
 import io.vlingo.wire.node.Node;
 
 abstract class LiveNodeState {
-  protected final LiveNodeMaintainer liveNodeMaintainer;
-  protected final Logger logger;
-  protected final Node node;
-  protected final Type type;
+  final LiveNodeMaintainer liveNodeMaintainer;
+  final Logger logger;
+  final Node node;
+  final Type type;
 
-  protected final TimeoutTracker noQuorumTracker =
+  final TimeoutTracker noQuorumTracker =
       new TimeoutTracker(Properties.instance.clusterQuorumTimeout());
 
-  protected final TimeoutTracker leaderElectionTracker =
+  final TimeoutTracker leaderElectionTracker =
       new TimeoutTracker(Properties.instance.clusterHeartbeatInterval());
 
   @Override
@@ -37,7 +37,7 @@ abstract class LiveNodeState {
     return this.getClass().getSimpleName() + "[type=" + type + " node=" + node + "]";
   }
 
-  protected LiveNodeState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Type type, final Logger logger) {
+  LiveNodeState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Type type, final Logger logger) {
     this.node = node;
     this.liveNodeMaintainer = liveNodeMaintainer;
     this.type = type;

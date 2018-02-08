@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Node;
@@ -37,7 +38,7 @@ public class OperationalMessageCache {
   }
 
   private void cacheValidTypes() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
 
     cacheElect(buffer);
     cacheJoin(buffer);

@@ -43,7 +43,7 @@ public final class Attribute<T> {
     return new Attribute<>(name, typedValue, type);
   }
 
-  protected static Type typeOfAttribute(final String classnameOfType) {
+  static Type typeOfAttribute(final String classnameOfType) {
     try {
       final Class<?> classOfType = Class.forName(classnameOfType);
       return typeOf(classOfType);

@@ -11,7 +11,7 @@ import io.vlingo.actors.Logger;
 import io.vlingo.wire.node.Node;
 
 final class IdleState extends LiveNodeState {
-  protected IdleState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {
+  IdleState(final Node node, final LiveNodeMaintainer liveNodeMaintainer, final Logger logger) {
     super(node, liveNodeMaintainer, Type.IDLE, logger);
   }
 }

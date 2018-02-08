@@ -15,27 +15,27 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class AttributeSetRepository {
   private final Map<String,AttributeSet> all;
   
-  protected AttributeSetRepository() {
+  AttributeSetRepository() {
     this.all = new ConcurrentHashMap<>(16, 0.75f, 16);
   }
 
-  protected void add(final AttributeSet set) {
+  void add(final AttributeSet set) {
     all.put(set.name, set);
   }
 
-  protected Collection<AttributeSet> all() {
+  Collection<AttributeSet> all() {
     return new ArrayList<>(all.values());
   }
 
-  protected AttributeSet attributeSetOf(final String name) {
+  AttributeSet attributeSetOf(final String name) {
     return all.getOrDefault(name, AttributeSet.None);
   }
 
-  protected void remove(final String name) {
+  void remove(final String name) {
     all.remove(name);
   }
 
-  protected void removeAll() {
+  void removeAll() {
     all.clear();
   }
 }

@@ -19,8 +19,8 @@ import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;
 
 class NetworkCommunicationsHub implements CommunicationsHub {
-  protected static final String APP_NAME = "APP";
-  protected static final String OP_NAME = "OP";
+  static final String APP_NAME = "APP";
+  static final String OP_NAME = "OP";
   
   private InboundStream applicationInboundStream;
   private ApplicationOutboundStream applicationOutboundStream;

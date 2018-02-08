@@ -19,7 +19,7 @@ import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
-public class LocalRegistry implements Registry {
+public final class LocalRegistry implements Registry {
   private final RegistryInterestBroadcaster broadcaster;
   private final Configuration configuration;
   private final Node localNode;
@@ -236,7 +236,7 @@ public class LocalRegistry implements Registry {
     }
   }
 
-  protected RegisteredNodeStatus registeredNodeStatusOf(final Id id) {
+  RegisteredNodeStatus registeredNodeStatusOf(final Id id) {
     return registry.get(id);
   }
 

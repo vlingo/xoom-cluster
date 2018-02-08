@@ -33,23 +33,23 @@ class ClusterSnapshotInitializer {
     this.registry = new LocalRegistry(this.localNode, this.configuration, logger);
   }
 
-  protected CommunicationsHub communicationsHub() {
+  CommunicationsHub communicationsHub() {
     return this.communicationsHub;
   }
 
-  protected Configuration configuration() {
+  Configuration configuration() {
     return configuration;
   }
 
-  protected Node localNode() {
+  Node localNode() {
     return localNode;
   }
 
-  protected Id localNodeId() {
+  Id localNodeId() {
     return localNodeId;
   }
   
-  protected Registry registry() {
+  Registry registry() {
     return registry;
   }
 }

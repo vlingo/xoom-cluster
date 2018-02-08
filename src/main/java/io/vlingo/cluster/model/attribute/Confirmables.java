@@ -19,12 +19,12 @@ final class Confirmables {
   private final Collection<Node> allOtherNodes;
   private final List<Confirmable> expectedConfirmables;
 
-  protected Confirmables(final Collection<Node> allOtherNodes) {
+  Confirmables(final Collection<Node> allOtherNodes) {
     this.allOtherNodes = allOtherNodes;
     this.expectedConfirmables = new ArrayList<>();
   }
 
-  protected Collection<Confirmable> allRedistributable() {
+  Collection<Confirmable> allRedistributable() {
     final List<Confirmable> ready = new ArrayList<>();
     for (final Confirmable confirmable : expectedConfirmables) {
       if (confirmable.isRedistributableAsOf()) {
@@ -34,7 +34,7 @@ final class Confirmables {
     return ready;
   }
 
-  protected Collection<String> allTrackingIds() {
+  Collection<String> allTrackingIds() {
     final List<String> all = new ArrayList<>();
     
     for (final Confirmable confirmable : expectedConfirmables) {
@@ -44,7 +44,7 @@ final class Confirmables {
     return all;
   }
 
-  protected void confirm(final String trackingId, final Node node) {
+  void confirm(final String trackingId, final Node node) {
     final Confirmable confirmable = confirmableOf(trackingId);
     confirmable.confirm(node);
     if (!confirmable.hasUnconfirmedNodes()) {
@@ -52,7 +52,7 @@ final class Confirmables {
     }
   }
 
-  protected Confirmable confirmableOf(final String trackingId) {
+  Confirmable confirmableOf(final String trackingId) {
     for (final Confirmable confirmable : expectedConfirmables) {
       if (confirmable.trackingId.equals(trackingId)) {
         return confirmable;
@@ -61,25 +61,25 @@ final class Confirmables {
     return Confirmable.NoConfirmable;
   }
 
-  protected Confirmable unconfirmed(final ApplicationMessage message) {
+  Confirmable unconfirmed(final ApplicationMessage message) {
     return unconfirmedFor(message, allOtherNodes);
   }
 
-  protected Confirmable unconfirmedFor(final ApplicationMessage message, final Collection<Node> nodes) {
+  Confirmable unconfirmedFor(final ApplicationMessage message, final Collection<Node> nodes) {
     final Confirmable confirmable = new Confirmable(message, nodes);
     expectedConfirmables.add(confirmable);
     return confirmable;
   }
 
-  protected static final class Confirmable {
-    protected static final Confirmable NoConfirmable = new Confirmable();
+  static final class Confirmable {
+    static final Confirmable NoConfirmable = new Confirmable();
     
     private final ApplicationMessage message;
     private final List<Node> unconfirmedNodes;
     private final long createdOn;
     private final String trackingId;
     
-    protected Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
+    Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
       this.message = message;
       this.unconfirmedNodes = new ArrayList<>();
       this.unconfirmedNodes.addAll(allOtherNodes);
@@ -94,24 +94,24 @@ final class Confirmables {
       this.trackingId = "";
     }
 
-    protected void confirm(final Node node) {
+    void confirm(final Node node) {
       unconfirmedNodes.remove(node);
     }
 
-    protected boolean hasUnconfirmedNodes() {
+    boolean hasUnconfirmedNodes() {
       return !unconfirmedNodes.isEmpty();
     }
 
-    protected ApplicationMessage message() {
+    ApplicationMessage message() {
       return message;
     }
 
-    protected boolean isRedistributableAsOf() {
+    boolean isRedistributableAsOf() {
       final long targetTime = createdOn + Properties.instance.clusterAttributesRedistributionInterval();
       return targetTime < System.currentTimeMillis();
     }
 
-    protected Collection<Node> unconfirmedNodes() {
+    Collection<Node> unconfirmedNodes() {
       return unconfirmedNodes;
     }
     

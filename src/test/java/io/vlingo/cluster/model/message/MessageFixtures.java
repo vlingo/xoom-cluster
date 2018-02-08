@@ -25,15 +25,15 @@ public class MessageFixtures {
         new StringBuilder(OperationalMessage.DIR)
         .append("\n")
         .append("id=").append(id1).append(" nm=node").append(id1).append("\n")
-        .append("id=").append(id1).append(" nm=node").append(id1).append(" op=").append(opAddresses[1]).append(" msg=").append(appAddresses[1]).append("\n")
-        .append("id=").append(id2).append(" nm=node").append(id2).append(" op=").append(opAddresses[2]).append(" msg=").append(appAddresses[2]).append("\n")
-        .append("id=").append(id3).append(" nm=node").append(id3).append(" op=").append(opAddresses[3]).append(" msg=").append(appAddresses[3]);
+        .append("id=").append(id1).append(" nm=node").append(id1).append(" op=").append(opAddresses[1]).append(" app=").append(appAddresses[1]).append("\n")
+        .append("id=").append(id2).append(" nm=node").append(id2).append(" op=").append(opAddresses[2]).append(" app=").append(appAddresses[2]).append("\n")
+        .append("id=").append(id3).append(" nm=node").append(id3).append(" op=").append(opAddresses[3]).append(" app=").append(appAddresses[3]);
 
     return builder.toString();
   }
   
   public static String joinAsText() {
-    return OperationalMessage.JOIN + "\nid=1 nm=node1 op=localhost:37371 msg=localhost:37372";
+    return OperationalMessage.JOIN + "\nid=1 nm=node1 op=localhost:37371 app=localhost:37372";
   }
   
   public static String leaderAsText() {

@@ -36,7 +36,7 @@ public final class Properties {
     return new Properties(properties);
   }
 
-  protected static Properties openForTest(java.util.Properties properties) {
+  static Properties openForTest(java.util.Properties properties) {
     return new Properties(properties);
   }
   
@@ -79,7 +79,7 @@ public final class Properties {
     final int port = getInteger(nodeName, "app.port", 0);
 
     if (port == 0) {
-      throw new IllegalStateException("Must assign an messages (msg) port to node '"
+      throw new IllegalStateException("Must assign an application (app) port to node '"
           + nodeName + "' in properties file.");
     }
 
