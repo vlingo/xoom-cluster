@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.message.RawMessageHeader;
@@ -26,7 +27,7 @@ public class RawMessageTest {
 
   @Test
   public void testKnownSizeWithAppend() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
@@ -43,7 +44,7 @@ public class RawMessageTest {
 
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
@@ -62,7 +63,7 @@ public class RawMessageTest {
 
   @Test
   public void testCopyBytesTo() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
@@ -75,13 +76,13 @@ public class RawMessageTest {
     
     buffer.clear();
     message.copyBytesTo(buffer); // copyBytesTo
-    final String text = Converters.bytesToText(buffer.array(), RawMessageHeader.BYTES - 1, message.length());
+    final String text = Converters.bytesToText(buffer.array(), RawMessageHeader.BYTES, message.length());
     assertTrue(OperationalMessage.messageFrom(text).isJoin());
   }
 
   @Test
   public void testHeaderFrom() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final RawMessageHeader header = RawMessageHeader.from(1, 0, 100);
     final RawMessage message = new RawMessage(100);
     header.copyBytesTo(buffer);
@@ -94,7 +95,7 @@ public class RawMessageTest {
 
   @Test
   public void testPut() {
-    final ByteBuffer buffer = ByteBuffer.allocate(1000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);

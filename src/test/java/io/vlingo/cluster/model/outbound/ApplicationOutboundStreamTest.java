@@ -24,6 +24,7 @@ import io.vlingo.cluster.model.AbstractClusterTest;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStreamActor;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.ByteBufferPool;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -39,7 +40,7 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
 
   @Test
   public void testBroadcast() {
-    final ByteBuffer buffer = ByteBuffer.allocate(properties.operationalBufferSize());
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
     
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     
@@ -54,7 +55,7 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
   public void testSendTo() {
     final Id targetId = Id.of(3);
     
-    final ByteBuffer buffer = ByteBuffer.allocate(properties.operationalBufferSize());
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
     
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     

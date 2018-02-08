@@ -24,6 +24,7 @@ import io.vlingo.cluster.model.message.Pulse;
 import io.vlingo.cluster.model.node.MergeResult;
 import io.vlingo.cluster.model.node.RegistryInterest;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
@@ -121,7 +122,7 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
     
     intializer = new ClusterSnapshotInitializer("node1", properties, testWorld.defaultLogger());
     
-    final ByteBuffer messageBuffer = ByteBuffer.allocate(4096);
+    final ByteBuffer messageBuffer = ByteBufferAllocator.allocate(4096);
     final Pulse pulse = new Pulse(Id.of(1));
     MessageConverters.messageToBytes(pulse, messageBuffer);
     opMessage = Converters.toRawMessage(Id.of(1).value(), messageBuffer);

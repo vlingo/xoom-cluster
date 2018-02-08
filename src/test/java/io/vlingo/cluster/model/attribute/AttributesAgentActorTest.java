@@ -34,6 +34,7 @@ import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStreamActor;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.ByteBufferPool;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
@@ -266,7 +267,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   private RawMessage rawMessageFor(final Id id, final Name name, final ApplicationMessage message) {
-    final ByteBuffer messageBuffer = ByteBuffer.allocate(4096);
+    final ByteBuffer messageBuffer = ByteBufferAllocator.allocate(4096);
     final ApplicationSays says = ApplicationSays.from(id, name, message.toPayload());
     MessageConverters.messageToBytes(says, messageBuffer);
     return Converters.toRawMessage(Id.of(1).value(), messageBuffer);

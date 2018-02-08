@@ -19,6 +19,7 @@ import org.junit.Test;
 import io.vlingo.cluster.model.AbstractClusterTest;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.wire.fdx.outbound.Outbound;
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.ByteBufferPool;
 import io.vlingo.wire.message.ByteBufferPool.PooledByteBuffer;
 import io.vlingo.wire.message.RawMessage;
@@ -36,7 +37,7 @@ public class OutboundTest extends AbstractClusterTest {
   
   @Test
   public void testBroadcast() throws Exception {
-    final ByteBuffer buffer = ByteBuffer.allocate(properties.operationalBufferSize());
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
     
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);
@@ -86,7 +87,7 @@ public class OutboundTest extends AbstractClusterTest {
   
   @Test
   public void testBroadcastToSelectNodes() throws Exception {
-    final ByteBuffer buffer = ByteBuffer.allocate(properties.operationalBufferSize());
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
     
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);
@@ -107,7 +108,7 @@ public class OutboundTest extends AbstractClusterTest {
   
   @Test
   public void testSendTo() throws Exception {
-    final ByteBuffer buffer = ByteBuffer.allocate(properties.operationalBufferSize());
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
     
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);

@@ -9,6 +9,7 @@ package io.vlingo.cluster.model.message;
 
 import java.nio.ByteBuffer;
 
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.message.RawMessageHeader;
@@ -49,7 +50,7 @@ public class MessageFixtures {
     final RawMessageHeader header = RawMessageHeader.from(1, 0, message.length());
     message.header(header);
     
-    final ByteBuffer buffer = ByteBuffer.allocate(4000);
+    final ByteBuffer buffer = ByteBufferAllocator.allocate(4000);
     message.copyBytesTo(buffer);
     buffer.flip();
     

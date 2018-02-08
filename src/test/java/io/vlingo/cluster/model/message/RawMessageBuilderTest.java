@@ -15,6 +15,7 @@ import java.nio.ByteBuffer;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.message.RawMessageBuilder;
 import io.vlingo.wire.message.RawMessageHeader;
@@ -91,7 +92,7 @@ public class RawMessageBuilderTest {
 
   @Before
   public void setUp() {
-    buffer = ByteBuffer.allocate(1000);
+    buffer = ByteBufferAllocator.allocate(1000);
     builder = new RawMessageBuilder(1000);
     node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
     node2 = Node.with(Id.of(2), Name.of("node2"), Host.of("localhost"), 37373, 37374);

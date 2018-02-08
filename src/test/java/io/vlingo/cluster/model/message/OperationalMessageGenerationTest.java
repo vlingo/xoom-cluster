@@ -17,6 +17,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.node.Address;
 import io.vlingo.wire.node.AddressType;
@@ -26,8 +27,8 @@ import io.vlingo.wire.node.Node;
 
 public class OperationalMessageGenerationTest {
   private static final int BYTES = 4096;
-  private ByteBuffer expectedBuffer = ByteBuffer.allocate(BYTES);
-  private ByteBuffer messageBuffer = ByteBuffer.allocate(BYTES);
+  private ByteBuffer expectedBuffer = ByteBufferAllocator.allocate(BYTES);
+  private ByteBuffer messageBuffer = ByteBufferAllocator.allocate(BYTES);
 
   @Test
   public void testGenerateApplicationSaidMessage() {
