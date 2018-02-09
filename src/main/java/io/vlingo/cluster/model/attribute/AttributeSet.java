@@ -17,11 +17,11 @@ public final class AttributeSet {
   public final String name;
   private final Map<String, TrackedAttribute> attributes;
   
-  static AttributeSet named(final String name) {
+  public static AttributeSet named(final String name) {
     return new AttributeSet(name);
   }
   
-  TrackedAttribute addIfAbsent(final Attribute<?> attribute) {
+  public TrackedAttribute addIfAbsent(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isAbsent()) {
@@ -35,23 +35,23 @@ public final class AttributeSet {
     return maybeAttribute;
   }
 
-  Collection<TrackedAttribute> all() {
+  public Collection<TrackedAttribute> all() {
     return attributes.values();
   }
 
-  TrackedAttribute attributeNamed(final String name) {
+  public TrackedAttribute attributeNamed(final String name) {
     return find(name);
   }
   
-  boolean isDefined() {
+  public boolean isDefined() {
     return !isNone();
   }
   
-  boolean isNone() {
+  public boolean isNone() {
     return this == None;
   }
   
-  TrackedAttribute remove(final Attribute<?> attribute) {
+  public TrackedAttribute remove(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {
@@ -61,7 +61,7 @@ public final class AttributeSet {
     return maybeAttribute;
   }
   
-  TrackedAttribute replace(final Attribute<?> attribute) {
+  public TrackedAttribute replace(final Attribute<?> attribute) {
     final TrackedAttribute maybeAttribute = find(attribute);
     
     if (maybeAttribute.isPresent()) {

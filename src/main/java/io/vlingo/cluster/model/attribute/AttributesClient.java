@@ -37,6 +37,7 @@ public final class AttributesClient implements AttributesProtocol {
     agent.add(attributeSetName, attributeName, value);
   }
   
+  @Override
   public Collection<AttributeSet> all() {
     return repository.all();
   }

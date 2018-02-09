@@ -23,31 +23,31 @@ public final class TrackedAttribute {
     return set.name + ":" + attribute.name;
   }
   
-  TrackedAttribute asDistributed() {
+  public TrackedAttribute asDistributed() {
     return new TrackedAttribute(this.id, this.attribute, true);
   }
   
-  boolean isAbsent() {
+  public boolean isAbsent() {
     return this.attribute == null;
   }
   
-  boolean isDistributed() {
+  public boolean isDistributed() {
     return distributed;
   }
   
-  boolean isPresent() {
+  public boolean isPresent() {
     return !isAbsent();
   }
 
-  Attribute<?> replacingValueWith(final Attribute<?> other) {
+  public Attribute<?> replacingValueWith(final Attribute<?> other) {
     return attribute.replacingValueWith(other);
   }
 
-  boolean sameAs(final Attribute<?> other) {
+  public boolean sameAs(final Attribute<?> other) {
     return attribute.equals(other);
   }
 
-  TrackedAttribute withAttribute(final Attribute<?> attribute) {
+  public TrackedAttribute withAttribute(final Attribute<?> attribute) {
     return new TrackedAttribute(this.id, attribute, false);
   }
 
