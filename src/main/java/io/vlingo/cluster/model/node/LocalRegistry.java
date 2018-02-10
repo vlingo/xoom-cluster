@@ -48,6 +48,7 @@ public final class LocalRegistry implements Registry {
       if (!status.isTimedOut(currentTime, liveNodeTimeout)) {
         nodesToKeep.put(status.node().id(), status);
       } else {
+        demoteLeaderOf(status.node().id());
         broadcaster.informNodeTimedOut(status.node(), isClusterHealthy());
         logger.log("Node cleaned from registry due to timeout: " + status.node());
       }
@@ -163,9 +164,7 @@ public final class LocalRegistry implements Registry {
   public void leave(final Id id) {
     RegisteredNodeStatus status = registry.remove(id);
     if (status != null) {
-      if (status.isLeader()) {
-        this.demoteLeaderOf(id);
-      }
+      demoteLeaderOf(id);
       broadcaster.informNodeLeftCluster(status.node(), isClusterHealthy());
       broadcaster.informAllLiveNodes(liveNodes(), isClusterHealthy());
     } else {
@@ -190,9 +189,7 @@ public final class LocalRegistry implements Registry {
 
     for (final RegisteredNodeStatus status : registry.values()) {
       if (!mergedNodes.containsKey(status.node().id())) {
-        if (status.isLeader()) {
-          this.demoteLeaderOf(status.node().id());
-        }
+        demoteLeaderOf(status.node().id());
         result.add(new MergeResult(status.node(), false));
       }
     }
