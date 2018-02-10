@@ -163,6 +163,9 @@ public final class LocalRegistry implements Registry {
   public void leave(final Id id) {
     RegisteredNodeStatus status = registry.remove(id);
     if (status != null) {
+      if (status.isLeader()) {
+        this.demoteLeaderOf(id);
+      }
       broadcaster.informNodeLeftCluster(status.node(), isClusterHealthy());
       broadcaster.informAllLiveNodes(liveNodes(), isClusterHealthy());
     } else {
@@ -187,6 +190,9 @@ public final class LocalRegistry implements Registry {
 
     for (final RegisteredNodeStatus status : registry.values()) {
       if (!mergedNodes.containsKey(status.node().id())) {
+        if (status.isLeader()) {
+          this.demoteLeaderOf(status.node().id());
+        }
         result.add(new MergeResult(status.node(), false));
       }
     }
