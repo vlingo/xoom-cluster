@@ -35,8 +35,8 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void informAllLiveNodes(final Collection<Id> liveNodes, final boolean isHealthyCluster) {
-    for (final Id id : liveNodes) {
+  public void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster) {
+    for (final Node id : liveNodes) {
        logger().log("APP: Live node confirmed: " + id);
     }
     printHealthy(isHealthyCluster);

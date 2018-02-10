@@ -18,6 +18,7 @@ import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 class ClusterApplicationBroadcaster implements ClusterApplication {
   private List<ClusterApplication> clusterApplications;
@@ -37,7 +38,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   //========================================
 
   @Override
-  public void informAllLiveNodes(final Collection<Id> liveNodes, final boolean isHealthyCluster) {
+  public void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster) {
     broadcast((app) -> app.informAllLiveNodes(liveNodes, isHealthyCluster));
   }
 

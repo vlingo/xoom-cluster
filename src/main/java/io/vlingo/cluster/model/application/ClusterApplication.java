@@ -33,7 +33,7 @@ public interface ClusterApplication extends Startable, Stoppable {
 
   void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder);
   
-  void informAllLiveNodes(final Collection<Id> liveNodes, final boolean isHealthyCluster);
+  void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster);
   void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading);
   void informLeaderLost(final Id lostLeaderId, final boolean isHealthyCluster);
   void informLocalNodeShutDown(final Id nodeId);

@@ -14,6 +14,7 @@ import io.vlingo.cluster.model.attribute.AttributesClient;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public class MockClusterApplication implements ClusterApplication {
   public int allLiveNodes;
@@ -58,7 +59,7 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void informAllLiveNodes(Collection<Id> liveNodes, boolean isHealthyCluster) {
+  public void informAllLiveNodes(Collection<Node> liveNodes, boolean isHealthyCluster) {
     ++allLiveNodes;
   }
 

@@ -8,8 +8,6 @@
 package io.vlingo.cluster.model;
 
 import java.util.Collection;
-import java.util.Set;
-import java.util.TreeSet;
 
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.application.ClusterApplication;
@@ -21,7 +19,6 @@ import io.vlingo.cluster.model.node.RegistryInterest;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
-import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public class ClusterSnapshotActor
@@ -148,11 +145,7 @@ public class ClusterSnapshotActor
 
   @Override
   public void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster) {
-    final Set<Id> liveNodesIds = new TreeSet<Id>();
-    for (final Node node : liveNodes) {
-      liveNodesIds.add(node.id());
-    }
-    broadcaster.informAllLiveNodes(liveNodesIds, isHealthyCluster);
+    broadcaster.informAllLiveNodes(liveNodes, isHealthyCluster);
   }
 
   @Override

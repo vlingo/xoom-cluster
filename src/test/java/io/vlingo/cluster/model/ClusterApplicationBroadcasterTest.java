@@ -9,9 +9,6 @@ package io.vlingo.cluster.model;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,8 +19,7 @@ public class ClusterApplicationBroadcasterTest extends AbstractClusterTest {
 
   @Test
   public void testInformAllLiveNodes() throws Exception {
-    final List<Id> ids = config.allNodes().stream().map(node -> node.id()).collect(Collectors.toList());
-    broadcaster.informAllLiveNodes(ids, true);
+    broadcaster.informAllLiveNodes(config.allNodes(), true);
     assertEquals(1, application.allLiveNodes);
   }
 
