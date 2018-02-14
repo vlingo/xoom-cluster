@@ -133,10 +133,16 @@ public class LocalLiveNodeActor extends Actor
   }
 
   public void escalateElection(final Id electId) {
+    registry.join(node);
+    registry.join(configuration.nodeMatching(electId));
+    
     if (node.id().greaterThan(electId)) {
       if (!state.leaderElectionTracker.hasStarted()) {
         state.leaderElectionTracker.start(true);
         outbound.elect(configuration.allGreaterNodes(node.id()));
+      } else if (state.leaderElectionTracker.hasTimedOut()) {
+        declareLeadership();
+        return;
       }
       outbound.vote(electId);
     }
