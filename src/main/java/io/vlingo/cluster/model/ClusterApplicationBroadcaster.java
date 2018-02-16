@@ -103,12 +103,17 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public void informAttributeRemoved(String attributeSetName, String attributeName) {
+  public void informAttributeRemoved(final String attributeSetName, final String attributeName) {
     broadcast((app) -> app.informAttributeRemoved(attributeSetName, attributeName));
   }
 
   @Override
-  public void informAttributeReplaced(String attributeSetName, String attributeName) {
+  public void informAttributeSetRemoved(final String attributeSetName) {
+    broadcast((app) -> app.informAttributeSetRemoved(attributeSetName));
+  }
+
+  @Override
+  public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
     broadcast((app) -> app.informAttributeReplaced(attributeSetName, attributeName));
   }
 

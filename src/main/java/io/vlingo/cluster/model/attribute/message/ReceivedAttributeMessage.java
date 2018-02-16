@@ -91,7 +91,12 @@ public final class ReceivedAttributeMessage {
   public final String attributeValue() {
     return payloadMap.get(AttributeValueKey);
   }
-  
+
+  @Override
+  public String toString() {
+    return "ReceivedAttributeMessage[payloadMap=" + payloadMap + "]";
+  }
+
   private Map<String,String> parsePayload(final RawMessage message) {
     final Map<String,String> map = new HashMap<>();
     
@@ -105,7 +110,13 @@ public final class ReceivedAttributeMessage {
     map.put(ClassOfMessageKey, parsed[0]);
     
     switch (parsed[0]) {
-    case "ConfirmAttributeSet":
+    case "ConfirmCreateAttributeSet":
+      map.put(CorrelatingMessageIdKey, parsed[1]);
+      map.put(TrackingIdKey, parsed[2]);
+      map.put(MessageTypeKey, parsed[3]);
+      map.put(AttributeSetNameKey, parsed[4]);
+      break;
+    case "ConfirmRemoveAttributeSet":
       map.put(CorrelatingMessageIdKey, parsed[1]);
       map.put(TrackingIdKey, parsed[2]);
       map.put(MessageTypeKey, parsed[3]);
@@ -119,6 +130,11 @@ public final class ReceivedAttributeMessage {
       map.put(AttributeNameKey, parsed[5]);
       break;
     case "CreateAttributeSet":
+      map.put(TrackingIdKey, parsed[1]);
+      map.put(MessageTypeKey, parsed[2]);
+      map.put(AttributeSetNameKey, parsed[3]);
+      break;
+    case "RemoveAttributeSet":
       map.put(TrackingIdKey, parsed[1]);
       map.put(MessageTypeKey, parsed[2]);
       map.put(AttributeSetNameKey, parsed[3]);

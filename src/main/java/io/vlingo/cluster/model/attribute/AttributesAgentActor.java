@@ -67,7 +67,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       final AttributeSet newSet = AttributeSet.named(attributeSetName);
       newSet.addIfAbsent(Attribute.from(attributeName, value));
       repository.add(newSet);
-      confirmingDistributor.distribute(newSet);
+      confirmingDistributor.distributeCreate(newSet);
     } else {
       final TrackedAttribute newlyTracked = set.addIfAbsent(Attribute.from(attributeName, value));
       if (!newlyTracked.isDistributed()) {
@@ -129,6 +129,16 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     }    
   }
 
+  @Override
+  public <T> void removeAll(final String attributeSetName) {
+    final AttributeSet set = repository.attributeSetOf(attributeSetName);
+    
+    if (!set.isNone()) {
+      repository.remove(attributeSetName);
+      confirmingDistributor.distributeRemove(set);
+    }    
+  }
+
   //=========================================
   // NodeSynchronizer
   //=========================================
@@ -162,12 +172,19 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       case RemoveAttribute:
         remoteRequestHandler.removeAttribute(request);
         break;
+      case RemoveAttributeSet:
+        remoteRequestHandler.removeAttributeSet(request);
+        break;
       case ConfirmCreateAttributeSet:
       case ConfirmAddAttribute:
       case ConfirmReplaceAttribute:
       case ConfirmRemoveAttribute:
+      case ConfirmRemoveAttributeSet:
         confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), configuration.nodeMatching(request.sourceNodeId()));
         confirmationInterest.confirm(request.attributeSetName(), request.attributeName(), type);
+        break;
+      default:
+        configuration.logger().log("Received unknown message: " + type.name());
         break;
       }
     }

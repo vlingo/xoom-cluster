@@ -48,5 +48,6 @@ public interface ClusterApplication extends Startable, Stoppable {
   void informAttributeSetCreated(final String attributeSetName);
   void informAttributeAdded(final String attributeSetName, final String attributeName);
   void informAttributeRemoved(final String attributeSetName, final String attributeName);
+  void informAttributeSetRemoved(final String attributeSetName);
   void informAttributeReplaced(final String attributeSetName, final String attributeName);
 }

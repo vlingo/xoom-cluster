@@ -10,11 +10,11 @@ package io.vlingo.cluster.model.attribute.message;
 import io.vlingo.cluster.model.attribute.AttributeSet;
 import io.vlingo.wire.node.Node;
 
-public final class ConfirmAttributeSet extends ApplicationMessage {
+public final class ConfirmRemoveAttributeSet extends ApplicationMessage {
   public final String attributeSetName;
   
-  public ConfirmAttributeSet(final String correlatingMessageId, final Node node, final AttributeSet set) {
-    super(correlatingMessageId, ApplicationMessageType.ConfirmCreateAttributeSet, trackingId(node, ApplicationMessageType.ConfirmCreateAttributeSet, set.name));
+  public ConfirmRemoveAttributeSet(final String correlatingMessageId, final Node node, final AttributeSet set) {
+    super(correlatingMessageId, ApplicationMessageType.ConfirmRemoveAttributeSet, trackingId(node, ApplicationMessageType.ConfirmRemoveAttributeSet, set.name));
     this.attributeSetName = set.name;
   }
   

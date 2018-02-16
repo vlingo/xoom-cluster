@@ -31,6 +31,8 @@ public class MockManagedOutboundChannel implements ManagedOutboundChannel {
   @Override
   public void write(final ByteBuffer buffer) {
     final RawMessage message = RawMessage.readFromWithHeader(buffer);
-    writes.add(message.asTextMessage());
+    final String textMessage = message.asTextMessage();
+    writes.add(textMessage);
+    //System.out.println("====================\nOUTBOUND [" + writes.size() + "]: " + textMessage + "\n--------------------");
   }
 }

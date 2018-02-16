@@ -22,9 +22,11 @@ import io.vlingo.cluster.model.attribute.message.AddAttribute;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessage;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.attribute.message.ConfirmAttribute;
-import io.vlingo.cluster.model.attribute.message.ConfirmAttributeSet;
+import io.vlingo.cluster.model.attribute.message.ConfirmCreateAttributeSet;
+import io.vlingo.cluster.model.attribute.message.ConfirmRemoveAttributeSet;
 import io.vlingo.cluster.model.attribute.message.CreateAttributeSet;
 import io.vlingo.cluster.model.attribute.message.RemoveAttribute;
+import io.vlingo.cluster.model.attribute.message.RemoveAttributeSet;
 import io.vlingo.cluster.model.attribute.message.ReplaceAttribute;
 import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.message.MessageConverters;
@@ -62,7 +64,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                             Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
                     AttributesAgent.class);
     
-    agent.actor().add("test=set", "test-attr", "test-value");
+    agent.actor().add("test-set", "test-attr", "test-value");
     
     final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
@@ -70,7 +72,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(2, mock(channel2).writes.size());
     assertEquals(2, mock(channel3).writes.size());
     
-    assertEquals("test-value", AttributesClient.instance().attribute("test=set", "test-attr").value);
+    assertEquals("test-value", AttributesClient.instance().attribute("test-set", "test-attr").value);
   }
 
   @Test
@@ -82,8 +84,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                             Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
                     AttributesAgent.class);
     
-    agent.actor().add("test=set", "test-attr", "test-value1");
-    agent.actor().replace("test=set", "test-attr", "test-value2");
+    agent.actor().add("test-set", "test-attr", "test-value1");
+    agent.actor().replace("test-set", "test-attr", "test-value2");
     
     final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
@@ -91,7 +93,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(3, mock(channel2).writes.size());
     assertEquals(3, mock(channel3).writes.size());
     
-    assertEquals("test-value2", AttributesClient.instance().attribute("test=set", "test-attr").value);
+    assertEquals("test-value2", AttributesClient.instance().attribute("test-set", "test-attr").value);
   }
 
   @Test
@@ -103,8 +105,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                             Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
                     AttributesAgent.class);
     
-    agent.actor().add("test=set", "test-attr", "test-value1");
-    agent.actor().remove("test=set", "test-attr");
+    agent.actor().add("test-set", "test-attr", "test-value1");
+    agent.actor().remove("test-set", "test-attr");
     
     final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
     final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
@@ -112,7 +114,36 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(3, mock(channel2).writes.size());
     assertEquals(3, mock(channel3).writes.size());
     
-    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test=set", "test-attr"));
+    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr"));
+  }
+
+  @Test
+  public void testRemoveAttributeSet() {
+    TestActor<AttributesAgent> agent =
+            testWorld.actorFor(
+                    Definition.has(
+                            AttributesAgentActor.class,
+                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
+                    AttributesAgent.class);
+    
+    agent.actor().add("test-set", "test-attr1", "test-value1");
+    agent.actor().add("test-set", "test-attr2", "test-value2");
+    agent.actor().add("test-set", "test-attr3", "test-value3");
+    agent.actor().removeAll("test-set");
+    
+    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
+    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
+    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
+    
+    // 1. create set, 2. add attr, 3. add attr, 4. add attr, 5. remove attr, 6. remove attr, 7. remove attr, 8. remove set
+    assertEquals(8, mock(channel2).writes.size());
+    assertEquals(8, mock(channel3).writes.size());
+    
+    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr1"));
+    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr2"));
+    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr3"));
+    assertEquals(0, AttributesClient.instance().allOf("test-set").size());
+    assertEquals(0, AttributesClient.instance().all().size());
   }
 
   @Test
@@ -182,13 +213,31 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testConfirmAttributeSet() {
+  public void testInboundStreamInterestRemoveAttributeSet() throws Exception {
+    final TestActor<InboundStreamInterest> inboundStreamInterest =
+            testWorld.actorFor(
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
+                    InboundStreamInterest.class);
+
+    final ApplicationMessage createMessage = CreateAttributeSet.from(localNode, set);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), createMessage));
+    final ApplicationMessage removeMessage = RemoveAttributeSet.from(localNode, set);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), removeMessage));
+    
+    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
+    assertEquals(2, mock(channel1).writes.size());
+    assertEquals(1, application.informAttributeSetCreated);
+    assertEquals(1, application.informAttributeSetRemoved);
+  }
+
+  @Test
+  public void testConfirmCreateAttributeSet() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
                     InboundStreamInterest.class);
     
-    final ApplicationMessage confirm = new ConfirmAttributeSet("123", localNode, set);
+    final ApplicationMessage confirm = new ConfirmCreateAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
     assertEquals(1, interest.confirmed);
     assertEquals(set.name, interest.attributeSetName);
@@ -238,6 +287,20 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(tracked.attribute.name, interest.attributeName);
     assertEquals(confirm.type, interest.type);
     assertEquals(1, interest.confirmed);
+  }
+
+  @Test
+  public void testConfirmRemoveAttributeSet() {
+    final TestActor<InboundStreamInterest> inboundStreamInterest =
+            testWorld.actorFor(
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
+                    InboundStreamInterest.class);
+    
+    final ApplicationMessage confirm = new ConfirmRemoveAttributeSet("123", localNode, set);
+    inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
+    assertEquals(1, interest.confirmed);
+    assertEquals(set.name, interest.attributeSetName);
+    assertEquals(confirm.type, interest.type);
   }
 
   @Before

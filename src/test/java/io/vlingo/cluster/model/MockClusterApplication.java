@@ -35,6 +35,7 @@ public class MockClusterApplication implements ClusterApplication {
   public int informAttributeAdded;
   public int informAttributeRemoved;
   public int informAttributeReplaced;
+  public int informAttributeSetRemoved;
   
   public int stop;
   
@@ -126,6 +127,11 @@ public class MockClusterApplication implements ClusterApplication {
   @Override
   public void informAttributeRemoved(String attributeSetName, String attributeName) {
     ++informAttributeRemoved;
+  }
+
+  @Override
+  public void informAttributeSetRemoved(String attributeSetName) {
+    ++informAttributeSetRemoved;
   }
 
   @Override

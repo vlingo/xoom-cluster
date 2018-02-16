@@ -129,6 +129,11 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
+  public void informAttributeSetRemoved(final String attributeSetName) {
+    logger().log("APP: Attributes Set Removed: " + attributeSetName);
+  }
+
+  @Override
   public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
     final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
      logger().log("APP: Attribute Set " + attributeSetName + " Attribute Replaced: " + attributeName + " Value: " + attr.value);

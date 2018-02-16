@@ -37,7 +37,16 @@ final class RemoteAttributeRequestHandler {
       attributeSet = AttributeSet.named(request.attributeSetName());
       repository.add(attributeSet);
     }
-    confirmingDistributor.confirm(request.trackingId(), attributeSet, configuration.nodeMatching(request.sourceNodeId()));
+    confirmingDistributor.confirmCreate(request.trackingId(), attributeSet, configuration.nodeMatching(request.sourceNodeId()));
+  }
+
+  void removeAttributeSet(final ReceivedAttributeMessage request) {
+    AttributeSet attributeSet = repository.attributeSetOf(request.attributeSetName());
+    if (attributeSet.isDefined()) {
+      attributeSet = AttributeSet.named(request.attributeSetName());
+      repository.remove(request.attributeSetName());
+    }
+    confirmingDistributor.confirmRemove(request.trackingId(), attributeSet, configuration.nodeMatching(request.sourceNodeId()));
   }
 
   void replaceAttribute(final ReceivedAttributeMessage request) {

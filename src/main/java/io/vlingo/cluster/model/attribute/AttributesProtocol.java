@@ -16,4 +16,5 @@ public interface AttributesProtocol {
   <T> Attribute<T> attribute(final String attributeSetName, final String attributeName);
   <T> void replace(final String attributeSetName, final String attributeName, final T value);
   <T> void remove(final String attributeSetName, final String attributeName);
+  <T> void removeAll(final String attributeSetName);
 }

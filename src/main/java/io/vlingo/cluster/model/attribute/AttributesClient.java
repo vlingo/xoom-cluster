@@ -80,6 +80,11 @@ public final class AttributesClient implements AttributesProtocol {
   }
 
   @Override
+  public <T> void removeAll(final String attributeSetName) {
+    agent.removeAll(attributeSetName);
+  }
+
+  @Override
   public String toString() {
     return "AttributesClient[agent=" + agent + " repository=" + repository + "]";
   }

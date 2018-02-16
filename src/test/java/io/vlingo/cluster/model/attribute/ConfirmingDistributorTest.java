@@ -67,8 +67,8 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testConfirmAttributeSet() {
-    confirmingDistributor.confirm("123", set, localNode);
+  public void testConfirmCreateAttributeSet() {
+    confirmingDistributor.confirmCreate("123", set, localNode);
     
     singleChannelMessageAssertions();
     
@@ -95,10 +95,19 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     singleChannelMessageAssertions();
   }
-  
+
   @Test
-  public void testDistributeAttributeSet() {
-    confirmingDistributor.distribute(set);
+  public void testConfirmRemoveAttributeSet() {
+    confirmingDistributor.confirmRemove("123", set, localNode);
+    
+    singleChannelMessageAssertions();
+    
+    assertEquals(1, application.informAttributeSetRemoved);
+  }
+
+  @Test
+  public void testDistributeCreateAttributeSet() {
+    confirmingDistributor.distributeCreate(set);
     
     multiChannelMessageAssertions(2);
     
@@ -132,7 +141,17 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     assertEquals(1, application.informAttributeRemoved);
   }
-  
+
+  @Test
+  public void testDistributeRemoveAttributeSet() {
+    confirmingDistributor.distributeRemove(set);
+    
+    multiChannelMessageAssertions(2);
+    
+    assertEquals(1, application.informAttributeSetRemoved);
+    assertEquals(1, application.informAttributeRemoved);
+  }
+
   @Test
   public void testRedistributeUnconfirmed() {
     final AttributeSet set = AttributeSet.named("test-set");

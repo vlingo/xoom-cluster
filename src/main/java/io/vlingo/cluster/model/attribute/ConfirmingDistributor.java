@@ -15,9 +15,11 @@ import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.cluster.model.attribute.message.AddAttribute;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.attribute.message.ConfirmAttribute;
-import io.vlingo.cluster.model.attribute.message.ConfirmAttributeSet;
+import io.vlingo.cluster.model.attribute.message.ConfirmCreateAttributeSet;
+import io.vlingo.cluster.model.attribute.message.ConfirmRemoveAttributeSet;
 import io.vlingo.cluster.model.attribute.message.CreateAttributeSet;
 import io.vlingo.cluster.model.attribute.message.RemoveAttribute;
+import io.vlingo.cluster.model.attribute.message.RemoveAttributeSet;
 import io.vlingo.cluster.model.attribute.message.ReplaceAttribute;
 import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
@@ -50,8 +52,12 @@ public final class ConfirmingDistributor {
     return confirmables.allTrackingIds();
   }
 
-  void distribute(final AttributeSet set) {
+  void distributeCreate(final AttributeSet set) {
     distributeTo(set, allOtherNodes);
+  }
+
+  public void distributeRemove(final AttributeSet set) {
+    distributeRemoveTo(set, allOtherNodes);
   }
 
   void distributeTo(final AttributeSet set, final Collection<Node> nodes) {
@@ -63,6 +69,17 @@ public final class ConfirmingDistributor {
     for (final TrackedAttribute tracked : set.all()) {
       distributeTo(set, tracked, ApplicationMessageType.AddAttribute, nodes);
     }
+  }
+
+  void distributeRemoveTo(final AttributeSet set, final Collection<Node> nodes) {
+    // remove attributes first, then the set
+    for (final TrackedAttribute untracked : set.all()) {
+      distributeTo(set, untracked, ApplicationMessageType.RemoveAttribute, nodes);
+    }
+    final RemoveAttributeSet removeSet = new RemoveAttributeSet(node, set);
+    final Confirmable confirmable = confirmables.unconfirmedFor(removeSet, nodes);
+    outbound.application(ApplicationSays.from(node.id(), node.name(), removeSet.toPayload()), confirmable.unconfirmedNodes());
+    application.informAttributeSetRemoved(set.name);
   }
 
   void distribute(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type) {
@@ -83,6 +100,12 @@ public final class ConfirmingDistributor {
       outbound.application(ApplicationSays.from(node.id(), node.name(), remove.toPayload()), removeConfirmable.unconfirmedNodes());
       application.informAttributeRemoved(set.name, tracked.attribute.name);
       break;
+    case RemoveAttributeSet:
+      final RemoveAttributeSet removeSet = RemoveAttributeSet.from(node, set);
+      final Confirmable removeSetConfirmable = confirmables.unconfirmedFor(removeSet, nodes);
+      outbound.application(ApplicationSays.from(node.id(), node.name(), removeSet.toPayload()), removeSetConfirmable.unconfirmedNodes());
+      application.informAttributeSetRemoved(set.name);
+      break;
     case ReplaceAttribute:
       final ReplaceAttribute replace = ReplaceAttribute.from(node, set, tracked);
       final Confirmable replaceConfirmable = confirmables.unconfirmedFor(replace, nodes);
@@ -94,14 +117,24 @@ public final class ConfirmingDistributor {
     }
   }
 
-  void confirm(
+  void confirmCreate(
           final String correlatingMessageId,
           final AttributeSet set,
           final Node toOriginalSource) {
     
-    final ConfirmAttributeSet confirm = new ConfirmAttributeSet(correlatingMessageId, node, set);
+    final ConfirmCreateAttributeSet confirm = new ConfirmCreateAttributeSet(correlatingMessageId, node, set);
     outbound.application(ApplicationSays.from(node.id(), node.name(), confirm.toPayload()), toOriginalSource.collected());
     application.informAttributeSetCreated(set.name);
+  }
+
+  void confirmRemove(
+          final String correlatingMessageId,
+          final AttributeSet set,
+          final Node toOriginalSource) {
+    
+    final ConfirmRemoveAttributeSet confirm = new ConfirmRemoveAttributeSet(correlatingMessageId, node, set);
+    outbound.application(ApplicationSays.from(node.id(), node.name(), confirm.toPayload()), toOriginalSource.collected());
+    application.informAttributeSetRemoved(set.name);
   }
   
   void confirm(
@@ -134,7 +167,7 @@ public final class ConfirmingDistributor {
 
   void redistributeUnconfirmed() {
     for (final Confirmable confirmable : confirmables.allRedistributable()) {
-      logger.log("REDIST: " + confirmable);
+      logger.log("REDIST ATTR: " + confirmable);
       outbound.application(ApplicationSays.from(
               node.id(), node.name(),
               confirmable.message().toPayload()),

@@ -12,8 +12,10 @@ public enum ApplicationMessageType {
   AddAttribute,
   ReplaceAttribute,
   RemoveAttribute,
+  RemoveAttributeSet,
   ConfirmCreateAttributeSet,
   ConfirmAddAttribute,
   ConfirmReplaceAttribute,
   ConfirmRemoveAttribute,
+  ConfirmRemoveAttributeSet
 }
