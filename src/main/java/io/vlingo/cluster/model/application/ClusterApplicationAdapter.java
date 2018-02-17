@@ -93,6 +93,10 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
   }
 
   @Override
+  public void informAttributeSetRemoved(final String attributeSetName) {
+  }
+
+  @Override
   public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
   }
 }
