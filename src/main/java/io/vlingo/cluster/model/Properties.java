@@ -29,9 +29,7 @@ public final class Properties {
     final java.util.Properties properties = new java.util.Properties();
 
     try {
-      final InputStream inputStream = Properties.class.getResourceAsStream(propertiesFile);
-      System.out.println("PROPERTIES: " + inputStream);
-      properties.load(inputStream);
+      properties.load(Properties.class.getResourceAsStream(propertiesFile));
     } catch (IOException e) {
       throw new IllegalStateException("Must provide properties file on classpath: " + propertiesFile);
     }

@@ -10,7 +10,5 @@ package io.vlingo.cluster.model.application;
 import io.vlingo.actors.Actor;
 
 public abstract class ClusterApplicationActor extends Actor {
-  protected ClusterApplicationActor() {
-    secure();
-  }
+  protected ClusterApplicationActor() { }
 }
