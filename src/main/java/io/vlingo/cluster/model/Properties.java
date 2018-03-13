@@ -8,6 +8,7 @@
 package io.vlingo.cluster.model;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,9 @@ public final class Properties {
     final java.util.Properties properties = new java.util.Properties();
 
     try {
-      properties.load(Properties.class.getResourceAsStream(propertiesFile));
+      final InputStream inputStream = Properties.class.getResourceAsStream(propertiesFile);
+      System.out.println("PROPERTIES: " + inputStream);
+      properties.load(inputStream);
     } catch (IOException e) {
       throw new IllegalStateException("Must provide properties file on classpath: " + propertiesFile);
     }
@@ -105,6 +108,16 @@ public final class Properties {
     }
 
     return classname;
+  }
+  
+  public final String clusterApplicationStageName() {
+    final String name = getString("cluster.app.stage", "");
+
+    if (name.length() == 0) {
+      throw new IllegalStateException("Must assign a cluster app stage name in properties file.");
+    }
+
+    return name;
   }
   
   public long clusterAttributesRedistributionInterval() {

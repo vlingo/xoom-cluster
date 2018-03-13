@@ -11,6 +11,7 @@ import java.util.Collection;
 
 import io.vlingo.actors.Actor;
 import io.vlingo.actors.Definition;
+import io.vlingo.actors.Stage;
 import io.vlingo.actors.Startable;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.actors.World;
@@ -26,7 +27,10 @@ public interface ClusterApplication extends Startable, Stoppable {
     final Class<? extends Actor> clusterApplicationActor =
             Properties.instance.clusterApplicationClass();
     
-    return world.actorFor(Definition.has(
+    final Stage applicationStage =
+            world.stageNamed(Properties.instance.clusterApplicationStageName());
+    
+    return applicationStage.actorFor(Definition.has(
             clusterApplicationActor, Definition.parameters(node), "cluster-application"),
             ClusterApplication.class);
   }
