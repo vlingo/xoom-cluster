@@ -8,7 +8,6 @@
 package io.vlingo.cluster.model;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,9 +116,14 @@ public final class Properties {
 
     return name;
   }
-  
+
   public long clusterAttributesRedistributionInterval() {
     final int interval = getInteger("cluster.attributes.redistribution.interval", 1000);
+    return interval;
+  }
+  
+  public int clusterAttributesRedistributionRetries() {
+    final int interval = getInteger("cluster.attributes.redistribution.retries", 10);
     return interval;
   }
   
