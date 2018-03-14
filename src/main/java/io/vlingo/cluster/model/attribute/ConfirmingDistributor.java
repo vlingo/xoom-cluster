@@ -41,7 +41,7 @@ public final class ConfirmingDistributor {
     this.node = node;
     this.outbound = outbound;
     this.allOtherNodes = configuration.allOtherNodes(node.id());
-    this.confirmables = new Confirmables(allOtherNodes);
+    this.confirmables = new Confirmables(node, allOtherNodes);
   }
 
   void acknowledgeConfirmation(final String trackingId, final Node node) {
@@ -167,11 +167,13 @@ public final class ConfirmingDistributor {
 
   void redistributeUnconfirmed() {
     for (final Confirmable confirmable : confirmables.allRedistributable()) {
-      logger.log("REDIST ATTR: " + confirmable);
-      outbound.application(ApplicationSays.from(
-              node.id(), node.name(),
-              confirmable.message().toPayload()),
-              confirmable.unconfirmedNodes());
+      if (confirmable.hasUnconfirmedNodes()) {
+        logger.log("REDIST ATTR: " + confirmable);
+        outbound.application(ApplicationSays.from(
+                node.id(), node.name(),
+                confirmable.message().toPayload()),
+                confirmable.unconfirmedNodes());
+      }
     }
   }
 

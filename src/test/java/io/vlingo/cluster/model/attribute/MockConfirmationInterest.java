@@ -8,15 +8,18 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
+import io.vlingo.wire.node.Id;
 
 public class MockConfirmationInterest implements ConfirmationInterest {
+  public short nodeId;
   public String attributeName;
   public String attributeSetName;
   public int confirmed;
   public ApplicationMessageType type;
   
   @Override
-  public void confirm(final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
+  public void confirm(final Id confirmingNodeId, final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
+    this.nodeId = confirmingNodeId.value();
     this.attributeSetName = attributeSetName;
     this.attributeName = attributeName;
     this.type = type;

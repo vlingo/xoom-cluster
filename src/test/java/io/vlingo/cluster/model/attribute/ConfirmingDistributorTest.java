@@ -10,10 +10,8 @@ package io.vlingo.cluster.model.attribute;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
@@ -54,16 +52,11 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     final String tackingId = trackingIds.iterator().next();
     
-    final Collection<Node> nodes = confirmingDistributor.unconfirmedNodesFor(tackingId);
-    
-    assertEquals(2, nodes.size());
-    
-    final List<Node> list = new ArrayList<>(nodes);
-    
-    confirmingDistributor.acknowledgeConfirmation(tackingId, list.get(0));
-    assertEquals(1, nodes.size());
-    confirmingDistributor.acknowledgeConfirmation(tackingId, list.get(1));
-    assertEquals(0, nodes.size());
+    assertEquals(2, confirmingDistributor.unconfirmedNodesFor(tackingId).size());
+    confirmingDistributor.acknowledgeConfirmation(tackingId, confirmingDistributor.unconfirmedNodesFor(tackingId).iterator().next());
+    assertEquals(1, confirmingDistributor.unconfirmedNodesFor(tackingId).size());
+    confirmingDistributor.acknowledgeConfirmation(tackingId, confirmingDistributor.unconfirmedNodesFor(tackingId).iterator().next());
+    assertEquals(0, confirmingDistributor.unconfirmedNodesFor(tackingId).size());
   }
 
   @Test

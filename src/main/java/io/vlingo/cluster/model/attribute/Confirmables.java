@@ -9,7 +9,9 @@ package io.vlingo.cluster.model.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessage;
@@ -18,8 +20,10 @@ import io.vlingo.wire.node.Node;
 final class Confirmables {
   private final Collection<Node> allOtherNodes;
   private final List<Confirmable> expectedConfirmables;
+  private final Node node;
 
-  Confirmables(final Collection<Node> allOtherNodes) {
+  Confirmables(final Node node, final Collection<Node> allOtherNodes) {
+    this.node = node;
     this.allOtherNodes = allOtherNodes;
     this.expectedConfirmables = new ArrayList<>();
   }
@@ -66,32 +70,43 @@ final class Confirmables {
   }
 
   Confirmable unconfirmedFor(final ApplicationMessage message, final Collection<Node> nodes) {
+    if (nodes.contains(node)) {
+      new Exception().printStackTrace();
+    }
     final Confirmable confirmable = new Confirmable(message, nodes);
     expectedConfirmables.add(confirmable);
     return confirmable;
   }
 
   static final class Confirmable {
+    static final int TotalRetries = Properties.instance.clusterAttributesRedistributionRetries();
     static final Confirmable NoConfirmable = new Confirmable();
     
-    private final ApplicationMessage message;
-    private final List<Node> unconfirmedNodes;
     private final long createdOn;
+    private final ApplicationMessage message;
     private final String trackingId;
+    private Map<Node, Integer> unconfirmedNodes;
     
     Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
       this.message = message;
-      this.unconfirmedNodes = new ArrayList<>();
-      this.unconfirmedNodes.addAll(allOtherNodes);
+      this.unconfirmedNodes = allUnconfirmedFor(allOtherNodes);
       this.createdOn = System.currentTimeMillis();
       this.trackingId = message.trackingId;
     }
 
     private Confirmable() {
       this.message = null;
-      this.unconfirmedNodes = new ArrayList<>(0);
+      this.unconfirmedNodes = new HashMap<>(0);
       this.createdOn = 0L;
       this.trackingId = "";
+    }
+
+    private Map<Node, Integer> allUnconfirmedFor(final Collection<Node> allOtherNodes) {
+      final Map<Node, Integer> allUnconfirmed = new HashMap<>(allOtherNodes.size());
+      for (final Node node : allOtherNodes) {
+        allUnconfirmed.put(node, 0);
+      }
+      return allUnconfirmed;
     }
 
     void confirm(final Node node) {
@@ -108,11 +123,24 @@ final class Confirmables {
 
     boolean isRedistributableAsOf() {
       final long targetTime = createdOn + Properties.instance.clusterAttributesRedistributionInterval();
-      return targetTime < System.currentTimeMillis();
+      if (targetTime < System.currentTimeMillis()) {
+        final Map<Node, Integer> allUnconfirmed = new HashMap<>(unconfirmedNodes.size());
+        
+        for (final Node node : unconfirmedNodes.keySet()) {
+          final int tries = unconfirmedNodes.get(node) + 1;
+          if (tries <= TotalRetries) {
+            allUnconfirmed.put(node, tries);
+          }
+        }
+        unconfirmedNodes = allUnconfirmed;
+        
+        return true;
+      }
+      return false;
     }
 
     Collection<Node> unconfirmedNodes() {
-      return unconfirmedNodes;
+      return unconfirmedNodes.keySet();
     }
     
     @Override

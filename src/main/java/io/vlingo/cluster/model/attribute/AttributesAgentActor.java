@@ -25,6 +25,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   private final Configuration configuration;
   private final ConfirmationInterest confirmationInterest;
   private final ConfirmingDistributor confirmingDistributor;
+  private final Node node;
   private final RemoteAttributeRequestHandler remoteRequestHandler;
   private final AttributeSetRepository repository;
   
@@ -43,6 +44,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final Configuration configuration,
           final ConfirmationInterest confirmationInterest) {
     
+    this.node = node;
     this.configuration = configuration;
     this.confirmationInterest = confirmationInterest;
     this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, configuration);
@@ -144,8 +146,10 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   //=========================================
 
   @Override
-  public void synchronize(final Node node) {
-    confirmingDistributor.synchronizeTo(repository.all(), node);
+  public void synchronize(final Node nodeToSynchronize) {
+    if (!node.equals(nodeToSynchronize)) {
+      confirmingDistributor.synchronizeTo(repository.all(), nodeToSynchronize);
+    }
   }
 
 
@@ -181,7 +185,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       case ConfirmRemoveAttribute:
       case ConfirmRemoveAttributeSet:
         confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), configuration.nodeMatching(request.sourceNodeId()));
-        confirmationInterest.confirm(request.attributeSetName(), request.attributeName(), type);
+        confirmationInterest.confirm(request.sourceNodeId(), request.attributeSetName(), request.attributeName(), type);
         break;
       default:
         configuration.logger().log("Received unknown message: " + type.name());

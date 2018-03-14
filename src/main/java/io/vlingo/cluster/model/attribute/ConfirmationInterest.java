@@ -8,7 +8,8 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
+import io.vlingo.wire.node.Id;
 
 public interface ConfirmationInterest {
-  void confirm(final String attributeSetName, final String attributeName, final ApplicationMessageType type);
+  void confirm(final Id confirmingNodeId, final String attributeSetName, final String attributeName, final ApplicationMessageType type);
 }

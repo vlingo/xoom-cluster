@@ -25,6 +25,11 @@ public abstract class ApplicationMessage {
     this.trackingId = trackingId;
     this.type = type;
   }
-  
+
   public abstract String toPayload();
+
+  @Override
+  public String toString() {
+    return toPayload();
+  }
 }

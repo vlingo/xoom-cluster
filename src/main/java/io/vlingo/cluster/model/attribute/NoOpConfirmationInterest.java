@@ -10,6 +10,7 @@ package io.vlingo.cluster.model.attribute;
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
 
 public class NoOpConfirmationInterest implements ConfirmationInterest {
   private final Logger logger;
@@ -19,7 +20,7 @@ public class NoOpConfirmationInterest implements ConfirmationInterest {
   }
 
   @Override
-  public void confirm(final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
-    logger.log("ATTR CONFIRMATION: SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
+  public void confirm(final Id confirmingNodeId, final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
+    logger.log("ATTR CONFIRMATION: NODE: " + confirmingNodeId.value() + " SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
   }
 }
