@@ -1,18 +1,19 @@
 # vlingo-cluster
-This is a very early stage release of the **vlingo/platform**.
 
-The **vlingo/cluster** supports scaling a JVM tool or application with fault tolerance.
+The **vlingo/cluster** supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. It has undergone much refinement and has reached version 0.3.0, but is actually near minimum-viable feature completion.
 
-To build and test, make sure that you also build and install the following in the order shown:
+To build and test, simply use the **vlingo-platform** build.:
 
 ```
-console:vlingo-common> mvn install
+console:vlingo> git clone [all available repositories]
 
-console:vlingo-actors> mvn install
+console:vlingo> cd vlingo-platform
 
-console:vlingo-wire> mvn install
+console:vlingo-platform> mvn install
 
-console:vlingo-cluster> mvn install
+console:vlingo-platform> cd ../vlingo-cluster
+
+console:vlingo-cluster>
 ```
 
 The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
