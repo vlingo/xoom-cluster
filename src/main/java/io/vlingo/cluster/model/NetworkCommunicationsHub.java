@@ -106,7 +106,5 @@ class NetworkCommunicationsHub implements CommunicationsHub {
 
   @Override
   public void start() {
-    operationalInboundStream.start();
-    applicationInboundStream.start();
   }
 }
