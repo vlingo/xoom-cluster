@@ -20,7 +20,7 @@ import io.vlingo.cluster.model.message.Split;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.wire.fdx.outbound.Outbound;
 import io.vlingo.wire.message.ByteBufferPool;
-import io.vlingo.wire.message.ByteBufferPool.PooledByteBuffer;
+import io.vlingo.wire.message.ConsumerByteBuffer;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -55,10 +55,10 @@ public class OperationalOutboundStreamActor extends Actor
 
   @Override
   public void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes) {
-    final PooledByteBuffer buffer = outbound.pooledByteBuffer();
-    MessageConverters.messageToBytes(says, buffer.buffer());
+    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    MessageConverters.messageToBytes(says, buffer.asByteBuffer());
 
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.buffer());
+    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
     
     outbound.broadcast(unconfirmedNodes, outbound.bytesFrom(message, buffer));
   }
@@ -67,10 +67,10 @@ public class OperationalOutboundStreamActor extends Actor
   public void directory(final Set<Node> allLiveNodes) {
     final Directory dir = new Directory(node.id(), node.name(), allLiveNodes);
 
-    final PooledByteBuffer buffer = outbound.pooledByteBuffer();
-    MessageConverters.messageToBytes(dir, buffer.buffer());
+    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    MessageConverters.messageToBytes(dir, buffer.asByteBuffer());
 
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.buffer());
+    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
     
     outbound.broadcast(outbound.bytesFrom(message, buffer));
   }
@@ -124,10 +124,10 @@ public class OperationalOutboundStreamActor extends Actor
   public void split(final Id targetNodeId, final Id currentLeaderId) {
     final Split split = new Split(currentLeaderId);
 
-    final PooledByteBuffer buffer = outbound.pooledByteBuffer();
-    MessageConverters.messageToBytes(split, buffer.buffer());
+    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    MessageConverters.messageToBytes(split, buffer.asByteBuffer());
 
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.buffer());
+    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
 
     outbound.sendTo(outbound.bytesFrom(message, buffer), targetNodeId);
   }

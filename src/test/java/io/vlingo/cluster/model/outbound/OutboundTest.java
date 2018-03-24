@@ -21,7 +21,7 @@ import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.wire.fdx.outbound.Outbound;
 import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.ByteBufferPool;
-import io.vlingo.wire.message.ByteBufferPool.PooledByteBuffer;
+import io.vlingo.wire.message.ConsumerByteBuffer;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
@@ -58,23 +58,20 @@ public class OutboundTest extends AbstractClusterTest {
   
   @Test
   public void testBroadcastPooledByteBuffer() throws Exception {
-    final PooledByteBuffer buffer1 = pool.access();
-    final PooledByteBuffer buffer2 = pool.access();
-    final PooledByteBuffer buffer3 = pool.access();
+    final ConsumerByteBuffer buffer1 = pool.access();
+    final ConsumerByteBuffer buffer2 = pool.access();
+    final ConsumerByteBuffer buffer3 = pool.access();
     
-    final RawMessage rawMessage1 = buildRawMessageBuffer(buffer1.buffer(), Message1);
-    bytesFrom(rawMessage1, buffer1.buffer());
-    final RawMessage rawMessage2 = buildRawMessageBuffer(buffer2.buffer(), Message2);
-    bytesFrom(rawMessage2, buffer2.buffer());
-    final RawMessage rawMessage3 = buildRawMessageBuffer(buffer3.buffer(), Message3);
-    bytesFrom(rawMessage3, buffer3.buffer());
+    final RawMessage rawMessage1 = buildRawMessageBuffer(buffer1.asByteBuffer(), Message1);
+    bytesFrom(rawMessage1, buffer1.asByteBuffer());
+    final RawMessage rawMessage2 = buildRawMessageBuffer(buffer2.asByteBuffer(), Message2);
+    bytesFrom(rawMessage2, buffer2.asByteBuffer());
+    final RawMessage rawMessage3 = buildRawMessageBuffer(buffer3.asByteBuffer(), Message3);
+    bytesFrom(rawMessage3, buffer3.asByteBuffer());
 
     outbound.broadcast(buffer1);
-    buffer1.release();
     outbound.broadcast(buffer2);
-    buffer2.release();
     outbound.broadcast(buffer3);
-    buffer3.release();
     
     for (final ManagedOutboundChannel channel : channelProvider.allOtherNodeChannels().values()) {
       final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channel;
@@ -129,25 +126,22 @@ public class OutboundTest extends AbstractClusterTest {
   
   @Test
   public void testSendToPooledByteBuffer() throws Exception {
-    final PooledByteBuffer buffer1 = pool.access();
-    final PooledByteBuffer buffer2 = pool.access();
-    final PooledByteBuffer buffer3 = pool.access();
+    final ConsumerByteBuffer buffer1 = pool.access();
+    final ConsumerByteBuffer buffer2 = pool.access();
+    final ConsumerByteBuffer buffer3 = pool.access();
     
-    final RawMessage rawMessage1 = buildRawMessageBuffer(buffer1.buffer(), Message1);
-    bytesFrom(rawMessage1, buffer1.buffer());
-    final RawMessage rawMessage2 = buildRawMessageBuffer(buffer2.buffer(), Message2);
-    bytesFrom(rawMessage2, buffer2.buffer());
-    final RawMessage rawMessage3 = buildRawMessageBuffer(buffer3.buffer(), Message3);
-    bytesFrom(rawMessage3, buffer3.buffer());
+    final RawMessage rawMessage1 = buildRawMessageBuffer(buffer1.asByteBuffer(), Message1);
+    bytesFrom(rawMessage1, buffer1.asByteBuffer());
+    final RawMessage rawMessage2 = buildRawMessageBuffer(buffer2.asByteBuffer(), Message2);
+    bytesFrom(rawMessage2, buffer2.asByteBuffer());
+    final RawMessage rawMessage3 = buildRawMessageBuffer(buffer3.asByteBuffer(), Message3);
+    bytesFrom(rawMessage3, buffer3.asByteBuffer());
     
     final Id id3 = Id.of(3);
     
     outbound.sendTo(buffer1, id3);
-    buffer1.release();
     outbound.sendTo(buffer2, id3);
-    buffer2.release();
     outbound.sendTo(buffer3, id3);
-    buffer3.release();
     
     final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(Id.of(3));
     
