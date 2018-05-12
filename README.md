@@ -51,6 +51,16 @@ Try it out. As the cluster changes states all of the activity and health conditi
 
 Have fun!
 
+### Bintray
+```xml
+<dependency>
+  <groupId>io.vlingo</groupId>
+  <artifactId>vlingo-cluster</artifactId>
+  <version>0.3.1</version>
+  <type>pom</type>
+</dependency>
+```
+
 License (See LICENSE file for full license)
 -------------------------------------------
 Copyright © 2012-2018 Vaughn Vernon. All rights reserved.
