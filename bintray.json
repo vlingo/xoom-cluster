@@ -1,0 +1,31 @@
+{
+    "package": {
+        "name": "vlingo-cluster",
+        "repo": "vlingo-cluster",
+        "subject": "vlingo-platform",
+        "desc": "Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.",
+        "website_url": "https://github.com/vlingo/vlingo-cluster",
+        "issue_tracker_url": "https://github.com/vlingo/vlingo-cluster/issues",
+        "vcs_url": "https://github.com/vlingo/vlingo-cluster.git",
+        "licenses": ["MPL-2.0"],
+        "public_download_numbers": true,
+        "public_stats": true
+    },
+
+    "version": {
+        "name": "master",
+        "gpgSign": false
+    },
+
+    "files": [
+        {
+            "includePattern": "target/(.*).jar",
+            "uploadPattern": "/vlingo-cluster/master/$1.jar",
+            "matrixParams": {
+                "override": 1
+            }
+        }
+    ],
+
+    "publish": true
+}
