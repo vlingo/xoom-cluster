@@ -20,11 +20,12 @@
     "files": [
         {
             "includePattern": "target/(.*).jar",
-            "uploadPattern": "/vlingo-cluster/master/$1.jar",
+            "uploadPattern": "/io/vlingo/vlingo-cluster/0.3.1/$1.jar",
             "matrixParams": {
                 "override": 1
             }
-        }
+        },
+        {"includePattern": "pom.xml", "uploadPattern": "/io/vlingo/vlingo-cluster/0.3.1/vlingo-cluster-0.3.1.pom"}
     ],
 
     "publish": true
