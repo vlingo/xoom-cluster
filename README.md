@@ -1,6 +1,6 @@
 # vlingo-cluster
 
-[![Build Status](https://travis-ci.org/vlingo/vlingo-cluster.svg?branch=master)](https://travis-ci.org/vlingo/vlingo-cluster)
+[![Build Status](https://travis-ci.org/vlingo/vlingo-cluster.svg?branch=master)](https://travis-ci.org/vlingo/vlingo-cluster) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion)
 
 The **vlingo/cluster** supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. It has undergone much refinement and has reached version 0.3.0, but is actually near minimum-viable feature completion.
 
