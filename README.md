@@ -2,7 +2,36 @@
 
 [![Build Status](https://travis-ci.org/vlingo/vlingo-cluster.svg?branch=master)](https://travis-ci.org/vlingo/vlingo-cluster) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion)
 
-The **vlingo/cluster** supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. It has undergone much refinement and has reached version 0.3.0, but is actually near minimum-viable feature completion.
+### Bintray
+
+```xml
+  <repositories>
+    <repository>
+      <id>jcenter</id>
+      <url>https://jcenter.bintray.com/</url>
+    </repository>
+  </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>io.vlingo</groupId>
+      <artifactId>vlingo-cluster</artifactId>
+      <version>0.3.3</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+```
+
+```gradle
+dependencies {
+    compile 'io.vlingo:vlingo-cluster:0.3.3'
+}
+
+repositories {
+    jcenter()
+}
+```
+
+The **vlingo/cluster** supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. It has undergone much refinement and has reached version 0.3.3, and is very near minimum-viable feature completion.
 
 To build and test, simply use the **vlingo-platform** build.:
 
@@ -50,16 +79,6 @@ Try it out. As the cluster changes states all of the activity and health conditi
 ```
 
 Have fun!
-
-### Bintray
-```xml
-<dependency>
-  <groupId>io.vlingo</groupId>
-  <artifactId>vlingo-cluster</artifactId>
-  <version>0.3.1</version>
-  <type>pom</type>
-</dependency>
-```
 
 License (See LICENSE file for full license)
 -------------------------------------------
