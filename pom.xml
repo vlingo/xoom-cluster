@@ -81,17 +81,17 @@
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-common</artifactId>
-      <version>0.3.1</version>
+      <version>0.3.3</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-actors</artifactId>
-      <version>0.4.4</version>
+      <version>0.4.5</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-wire</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
     </dependency>
   </dependencies>
 
