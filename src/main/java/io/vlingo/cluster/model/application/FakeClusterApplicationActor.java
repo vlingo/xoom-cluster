@@ -10,14 +10,14 @@ package io.vlingo.cluster.model.application;
 import java.util.Collection;
 
 import io.vlingo.cluster.model.attribute.Attribute;
-import io.vlingo.cluster.model.attribute.AttributesClient;
+import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
-  private AttributesClient client;
+  private AttributesProtocol client;
   private final Node localNode;
   
   public FakeClusterApplicationActor(final Node localNode) {
@@ -98,7 +98,7 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void informAttributesClient(final AttributesClient client) {
+  public void informAttributesClient(final AttributesProtocol client) {
      logger().log("APP: Attributes Client received.");
     this.client = client;
     if (localNode.id().value() == 1) {

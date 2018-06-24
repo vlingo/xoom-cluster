@@ -16,7 +16,7 @@ import io.vlingo.actors.Startable;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.Properties;
-import io.vlingo.cluster.model.attribute.AttributesClient;
+import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -48,7 +48,7 @@ public interface ClusterApplication extends Startable, Stoppable {
   void informQuorumAchieved();
   void informQuorumLost();
 
-  void informAttributesClient(final AttributesClient client);
+  void informAttributesClient(final AttributesProtocol client);
   void informAttributeSetCreated(final String attributeSetName);
   void informAttributeAdded(final String attributeSetName, final String attributeName);
   void informAttributeRemoved(final String attributeSetName, final String attributeName);

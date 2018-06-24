@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class AttributesClient implements AttributesCommands, AttributesQueries {
+public final class AttributesClient implements AttributesProtocol {
   final AttributesAgent agent;
   final AttributeSetRepository repository;
   

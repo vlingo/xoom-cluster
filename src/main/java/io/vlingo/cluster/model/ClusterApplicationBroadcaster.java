@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.cluster.model.attribute.AttributesClient;
+import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -88,7 +88,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public void informAttributesClient(final AttributesClient client) {
+  public void informAttributesClient(final AttributesProtocol client) {
     broadcast((app) -> app.informAttributesClient(client));
   }
 

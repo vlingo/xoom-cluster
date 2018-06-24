@@ -10,14 +10,14 @@ package io.vlingo.cluster.model;
 import java.util.Collection;
 
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.cluster.model.attribute.AttributesClient;
+import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public class MockClusterApplication implements ClusterApplication {
-  public AttributesClient attributesClient;
+  public AttributesProtocol attributesClient;
   
   public int allLiveNodes;
   public int handleApplicationMessage;
@@ -112,7 +112,7 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void informAttributesClient(AttributesClient client) {
+  public void informAttributesClient(AttributesProtocol client) {
     attributesClient = client;
     ++informAttributesClient;
   }
