@@ -7,8 +7,6 @@
 
 package io.vlingo.cluster.model.attribute;
 
-import java.util.Collection;
-
 import io.vlingo.actors.Actor;
 import io.vlingo.actors.Scheduled;
 import io.vlingo.cluster.model.Properties;
@@ -22,6 +20,7 @@ import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;
 
 public class AttributesAgentActor extends Actor implements AttributesAgent {
+  private final AttributesClient client;
   private final Configuration configuration;
   private final ConfirmationInterest confirmationInterest;
   private final ConfirmingDistributor confirmingDistributor;
@@ -47,11 +46,12 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     this.node = node;
     this.configuration = configuration;
     this.confirmationInterest = confirmationInterest;
+    this.client = AttributesClient.with(selfAs(AttributesAgent.class));
     this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, configuration);
     this.repository = new AttributeSetRepository();
     this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, configuration, repository);
     
-    application.informAttributesClient(AttributesClient.with(selfAs(AttributesAgent.class), repository));
+    application.informAttributesClient(this.client);
     
     stage().scheduler()
       .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance.clusterAttributesRedistributionInterval());
@@ -69,6 +69,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       final AttributeSet newSet = AttributeSet.named(attributeSetName);
       newSet.addIfAbsent(Attribute.from(attributeName, value));
       repository.add(newSet);
+      client.syncWith(newSet);
       confirmingDistributor.distributeCreate(newSet);
     } else {
       final TrackedAttribute newlyTracked = set.addIfAbsent(Attribute.from(attributeName, value));
@@ -76,21 +77,6 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
         confirmingDistributor.distribute(set, newlyTracked, ApplicationMessageType.AddAttribute);
       }
     }
-  }
-
-  @Override
-  public Collection<AttributeSet> all() {
-    return null;  // unsupported here; see AttributesClient
-  }
-
-  @Override
-  public Collection<Attribute<?>> allOf(final String attributeSetName) {
-    return null;  // unsupported here; see AttributesClient
-  }
-
-  @Override
-  public <T> Attribute<T> attribute(final String attributeSetName, final String attributeName) {
-    return null; // unsupported here; see AttributesClient
   }
 
   @Override
@@ -107,6 +93,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final TrackedAttribute newlyTracked = set.replace(tracked.replacingValueWith(other));
           
           if (newlyTracked.isPresent()) {
+            client.syncWith(set);
             confirmingDistributor.distribute(set, newlyTracked, ApplicationMessageType.ReplaceAttribute);
           }
         }
@@ -125,6 +112,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
         final TrackedAttribute untracked = set.remove(tracked.attribute);
         
         if (untracked.isPresent()) {
+          client.syncWith(set);
           confirmingDistributor.distribute(set, untracked, ApplicationMessageType.RemoveAttribute);
         }
       }
@@ -137,6 +125,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     
     if (!set.isNone()) {
       repository.remove(attributeSetName);
+      client.syncWithout(set);
       confirmingDistributor.distributeRemove(set);
     }    
   }
@@ -212,8 +201,6 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     if (isStopped()) {
       return;
     }
-
-    AttributesClient.stop();
     
     repository.removeAll();
     

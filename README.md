@@ -15,7 +15,7 @@
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-cluster</artifactId>
-      <version>0.3.3</version>
+      <version>0.3.4</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -23,7 +23,7 @@
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-cluster:0.3.3'
+    compile 'io.vlingo:vlingo-cluster:0.3.4'
 }
 
 repositories {

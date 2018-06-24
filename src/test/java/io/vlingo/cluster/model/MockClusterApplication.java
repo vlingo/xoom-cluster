@@ -17,6 +17,8 @@ import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public class MockClusterApplication implements ClusterApplication {
+  public AttributesClient attributesClient;
+  
   public int allLiveNodes;
   public int handleApplicationMessage;
   
@@ -111,6 +113,7 @@ public class MockClusterApplication implements ClusterApplication {
 
   @Override
   public void informAttributesClient(AttributesClient client) {
+    attributesClient = client;
     ++informAttributesClient;
   }
 

@@ -43,6 +43,16 @@ public final class AttributeSet {
     return find(name);
   }
   
+  public AttributeSet copy(final AttributeSet source) {
+    final AttributeSet target = named(source.name);
+    
+    for (final TrackedAttribute attribute : source.attributes.values()) {
+      target.attributes.put(attribute.id, attribute);
+    }
+    
+    return target;
+  }
+  
   public boolean isDefined() {
     return !isNone();
   }

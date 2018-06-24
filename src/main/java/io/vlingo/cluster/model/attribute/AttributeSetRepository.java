@@ -38,4 +38,8 @@ public final class AttributeSetRepository {
   void removeAll() {
     all.clear();
   }
+
+  void syncWith(final AttributeSet set) {
+    all.put(set.name, set);
+  }
 }

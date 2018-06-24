@@ -72,7 +72,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(2, mock(channel2).writes.size());
     assertEquals(2, mock(channel3).writes.size());
     
-    assertEquals("test-value", AttributesClient.instance().attribute("test-set", "test-attr").value);
+    assertEquals("test-value", application.attributesClient.attribute("test-set", "test-attr").value);
   }
 
   @Test
@@ -93,7 +93,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(3, mock(channel2).writes.size());
     assertEquals(3, mock(channel3).writes.size());
     
-    assertEquals("test-value2", AttributesClient.instance().attribute("test-set", "test-attr").value);
+    assertEquals("test-value2", application.attributesClient.attribute("test-set", "test-attr").value);
   }
 
   @Test
@@ -114,7 +114,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(3, mock(channel2).writes.size());
     assertEquals(3, mock(channel3).writes.size());
     
-    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr"));
+    assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr"));
   }
 
   @Test
@@ -139,11 +139,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     assertEquals(8, mock(channel2).writes.size());
     assertEquals(8, mock(channel3).writes.size());
     
-    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr1"));
-    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr2"));
-    assertEquals(Attribute.Undefined, AttributesClient.instance().attribute("test-set", "test-attr3"));
-    assertEquals(0, AttributesClient.instance().allOf("test-set").size());
-    assertEquals(0, AttributesClient.instance().all().size());
+    assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr1"));
+    assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr2"));
+    assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr3"));
+    assertEquals(0, application.attributesClient.allOf("test-set").size());
+    assertEquals(0, application.attributesClient.all().size());
   }
 
   @Test

@@ -18,7 +18,7 @@ import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
 
-public interface AttributesAgent extends AttributesProtocol, NodeSynchronizer, InboundStreamInterest, Scheduled, Stoppable {
+public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, InboundStreamInterest, Scheduled, Stoppable {
   public static AttributesAgent instance(
           final Stage stage,
           final Node node,

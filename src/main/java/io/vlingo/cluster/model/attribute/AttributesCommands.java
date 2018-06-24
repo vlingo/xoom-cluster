@@ -7,13 +7,8 @@
 
 package io.vlingo.cluster.model.attribute;
 
-import java.util.Collection;
-
-public interface AttributesProtocol {
+public interface AttributesCommands {
   <T> void add(final String attributeSetName, final String attributeName, final T value);
-  Collection<AttributeSet> all();
-  Collection<Attribute<?>> allOf(final String attributeSetName);
-  <T> Attribute<T> attribute(final String attributeSetName, final String attributeName);
   <T> void replace(final String attributeSetName, final String attributeName, final T value);
   <T> void remove(final String attributeSetName, final String attributeName);
   <T> void removeAll(final String attributeSetName);

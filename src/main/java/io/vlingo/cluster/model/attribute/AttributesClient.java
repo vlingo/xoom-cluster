@@ -11,25 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public final class AttributesClient implements AttributesProtocol {
-  private static AttributesClient client;
-  
+public final class AttributesClient implements AttributesCommands, AttributesQueries {
   final AttributesAgent agent;
   final AttributeSetRepository repository;
   
-  public static AttributesClient instance() {
-    return client;
-  }
-  
-  static void stop() {
-    client = null;
-  }
-
-  static synchronized AttributesClient with(final AttributesAgent agent, final AttributeSetRepository repository) {
-    if (client == null) {
-      client = new AttributesClient(agent, repository);
-    }
-    return client;
+  static synchronized AttributesClient with(final AttributesAgent agent) {
+    return new AttributesClient(agent, new AttributeSetRepository());
   }
 
   @Override
@@ -87,6 +74,14 @@ public final class AttributesClient implements AttributesProtocol {
   @Override
   public String toString() {
     return "AttributesClient[agent=" + agent + " repository=" + repository + "]";
+  }
+
+  void syncWith(final AttributeSet set) {
+    repository.syncWith(set.copy(set));
+  }
+
+  void syncWithout(final AttributeSet set) {
+    repository.remove(set.name);
   }
 
   private AttributesClient(final AttributesAgent agent, final AttributeSetRepository repository) {
