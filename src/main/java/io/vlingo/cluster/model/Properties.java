@@ -55,16 +55,6 @@ public final class Properties {
     return probeInterval;
   }
 
-  public long applicationInboundProbeTimeout() {
-    final int probeTimeout = getInteger("cluster.app.incoming.probe.timeout", 5);
-
-    if (probeTimeout <= 0) {
-      throw new IllegalStateException("Must assign an application (app) incoming probe timeout in properties file.");
-    }
-
-    return probeTimeout;
-  }
-
   public int applicationOutgoingPooledBuffers() {
     final int pooledBuffers = getInteger("cluster.app.outgoing.pooled.buffers", 50);
 
@@ -193,16 +183,6 @@ public final class Properties {
     }
 
     return probeInterval;
-  }
-
-  public long operationalInboundProbeTimeout() {
-    final int probeTimeout = getInteger("cluster.op.incoming.probe.timeout", 5);
-
-    if (probeTimeout <= 0) {
-      throw new IllegalStateException("Must assign an operational (op) incoming probe timeout in properties file.");
-    }
-
-    return probeTimeout;
   }
 
   public int operationalOutgoingPooledBuffers() {
