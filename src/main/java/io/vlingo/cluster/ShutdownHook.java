@@ -9,7 +9,7 @@ package io.vlingo.cluster;
 
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.ClusterSnapshotControl;
-import io.vlingo.common.fn.Tuple2;
+import io.vlingo.common.Tuple2;
 
 final class ShutdownHook {
   private final Tuple2<ClusterSnapshotControl, Logger> control;

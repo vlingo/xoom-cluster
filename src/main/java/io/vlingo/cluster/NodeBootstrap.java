@@ -11,7 +11,7 @@ import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.Cluster;
 import io.vlingo.cluster.model.ClusterSnapshotControl;
 import io.vlingo.cluster.model.Properties;
-import io.vlingo.common.fn.Tuple2;
+import io.vlingo.common.Tuple2;
 
 public final class NodeBootstrap {
   private static NodeBootstrap instance;

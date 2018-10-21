@@ -9,7 +9,7 @@ package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Logger;
 import io.vlingo.actors.World;
-import io.vlingo.common.fn.Tuple2;
+import io.vlingo.common.Tuple2;
 
 public class Cluster {
   

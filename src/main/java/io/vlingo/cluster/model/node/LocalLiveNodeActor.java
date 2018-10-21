@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import io.vlingo.actors.Actor;
-import io.vlingo.actors.Cancellable;
-import io.vlingo.actors.Scheduled;
 import io.vlingo.cluster.model.ClusterSnapshot;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.message.CheckHealth;
@@ -29,6 +27,8 @@ import io.vlingo.cluster.model.message.Pulse;
 import io.vlingo.cluster.model.message.Split;
 import io.vlingo.cluster.model.message.Vote;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.common.Cancellable;
+import io.vlingo.common.Scheduled;
 import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;

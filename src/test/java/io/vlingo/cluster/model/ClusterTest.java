@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.actors.Logger;
-import io.vlingo.common.fn.Tuple2;
+import io.vlingo.common.Tuple2;
 
 public class ClusterTest extends AbstractClusterTest {
 

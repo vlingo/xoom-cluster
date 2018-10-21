@@ -8,12 +8,12 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.actors.Actor;
-import io.vlingo.actors.Scheduled;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.attribute.message.ReceivedAttributeMessage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.common.Scheduled;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
 import io.vlingo.wire.node.Configuration;

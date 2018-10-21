@@ -8,11 +8,11 @@
 package io.vlingo.cluster.model.attribute;
 
 import io.vlingo.actors.Definition;
-import io.vlingo.actors.Scheduled;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.common.Scheduled;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;

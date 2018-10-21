@@ -11,7 +11,7 @@ import io.vlingo.actors.Definition;
 import io.vlingo.actors.Logger;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.application.ClusterApplication;
-import io.vlingo.common.fn.Tuple2;
+import io.vlingo.common.Tuple2;
 
 public interface ClusterSnapshotControl {
   public static Tuple2<ClusterSnapshotControl, Logger> instance(final World world, final String name) {
