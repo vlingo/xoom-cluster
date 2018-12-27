@@ -8,6 +8,7 @@
 package io.vlingo.cluster.model;
 
 import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
@@ -19,27 +20,27 @@ import io.vlingo.wire.node.Node;
 public class MockClusterApplication implements ClusterApplication {
   public AttributesProtocol attributesClient;
   
-  public int allLiveNodes;
-  public int handleApplicationMessage;
+  public AtomicInteger allLiveNodes = new AtomicInteger(0);
+  public AtomicInteger handleApplicationMessage = new AtomicInteger(0);
   
-  public int informLeaderElected;
-  public int informLeaderLost;
-  public int informLocalNodeShutDown;
-  public int informLocalNodeStarted;
-  public int informNodeIsHealthy;
-  public int informNodeJoinedCluster;
-  public int informNodeLeftCluster;
-  public int informQuorumAchieved;
-  public int informQuorumLost;
+  public AtomicInteger informLeaderElected = new AtomicInteger(0);
+  public AtomicInteger informLeaderLost = new AtomicInteger(0);
+  public AtomicInteger informLocalNodeShutDown = new AtomicInteger(0);
+  public AtomicInteger informLocalNodeStarted = new AtomicInteger(0);
+  public AtomicInteger informNodeIsHealthy = new AtomicInteger(0);
+  public AtomicInteger informNodeJoinedCluster = new AtomicInteger(0);
+  public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
+  public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
+  public AtomicInteger informQuorumLost = new AtomicInteger(0);
   
-  public int informAttributesClient;
-  public int informAttributeSetCreated;
-  public int informAttributeAdded;
-  public int informAttributeRemoved;
-  public int informAttributeReplaced;
-  public int informAttributeSetRemoved;
+  public AtomicInteger informAttributesClient = new AtomicInteger(0);
+  public AtomicInteger informAttributeSetCreated = new AtomicInteger(0);
+  public AtomicInteger informAttributeAdded = new AtomicInteger(0);
+  public AtomicInteger informAttributeRemoved = new AtomicInteger(0);
+  public AtomicInteger informAttributeReplaced = new AtomicInteger(0);
+  public AtomicInteger informAttributeSetRemoved = new AtomicInteger(0);
   
-  public int stop;
+  public AtomicInteger stop = new AtomicInteger(0);
   
   @Override
   public void start() {
@@ -53,92 +54,92 @@ public class MockClusterApplication implements ClusterApplication {
 
   @Override
   public void stop() {
-    ++stop;
+    stop.incrementAndGet();
   }
 
   @Override
   public void handleApplicationMessage(RawMessage message, ApplicationOutboundStream responder) {
-    ++handleApplicationMessage;
+    handleApplicationMessage.incrementAndGet();
   }
 
   @Override
   public void informAllLiveNodes(Collection<Node> liveNodes, boolean isHealthyCluster) {
-    ++allLiveNodes;
+    allLiveNodes.incrementAndGet();
   }
 
   @Override
   public void informLeaderElected(Id leaderId, boolean isHealthyCluster, boolean isLocalNodeLeading) {
-    ++informLeaderElected;
+    informLeaderElected.incrementAndGet();
   }
 
   @Override
   public void informLeaderLost(Id lostLeaderId, boolean isHealthyCluster) {
-    ++informLeaderLost;
+    informLeaderLost.incrementAndGet();
   }
 
   @Override
   public void informLocalNodeShutDown(Id nodeId) {
-    ++informLocalNodeShutDown;
+    informLocalNodeShutDown.incrementAndGet();
   }
 
   @Override
   public void informLocalNodeStarted(Id nodeId) {
-    ++informLocalNodeStarted;
+    informLocalNodeStarted.incrementAndGet();
   }
 
   @Override
   public void informNodeIsHealthy(Id nodeId, boolean isHealthyCluster) {
-    ++informNodeIsHealthy;
+    informNodeIsHealthy.incrementAndGet();
   }
 
   @Override
   public void informNodeJoinedCluster(Id nodeId, boolean isHealthyCluster) {
-    ++informNodeJoinedCluster;
+    informNodeJoinedCluster.incrementAndGet();
   }
 
   @Override
   public void informNodeLeftCluster(Id nodeId, boolean isHealthyCluster) {
-    ++informNodeLeftCluster;
+    informNodeLeftCluster.incrementAndGet();
   }
 
   @Override
   public void informQuorumAchieved() {
-    ++informQuorumAchieved;
+    informQuorumAchieved.incrementAndGet();
   }
 
   @Override
   public void informQuorumLost() {
-    ++informQuorumLost;
+    informQuorumLost.incrementAndGet();
   }
 
   @Override
   public void informAttributesClient(AttributesProtocol client) {
     attributesClient = client;
-    ++informAttributesClient;
+    informAttributesClient.incrementAndGet();
   }
 
   @Override
   public void informAttributeSetCreated(String attributeSetName) {
-    ++informAttributeSetCreated;
+    informAttributeSetCreated.incrementAndGet();
   }
 
   @Override
   public void informAttributeAdded(String attributeSetName, String attributeName) {
-    ++informAttributeAdded;
+    informAttributeAdded.incrementAndGet();
   }
 
   @Override
   public void informAttributeRemoved(String attributeSetName, String attributeName) {
-    ++informAttributeRemoved;
+    informAttributeRemoved.incrementAndGet();
   }
 
   @Override
   public void informAttributeSetRemoved(String attributeSetName) {
-    ++informAttributeSetRemoved;
+    informAttributeSetRemoved.incrementAndGet();
   }
 
   @Override
   public void informAttributeReplaced(String attributeSetName, String attributeName) {
-    ++informAttributeReplaced;
+    informAttributeReplaced.incrementAndGet();
   }
 }
