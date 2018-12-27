@@ -43,10 +43,10 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     ClusterSnapshot.class);
     
     snapshot.actor().quorumAchieved();
-    assertEquals(1, application.informQuorumAchieved);
+    assertEquals(1, application.informQuorumAchieved.get());
     
     snapshot.actor().quorumLost();
-    assertEquals(1, application.informQuorumLost);
+    assertEquals(1, application.informQuorumLost.get());
   }
 
   @Test
@@ -57,7 +57,7 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     ClusterSnapshotControl.class);
     
     control.actor().shutDown();
-    assertEquals(1, application.stop);
+    assertEquals(1, application.stop.get());
   }
 
   @Test
@@ -68,11 +68,11 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     InboundStreamInterest.class);
 
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, opMessage);
-    assertEquals(0, application.handleApplicationMessage);
+    assertEquals(0, application.handleApplicationMessage.get());
     
     final RawMessage appMessage = RawMessage.from(1, 0, "app-test");
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.APP, appMessage);
-    assertEquals(1, application.handleApplicationMessage);
+    assertEquals(1, application.handleApplicationMessage.get());
   }
 
   @Test
@@ -83,13 +83,13 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
                     RegistryInterest.class);
     
     registryInterest.actor().informAllLiveNodes(config.allNodes(), true);
-    assertEquals(1, application.allLiveNodes);
+    assertEquals(1, application.allLiveNodes.get());
     
     registryInterest.actor().informConfirmedByLeader(config.nodeMatching(Id.of(1)), true);
-    assertEquals(1, application.informNodeIsHealthy);
+    assertEquals(1, application.informNodeIsHealthy.get());
     
     registryInterest.actor().informCurrentLeader(config.nodeMatching(Id.of(3)), true);
-    assertEquals(1, application.informLeaderElected);
+    assertEquals(1, application.informLeaderElected.get());
     
     List<Node> nodes = new ArrayList<>();
     nodes.add(config.nodeMatching(Id.of(3)));
@@ -97,23 +97,23 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
     mergeResult.add(new MergeResult(config.nodeMatching(Id.of(2)), true));
     mergeResult.add(new MergeResult(config.nodeMatching(Id.of(1)), false));
     registryInterest.actor().informMergedAllDirectoryEntries(nodes, mergeResult, true);
-    assertEquals(1, application.informNodeJoinedCluster);
-    assertEquals(1, application.informNodeLeftCluster);
+    assertEquals(1, application.informNodeJoinedCluster.get());
+    assertEquals(1, application.informNodeLeftCluster.get());
     
     registryInterest.actor().informLeaderDemoted(config.nodeMatching(Id.of(2)), true);
-    assertEquals(1, application.informLeaderLost);
+    assertEquals(1, application.informLeaderLost.get());
     
     registryInterest.actor().informNodeIsHealthy(config.nodeMatching(Id.of(2)), true);
-    assertEquals(2, application.informNodeIsHealthy);
+    assertEquals(2, application.informNodeIsHealthy.get());
     
     registryInterest.actor().informNodeJoinedCluster(config.nodeMatching(Id.of(2)), true);
-    assertEquals(2, application.informNodeJoinedCluster);
+    assertEquals(2, application.informNodeJoinedCluster.get());
     
     registryInterest.actor().informNodeLeftCluster(config.nodeMatching(Id.of(2)), true);
-    assertEquals(2, application.informNodeLeftCluster);
+    assertEquals(2, application.informNodeLeftCluster.get());
     
     registryInterest.actor().informNodeTimedOut(config.nodeMatching(Id.of(2)), true);
-    assertEquals(3, application.informNodeLeftCluster);
+    assertEquals(3, application.informNodeLeftCluster.get());
   }
   
   @Before
