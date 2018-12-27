@@ -19,8 +19,8 @@ import org.junit.Test;
 
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.testkit.TestActor;
+import io.vlingo.actors.testkit.TestUntil;
 import io.vlingo.cluster.model.AbstractClusterTest;
-import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.cluster.model.message.OperationalMessage;
 import io.vlingo.cluster.model.outbound.MockManagedOutboundChannel;
@@ -65,7 +65,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     singleChannelMessageAssertions();
     
-    assertEquals(1, application.informAttributeSetCreated);
+    assertEquals(1, application.informAttributeSetCreated.get());
   }
 
   @Test
@@ -95,7 +95,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     singleChannelMessageAssertions();
     
-    assertEquals(1, application.informAttributeSetRemoved);
+    assertEquals(1, application.informAttributeSetRemoved.get());
   }
 
   @Test
@@ -104,8 +104,8 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     multiChannelMessageAssertions(2);
     
-    assertEquals(1, application.informAttributeSetCreated);
-    assertEquals(1, application.informAttributeAdded);
+    assertEquals(1, application.informAttributeSetCreated.get());
+    assertEquals(1, application.informAttributeAdded.get());
   }
 
   @Test
@@ -114,7 +114,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     multiChannelMessageAssertions(1);
     
-    assertEquals(1, application.informAttributeAdded);
+    assertEquals(1, application.informAttributeAdded.get());
   }
 
   @Test
@@ -123,7 +123,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     multiChannelMessageAssertions(1);
     
-    assertEquals(1, application.informAttributeReplaced);
+    assertEquals(1, application.informAttributeReplaced.get());
   }
 
   @Test
@@ -132,7 +132,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     multiChannelMessageAssertions(1);
     
-    assertEquals(1, application.informAttributeRemoved);
+    assertEquals(1, application.informAttributeRemoved.get());
   }
 
   @Test
@@ -141,28 +141,32 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     multiChannelMessageAssertions(2);
     
-    assertEquals(1, application.informAttributeSetRemoved);
-    assertEquals(1, application.informAttributeRemoved);
+    assertEquals(1, application.informAttributeSetRemoved.get());
+    assertEquals(1, application.informAttributeRemoved.get());
   }
 
   @Test
   public void testRedistributeUnconfirmed() {
+    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
+
+    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
+    mock(channel2).until = TestUntil.happenings(1);
+
+    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
+    mock(channel3).until = TestUntil.happenings(1);
+    
     final AttributeSet set = AttributeSet.named("test-set");
     final TrackedAttribute tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
     
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
     
-    this.delay = 100L + Properties.instance.clusterAttributesRedistributionInterval();
-    pause();
-    
     confirmingDistributor.redistributeUnconfirmed();
-    
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    
-    assertEquals(2, mock(channel2).writes.size());
-    assertEquals(2, mock(channel3).writes.size());
+
+    mock(channel2).until.completes();
+    assertEquals(1, mock(channel2).writes.size());
+
+    mock(channel3).until.completes();
+    assertEquals(1, mock(channel3).writes.size());
   }
   
   @Before
