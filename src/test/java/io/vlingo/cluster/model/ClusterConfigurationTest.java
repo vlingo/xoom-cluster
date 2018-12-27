@@ -17,11 +17,7 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import io.vlingo.wire.node.Address;
-import io.vlingo.wire.node.AddressType;
-import io.vlingo.wire.node.Host;
 import io.vlingo.wire.node.Id;
-import io.vlingo.wire.node.Name;
 import io.vlingo.wire.node.Node;
 
 public class ClusterConfigurationTest extends AbstractClusterTest {
@@ -32,9 +28,9 @@ public class ClusterConfigurationTest extends AbstractClusterTest {
     assertEquals(3, all.size());
 
     final Set<Node> nodes = new HashSet<>();
-    nodes.add(new Node(Id.of(1), new Name("node1"), Address.from(Host.of("localhost"), 37371, AddressType.OP), Address.from(Host.of("localhost"), 37372, AddressType.APP)));
-    nodes.add(new Node(Id.of(2), new Name("node2"), Address.from(Host.of("localhost"), 37373, AddressType.OP), Address.from(Host.of("localhost"), 37374, AddressType.APP)));
-    nodes.add(new Node(Id.of(3), new Name("node3"), Address.from(Host.of("localhost"), 37375, AddressType.OP), Address.from(Host.of("localhost"), 37376, AddressType.APP)));
+    nodes.add(nextNodeWith(1));
+    nodes.add(nextNodeWith(2));
+    nodes.add(nextNodeWith(3));
 
     for (final Node node : all) {
       nodes.remove(node);
