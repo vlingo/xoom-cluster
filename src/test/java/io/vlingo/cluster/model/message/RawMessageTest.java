@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 
 import org.junit.Test;
 
+import io.vlingo.cluster.model.AbstractClusterTest;
 import io.vlingo.wire.message.ByteBufferAllocator;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
@@ -23,12 +24,12 @@ import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Name;
 import io.vlingo.wire.node.Node;
 
-public class RawMessageTest {
+public class RawMessageTest extends AbstractClusterTest {
 
   @Test
   public void testKnownSizeWithAppend() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
+    final Node node1 = nextNodeWith(1);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -45,7 +46,7 @@ public class RawMessageTest {
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
+    final Node node1 = nextNodeWith(1);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
@@ -64,7 +65,7 @@ public class RawMessageTest {
   @Test
   public void testCopyBytesTo() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
+    final Node node1 = nextNodeWith(1);
     final Join join = new Join(node1);
     MessageConverters.messageToBytes(join, buffer);
     buffer.flip();
