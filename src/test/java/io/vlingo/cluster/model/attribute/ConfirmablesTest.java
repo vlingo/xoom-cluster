@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.cluster.model.AbstractClusterTest;
-import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.cluster.model.attribute.message.AddAttribute;
 import io.vlingo.wire.node.Id;
@@ -68,9 +67,7 @@ public class ConfirmablesTest extends AbstractClusterTest {
     assertFalse(consumables.confirmableOf(addAttribute.trackingId).isRedistributableAsOf());
     assertEquals(0, consumables.allRedistributable().size());
     
-    this.delay = 100L + Properties.instance.clusterAttributesRedistributionInterval();
-    pause();
-    
+    while (consumables.allRedistributable().size() != 1);
     assertEquals(1, consumables.allRedistributable().size());
   }
 
