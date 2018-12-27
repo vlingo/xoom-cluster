@@ -31,7 +31,6 @@ public class ClusterSnapshotActor
   private final CommunicationsHub communicationsHub;
   private final LocalLiveNode localLiveNode;
   private final Node localNode;
-  private boolean stopping;
 
   public ClusterSnapshotActor(final ClusterSnapshotInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
     this.broadcaster = new ClusterApplicationBroadcaster(logger());
@@ -88,24 +87,17 @@ public class ClusterSnapshotActor
   @Override
   public void shutDown() {
     if (isStopped()) {
-      return;
-    }
-
-    if (stopping && !stage().world().isTerminated()) {
       Cluster.reset();
-      communicationsHub.close();
-      stop();
-      stage().world().terminate();
       return;
     }
 
     localLiveNode.stop();
     clusterApplication.stop();
     attributesAgent.stop();
-    
-    // one more time to fully stop myself and terminate world (see above)
-    stopping = true;
-    selfAs(ClusterSnapshotControl.class).shutDown();
+    communicationsHub.close();
+    stop();
+    stage().world().terminate();
+    Cluster.reset();
   }
 
 
