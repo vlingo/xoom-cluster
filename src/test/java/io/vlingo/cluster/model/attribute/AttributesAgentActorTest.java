@@ -158,7 +158,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(1, mock(channel1).writes.size());
-    assertEquals(1, application.informAttributeSetCreated);
+    assertEquals(1, application.informAttributeSetCreated.get());
   }
 
   @Test
@@ -173,7 +173,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(1, mock(channel1).writes.size());
-    assertEquals(1, application.informAttributeAdded);
+    assertEquals(1, application.informAttributeAdded.get());
   }
 
   @Test
@@ -190,8 +190,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(2, mock(channel1).writes.size());
-    assertEquals(1, application.informAttributeAdded);
-    assertEquals(1, application.informAttributeReplaced);
+    assertEquals(1, application.informAttributeAdded.get());
+    assertEquals(1, application.informAttributeReplaced.get());
   }
 
   @Test
@@ -208,8 +208,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(2, mock(channel1).writes.size());
-    assertEquals(1, application.informAttributeAdded);
-    assertEquals(1, application.informAttributeRemoved);
+    assertEquals(1, application.informAttributeAdded.get());
+    assertEquals(1, application.informAttributeRemoved.get());
   }
 
   @Test
@@ -226,8 +226,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
     assertEquals(2, mock(channel1).writes.size());
-    assertEquals(1, application.informAttributeSetCreated);
-    assertEquals(1, application.informAttributeSetRemoved);
+    assertEquals(1, application.informAttributeSetCreated.get());
+    assertEquals(1, application.informAttributeSetRemoved.get());
   }
 
   @Test
