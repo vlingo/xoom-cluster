@@ -11,6 +11,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vlingo.actors.testkit.TestUntil;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -18,6 +19,7 @@ import io.vlingo.wire.node.Id;
 public class MockManagedOutboundChannel implements ManagedOutboundChannel {
   public final Id id;
   public final List<String> writes = new ArrayList<>();
+  public TestUntil until = TestUntil.happenings(0);
   
   public MockManagedOutboundChannel(final Id id) {
     this.id = id;
@@ -33,6 +35,7 @@ public class MockManagedOutboundChannel implements ManagedOutboundChannel {
     final RawMessage message = RawMessage.readFromWithHeader(buffer);
     final String textMessage = message.asTextMessage();
     writes.add(textMessage);
-    //System.out.println("====================\nOUTBOUND [" + writes.size() + "]: " + textMessage + "\n--------------------");
+    until.happened();
+    //System.out.println("====================\nOUTBOUND " + id + ": WRITES(" + writes.size() + "): MESSAGE: " + textMessage + "\n--------------------");
   }
 }
