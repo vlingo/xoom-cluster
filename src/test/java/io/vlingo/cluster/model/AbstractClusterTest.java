@@ -9,16 +9,25 @@ package io.vlingo.cluster.model;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.actors.testkit.TestWorld;
+import io.vlingo.wire.node.Host;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Name;
+import io.vlingo.wire.node.Node;
 
 public abstract class AbstractClusterTest extends AbstractMessageTool {
+  private static final Random random = new Random();
+  private static AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
+
   protected MockClusterApplication application;
   protected ClusterConfiguration config;
-  protected long delay = 100L;
   protected Properties properties;
   protected TestWorld testWorld;
   
@@ -28,10 +37,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     assertNotNull(config);
     assertNotNull(properties);
     assertNotNull(testWorld);
-  }
-  
-  protected void pause() {
-    try { Thread.sleep(delay); } catch (Exception e) { }
   }
   
   @Before
@@ -59,20 +64,20 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("node.node1.id", "1");
     properties.setProperty("node.node1.name", "node1");
     properties.setProperty("node.node1.host", "localhost");
-    properties.setProperty("node.node1.op.port", "37371");
-    properties.setProperty("node.node1.app.port", "37372");
+    properties.setProperty("node.node1.op.port", nextPortToUseString());
+    properties.setProperty("node.node1.app.port", nextPortToUseString());
     
     properties.setProperty("node.node2.id", "2");
     properties.setProperty("node.node2.name", "node2");
     properties.setProperty("node.node2.host", "localhost");
-    properties.setProperty("node.node2.op.port", "37373");
-    properties.setProperty("node.node2.app.port", "37374");
+    properties.setProperty("node.node2.op.port", nextPortToUseString());
+    properties.setProperty("node.node2.app.port", nextPortToUseString());
     
     properties.setProperty("node.node3.id", "3");
     properties.setProperty("node.node3.name", "node3");
     properties.setProperty("node.node3.host", "localhost");
-    properties.setProperty("node.node3.op.port", "37375");
-    properties.setProperty("node.node3.app.port", "37376");
+    properties.setProperty("node.node3.op.port", nextPortToUseString());
+    properties.setProperty("node.node3.app.port", nextPortToUseString());
     
     this.properties = Properties.openForTest(properties);
     
@@ -86,5 +91,19 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
   @After
   public void tearDown() {
     testWorld.terminate();
+    Cluster.reset();
+  }
+
+
+  private int nextPortToUse() {
+    return PORT_TO_USE.getAndIncrement();
+  }
+
+  private String nextPortToUseString() {
+    return "" + nextPortToUse();
+  }
+
+  protected Node nextNodeWith(final int nodeNumber) {
+    return Node.with(Id.of(nodeNumber), Name.of("node"+nodeNumber), Host.of("localhost"), nextPortToUse(), nextPortToUse());
   }
 }
