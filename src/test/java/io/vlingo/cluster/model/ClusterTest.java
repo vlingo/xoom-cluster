@@ -11,31 +11,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.actors.Logger;
 import io.vlingo.common.Tuple2;
 
 public class ClusterTest extends AbstractClusterTest {
+  private static int count = 0;
 
   @Test
   public void testClusterSnapshotControl() throws Exception {
     final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor("node1");
-    
-    pause();
-    assertNotNull(control);
-    assertTrue(Cluster.isRunning());
-    
-    control._1.shutDown();
-    pause();
-    assertFalse(Cluster.isRunning());
-  }
 
-  @Before
-  public void setUp() throws Exception {
-    super.setUp();
-    
-    this.delay = 500L;
+    assertNotNull(control);
+
+    ++count;
+    control._2.log("======== ClusterTest#testClusterSnapshotControl(" + count + ") ========");
+
+    assertTrue(Cluster.isRunning(true, 10));
+
+    control._1.shutDown();
+
+    assertFalse(Cluster.isRunning(false, 10));
   }
 }
