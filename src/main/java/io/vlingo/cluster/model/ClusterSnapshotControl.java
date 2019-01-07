@@ -25,7 +25,7 @@ public interface ClusterSnapshotControl {
                     Definition.parameters(initializer, application),
                     "cluster-snapshot-" + name);
     
-    ClusterSnapshotControl control = world.actorFor(definition, ClusterSnapshotControl.class);
+    ClusterSnapshotControl control = world.actorFor(ClusterSnapshotControl.class, definition);
     
     return Tuple2.from(control, world.defaultLogger());
   }

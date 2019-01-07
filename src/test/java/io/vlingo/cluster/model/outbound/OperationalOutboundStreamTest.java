@@ -179,10 +179,10 @@ public class OperationalOutboundStreamTest extends AbstractClusterTest {
     
     outboundStream =
             world.actorFor(
+                    OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
-                            Definition.parameters(localNode, channelProvider, pool)),
-                    OperationalOutboundStream.class);
+                            Definition.parameters(localNode, channelProvider, pool)));
   }
   
   @After

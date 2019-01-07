@@ -30,9 +30,9 @@ public interface ClusterApplication extends Startable, Stoppable {
     final Stage applicationStage =
             world.stageNamed(Properties.instance.clusterApplicationStageName());
     
-    return applicationStage.actorFor(Definition.has(
-            clusterApplicationActor, Definition.parameters(node), "cluster-application"),
-            ClusterApplication.class);
+    return applicationStage.actorFor(
+            ClusterApplication.class,
+            Definition.has(clusterApplicationActor, Definition.parameters(node), "cluster-application"));
   }
 
   void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder);

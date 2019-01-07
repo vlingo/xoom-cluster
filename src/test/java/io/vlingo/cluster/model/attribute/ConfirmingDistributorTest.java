@@ -187,10 +187,10 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     
     outboundStream =
             testWorld.actorFor(
+                    OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
-                            Definition.parameters(localNode, channelProvider, pool)),
-                    OperationalOutboundStream.class);
+                            Definition.parameters(localNode, channelProvider, pool)));
     
     confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), config);
   }

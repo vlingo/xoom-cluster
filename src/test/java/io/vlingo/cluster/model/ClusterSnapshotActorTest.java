@@ -39,8 +39,8 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void testClusterSnapshot() throws Exception {
     final TestActor<ClusterSnapshot> snapshot =
             testWorld.actorFor(
-                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
-                    ClusterSnapshot.class);
+                    ClusterSnapshot.class,
+                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)));
     
     snapshot.actor().quorumAchieved();
     assertEquals(1, application.informQuorumAchieved.get());
@@ -53,8 +53,8 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void testClusterSnapshotControl() throws Exception {
     final TestActor<ClusterSnapshotControl> control =
             testWorld.actorFor(
-                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
-                    ClusterSnapshotControl.class);
+                    ClusterSnapshotControl.class,
+                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)));
     
     control.actor().shutDown();
     assertEquals(1, application.stop.get());
@@ -64,8 +64,8 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void testInboundStreamInterest() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)));
 
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, opMessage);
     assertEquals(0, application.handleApplicationMessage.get());
@@ -79,8 +79,8 @@ public class ClusterSnapshotActorTest extends AbstractClusterTest {
   public void testRegistryInterest() throws Exception {
     final TestActor<RegistryInterest> registryInterest =
             testWorld.actorFor(
-                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)),
-                    RegistryInterest.class);
+                    RegistryInterest.class,
+                    Definition.has(ClusterSnapshotActor.class, Definition.parameters(intializer, application)));
     
     registryInterest.actor().informAllLiveNodes(config.allNodes(), true);
     assertEquals(1, application.allLiveNodes.get());

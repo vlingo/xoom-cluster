@@ -33,7 +33,7 @@ public interface OperationalOutboundStream extends Stoppable {
                     "cluster-operational-outbound-stream");
     
     final OperationalOutboundStream operationalOutboundStream =
-            stage.actorFor(definition, OperationalOutboundStream.class);
+            stage.actorFor(OperationalOutboundStream.class, definition);
     
     return operationalOutboundStream;
   }

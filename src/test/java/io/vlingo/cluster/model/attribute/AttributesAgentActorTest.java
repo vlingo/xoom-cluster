@@ -59,10 +59,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testAdd() {
     TestActor<AttributesAgent> agent =
             testWorld.actorFor(
+                    AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    AttributesAgent.class);
+                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     agent.actor().add("test-set", "test-attr", "test-value");
     
@@ -79,10 +79,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testReplace() {
     TestActor<AttributesAgent> agent =
             testWorld.actorFor(
+                    AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    AttributesAgent.class);
+                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().replace("test-set", "test-attr", "test-value2");
@@ -100,10 +100,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testRemove() {
     TestActor<AttributesAgent> agent =
             testWorld.actorFor(
+                    AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    AttributesAgent.class);
+                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().remove("test-set", "test-attr");
@@ -121,10 +121,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testRemoveAttributeSet() {
     TestActor<AttributesAgent> agent =
             testWorld.actorFor(
+                    AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    AttributesAgent.class);
+                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     agent.actor().add("test-set", "test-attr1", "test-value1");
     agent.actor().add("test-set", "test-attr2", "test-value2");
@@ -150,8 +150,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testInboundStreamInterestCreateAttributeSet() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
 
     final ApplicationMessage message = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
@@ -165,8 +165,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testInboundStreamInterestAddAttribute() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
 
     final ApplicationMessage message = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
@@ -180,8 +180,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testInboundStreamInterestReplaceAttribute() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
@@ -198,8 +198,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testInboundStreamInterestRemoveAttribute() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
@@ -216,8 +216,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testInboundStreamInterestRemoveAttributeSet() throws Exception {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
 
     final ApplicationMessage createMessage = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), createMessage));
@@ -234,8 +234,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testConfirmCreateAttributeSet() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     final ApplicationMessage confirm = new ConfirmCreateAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -248,8 +248,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testConfirmAddAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmAddAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -263,8 +263,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testConfirmReplaceAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmReplaceAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -278,8 +278,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testConfirmRemoveAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmRemoveAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -293,8 +293,8 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   public void testConfirmRemoveAttributeSet() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)),
-                    InboundStreamInterest.class);
+                    InboundStreamInterest.class,
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
     
     final ApplicationMessage confirm = new ConfirmRemoveAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -323,10 +323,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     
     outboundStream =
             testWorld.actorFor(
+                    OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
-                            Definition.parameters(localNode, channelProvider, pool)),
-                    OperationalOutboundStream.class);
+                            Definition.parameters(localNode, channelProvider, pool)));
   }
 
   private RawMessage rawMessageFor(final Id id, final Name name, final ApplicationMessage message) {
