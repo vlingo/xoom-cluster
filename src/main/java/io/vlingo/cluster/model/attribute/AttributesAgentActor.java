@@ -36,6 +36,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     this(node, application, outbound, configuration, new NoOpConfirmationInterest(configuration));
   }
 
+  @SuppressWarnings("unchecked")
   public AttributesAgentActor(
           final Node node,
           final ClusterApplication application,
@@ -188,7 +189,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   //=========================================
 
   @Override
-  public void intervalSignal(final Scheduled scheduled, final Object data) {
+  public void intervalSignal(final Scheduled<Object> scheduled, final Object data) {
     confirmingDistributor.redistributeUnconfirmed();
   }
 
