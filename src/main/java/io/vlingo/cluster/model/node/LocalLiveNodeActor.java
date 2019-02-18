@@ -35,7 +35,7 @@ import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
 
 public class LocalLiveNodeActor extends Actor
-  implements LocalLiveNode, LiveNodeMaintainer, Scheduled {
+  implements LocalLiveNode, LiveNodeMaintainer, Scheduled<Object> {
 
   private final Cancellable cancellable;
   private final CheckHealth checkHealth;
@@ -228,7 +228,7 @@ public class LocalLiveNodeActor extends Actor
   //===================================
 
   @Override
-  public void intervalSignal(final Scheduled scheduled, final Object data) {
+  public void intervalSignal(final Scheduled<Object> scheduled, final Object data) {
     registry.cleanTimedOutNodes();
     
     selfLocalLiveNode.handle(checkHealth);
@@ -368,6 +368,7 @@ public class LocalLiveNodeActor extends Actor
     }
   }
 
+  @SuppressWarnings("unchecked")
   private Cancellable scheduleHealthCheck() {
     return
       stage()
