@@ -32,17 +32,21 @@ public class ClusterConfiguration implements Configuration {
     initializeConfiguredNodeEntries(Properties.instance);
   }
 
+  @Override
   public Set<Node> allNodes() {
     return Collections.unmodifiableSet(nodes);
   }
 
   @Override
   public Set<Node> allNodesOf(final Collection<Id> ids) {
+    // Currently not used
+
     final Set<Node> nodes = new TreeSet<Node>();
-    
+
     return nodes;
   }
 
+  @Override
   public final Set<Node> allOtherNodes(Id nodeId) {
     final Set<Node> except = new TreeSet<Node>();
 
@@ -58,14 +62,15 @@ public class ClusterConfiguration implements Configuration {
   @Override
   public Set<Id> allOtherNodesId(final Id nodeId) {
     final Set<Id> ids = new TreeSet<Id>();
-    
+
     for (final Node node : allOtherNodes(nodeId)) {
       ids.add(node.id());
     }
-    
+
     return ids;
   }
 
+  @Override
   public final Set<Node> allGreaterNodes(Id nodeId) {
     final Set<Node> greater = new TreeSet<Node>();
 
@@ -78,6 +83,7 @@ public class ClusterConfiguration implements Configuration {
     return greater;
   }
 
+  @Override
   public Set<String> allNodeNames() {
     final Set<String> names = new TreeSet<String>();
 
@@ -88,6 +94,7 @@ public class ClusterConfiguration implements Configuration {
     return names;
   }
 
+  @Override
   public final Node nodeMatching(Id nodeId) {
     for (final Node node : nodes) {
       if (node.id().equals(nodeId)) {
@@ -97,6 +104,7 @@ public class ClusterConfiguration implements Configuration {
     return Node.NO_NODE;
   }
 
+  @Override
   public final Id greatestNodeId() {
     Id greatest = Id.NO_ID;
 
@@ -109,6 +117,7 @@ public class ClusterConfiguration implements Configuration {
     return greatest;
   }
 
+  @Override
   public boolean hasNode(Id nodeId) {
     for (final Node node : nodes) {
       if (node.id().equals(nodeId)) {
@@ -118,6 +127,7 @@ public class ClusterConfiguration implements Configuration {
     return false;
   }
 
+  @Override
   public int totalNodes() {
     return nodes.size();
   }
