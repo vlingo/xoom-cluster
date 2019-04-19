@@ -36,6 +36,7 @@ public class ClusterConfiguration implements Configuration {
     return Collections.unmodifiableSet(nodes);
   }
 
+  // Currently not used
   @Override
   public Set<Node> allNodesOf(final Collection<Id> ids) {
     final Set<Node> nodes = new TreeSet<Node>();

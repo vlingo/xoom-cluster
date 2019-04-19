@@ -18,7 +18,7 @@ public class RemoveAttributeSet extends ApplicationMessage {
   }
   
   public RemoveAttributeSet(final Node node, final AttributeSet set) {
-    super(NoCorrelatingMessageId, ApplicationMessageType.RemoveAttributeSet, trackingId(node, ApplicationMessageType.CreateAttributeSet, set.name));
+    super(NoCorrelatingMessageId, ApplicationMessageType.RemoveAttributeSet, trackingId(node, ApplicationMessageType.RemoveAttributeSet, set.name));
     
     this.attributeSetName = set.name;
   }
