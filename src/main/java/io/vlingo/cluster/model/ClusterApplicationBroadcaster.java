@@ -122,6 +122,10 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
+  public void conclude() {
+  }
+
+  @Override
   public boolean isStopped() {
     return false;
   }
@@ -133,7 +137,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   @Override
   public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
   }
-  
+
   private void broadcast(final Consumer<ClusterApplication> inform) {
     for (final ClusterApplication app : clusterApplications) {
       try {
