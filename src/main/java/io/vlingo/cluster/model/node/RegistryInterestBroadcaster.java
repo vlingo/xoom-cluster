@@ -7,13 +7,13 @@
 
 package io.vlingo.cluster.model.node;
 
+import io.vlingo.actors.Logger;
+import io.vlingo.wire.node.Node;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
-
-import io.vlingo.actors.Logger;
-import io.vlingo.wire.node.Node;
 
 public class RegistryInterestBroadcaster implements RegistryInterest {
   private final Logger logger;
@@ -82,7 +82,7 @@ public class RegistryInterestBroadcaster implements RegistryInterest {
       try {
         inform.accept(interest);
       } catch (Exception e) {
-        logger.log("Cannot inform because: " + e.getMessage(), e);
+        logger.error("Cannot inform because: " + e.getMessage(), e);
       }
     }
   }
