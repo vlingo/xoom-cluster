@@ -23,7 +23,7 @@ final class LeaderState extends LiveNodeState {
 
   @Override
   protected void handle(final Directory dir) {
-    logger.log("" + type + " " + node.id() + " DIRECTORY: " + dir);
+    logger.debug("" + type + " " + node.id() + " DIRECTORY: " + dir);
     
     if (dir.id().greaterThan(node.id())) {
       
@@ -34,27 +34,27 @@ final class LeaderState extends LiveNodeState {
       liveNodeMaintainer.mergeAllDirectoryEntries(dir.nodes());
       
     } else {
-      logger.log("Leader must not receive Directory message from follower: '" + dir.id() + "'");
+      logger.warn("Leader must not receive Directory message from follower: '" + dir.id() + "'");
     }
   }
 
   @Override
   protected void handle(final Elect elect) {
-    logger.log("" + type + " " + node.id() + " ELECT: " + elect);
+    logger.debug("" + type + " " + node.id() + " ELECT: " + elect);
     liveNodeMaintainer.voteForLocalNode(elect.id());
   }
 
   @Override
   protected void handle(final Join join) {
-    logger.log("" + type + " " + node.id() + " JOIN: " + join);
+    logger.debug("" + type + " " + node.id() + " JOIN: " + join);
     liveNodeMaintainer.join(join.node());
   }
 
   @Override
   protected void handle(final Leader leader) {
-    logger.log("" + type + " " + node.id() + " LEADER: " + leader);
+    logger.debug("" + type + " " + node.id() + " LEADER: " + leader);
     if (leader.id().equals(node.id())) {
-      logger.log("Leader must not receive Leader message of itself from a follower.");
+      logger.warn("Leader must not receive Leader message of itself from a follower.");
     } else if (leader.id().greaterThan(node.id())) {
       liveNodeMaintainer.overtakeLeadership(leader.id());
     } else {
@@ -64,9 +64,9 @@ final class LeaderState extends LiveNodeState {
 
   @Override
   protected void handle(final Leave leave) {
-    logger.log("" + type + " " + node.id() + " LEAVE: " + leave);
+    logger.debug("" + type + " " + node.id() + " LEAVE: " + leave);
     if (leave.id().equals(node.id())) {
-      logger.log("Leader must not receive Leave message of itself from a follower.");
+      logger.warn("Leader must not receive Leave message of itself from a follower.");
     } else {
       liveNodeMaintainer.dropNode(leave.id());
     }
@@ -74,7 +74,7 @@ final class LeaderState extends LiveNodeState {
 
   @Override
   protected void handle(final Vote vote) {
-    logger.log("" + type + " " + node.id() + " VOTE: " + vote);
+    logger.debug("" + type + " " + node.id() + " VOTE: " + vote);
     liveNodeMaintainer.declareLeadership();
   }
 }

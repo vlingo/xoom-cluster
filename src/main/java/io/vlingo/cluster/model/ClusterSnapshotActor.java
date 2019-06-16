@@ -7,8 +7,6 @@
 
 package io.vlingo.cluster.model;
 
-import java.util.Collection;
-
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesAgent;
@@ -20,6 +18,8 @@ import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.AddressType;
 import io.vlingo.wire.node.Node;
+
+import java.util.Collection;
 
 public class ClusterSnapshotActor
   extends Actor
@@ -122,7 +122,7 @@ public class ClusterSnapshotActor
     } else if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message, communicationsHub.applicationOutboundStream()); // TODO
     } else {
-      logger().log(
+      logger().warn(
               "ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
               addressType +
               " for message: " +

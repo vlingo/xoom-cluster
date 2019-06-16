@@ -7,8 +7,6 @@
 
 package io.vlingo.cluster.model.attribute;
 
-import java.util.Collection;
-
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.Confirmables.Confirmable;
@@ -25,6 +23,8 @@ import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;
+
+import java.util.Collection;
 
 public final class ConfirmingDistributor {
   private final ClusterApplication application;
@@ -168,7 +168,7 @@ public final class ConfirmingDistributor {
   void redistributeUnconfirmed() {
     for (final Confirmable confirmable : confirmables.allRedistributable()) {
       if (confirmable.hasUnconfirmedNodes()) {
-        logger.log("REDIST ATTR: " + confirmable);
+        logger.trace("REDIST ATTR: " + confirmable);
         outbound.application(ApplicationSays.from(
                 node.id(), node.name(),
                 confirmable.message().toPayload()),

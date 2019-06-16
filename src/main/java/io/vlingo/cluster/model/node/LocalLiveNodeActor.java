@@ -7,11 +7,6 @@
 
 package io.vlingo.cluster.model.node;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.ClusterSnapshot;
 import io.vlingo.cluster.model.Properties;
@@ -33,6 +28,11 @@ import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class LocalLiveNodeActor extends Actor
   implements LocalLiveNode, LiveNodeMaintainer, Scheduled<Object> {
@@ -262,7 +262,7 @@ public class LocalLiveNodeActor extends Actor
 
   private void declareFollower() {
     if (state == null || !state.isFollower()) {
-      logger().log("Cluster follower: " + node);
+      logger().info("Cluster follower: " + node);
       
       state = new FollowerState(node, this, logger());
     }
@@ -270,7 +270,7 @@ public class LocalLiveNodeActor extends Actor
 
   private void declareIdle() {
     if (state == null || !state.isIdle()) {
-      logger().log("Cluster idle: " + node);
+      logger().info("Cluster idle: " + node);
       
       state = new IdleState(node, this, logger());
       
@@ -281,7 +281,7 @@ public class LocalLiveNodeActor extends Actor
   }
 
   private void declareLeader() {
-    logger().log("Cluster leader: " + node);
+    logger().info("Cluster leader: " + node);
 
     state = new LeaderState(node, this, logger());
 
@@ -319,7 +319,7 @@ public class LocalLiveNodeActor extends Actor
     watchForQuorumRelinquished();
 
     if (state.noQuorumTracker.hasTimedOut()) {
-      logger().log("No quorum; leaving cluster to become idle node.");
+      logger().warn("No quorum; leaving cluster to become idle node.");
       registry.leave(node.id());
       declareIdle();
     }
