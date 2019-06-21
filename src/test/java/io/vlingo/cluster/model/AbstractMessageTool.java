@@ -7,7 +7,7 @@
 
 package io.vlingo.cluster.model;
 
-import io.vlingo.actors.LoggerProvider;
+import io.vlingo.actors.Logger;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Configuration;
@@ -15,7 +15,7 @@ import io.vlingo.wire.node.Configuration;
 import java.nio.ByteBuffer;
 
 public class AbstractMessageTool {
-  protected Configuration config = new ClusterConfiguration(LoggerProvider.noOpLoggerProvider().logger());
+  protected Configuration config = new ClusterConfiguration(Logger.basicLogger());
   
   public RawMessage buildRawMessageBuffer(final ByteBuffer buffer, final String message) {
     buffer.clear();
