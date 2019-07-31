@@ -11,8 +11,9 @@ import io.vlingo.actors.Stage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.wire.fdx.inbound.InboundStream;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.wire.fdx.inbound.rsocket.RSocketInboundChannelReaderProvider;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
-import io.vlingo.wire.fdx.outbound.ManagedOutboundSocketChannelProvider;
+import io.vlingo.wire.fdx.outbound.rsocket.ManagedOutboundRSocketChannelProvider;
 import io.vlingo.wire.message.ByteBufferPool;
 import io.vlingo.wire.node.AddressType;
 import io.vlingo.wire.node.Configuration;
@@ -21,7 +22,7 @@ import io.vlingo.wire.node.Node;
 class NetworkCommunicationsHub implements CommunicationsHub {
   static final String APP_NAME = "APP";
   static final String OP_NAME = "OP";
-  
+
   private InboundStream applicationInboundStream;
   private ApplicationOutboundStream applicationOutboundStream;
   private InboundStream operationalInboundStream;
@@ -43,40 +44,43 @@ class NetworkCommunicationsHub implements CommunicationsHub {
           final InboundStreamInterest interest,
           final Configuration configuration)
   throws Exception {
-    
+
+    final RSocketInboundChannelReaderProvider channelReaderProvider = new RSocketInboundChannelReaderProvider(
+            Properties.instance.operationalBufferSize(), stage.world().defaultLogger());
+
     this.operationalInboundStream =
             InboundStream.instance(
                     stage,
+                    channelReaderProvider,
                     interest,
                     node.operationalAddress().port(),
                     AddressType.OP,
                     OP_NAME,
-                    Properties.instance.operationalBufferSize(),
                     Properties.instance.operationalInboundProbeInterval());
-    
+
     this.operationalOutboundStream =
             OperationalOutboundStream.instance(
                     stage,
                     node,
-                    new ManagedOutboundSocketChannelProvider(node, AddressType.OP, configuration),
+                    new ManagedOutboundRSocketChannelProvider(node, AddressType.OP, configuration),
                     new ByteBufferPool(
                             Properties.instance.operationalOutgoingPooledBuffers(),
                             Properties.instance.operationalBufferSize()));
-    
+
     this.applicationInboundStream =
             InboundStream.instance(
                     stage,
+                    channelReaderProvider,
                     interest,
                     node.applicationAddress().port(),
                     AddressType.APP,
                     APP_NAME,
-                    Properties.instance.applicationBufferSize(),
                     Properties.instance.applicationInboundProbeInterval());
-    
+
     this.applicationOutboundStream =
             ApplicationOutboundStream.instance(
                     stage,
-                    new ManagedOutboundSocketChannelProvider(node, AddressType.APP, configuration),
+                    new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration),
                     new ByteBufferPool(
                             Properties.instance.applicationOutgoingPooledBuffers(),
                             Properties.instance.applicationBufferSize()));
