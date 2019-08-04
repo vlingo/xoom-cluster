@@ -24,7 +24,7 @@ import java.util.Collection;
 public class ClusterSnapshotActor
   extends Actor
   implements ClusterSnapshot, ClusterSnapshotControl, InboundStreamInterest, RegistryInterest {
-  
+
   private final AttributesAgent attributesAgent;
   private final ClusterApplication clusterApplication;
   private final ClusterApplicationBroadcaster broadcaster;
@@ -40,9 +40,9 @@ public class ClusterSnapshotActor
     this.clusterApplication = clusterApplication;
     this.broadcaster.registerClusterApplication(clusterApplication);
     clusterApplication.start();
-    
+
     initializer.registry().registerRegistryInterest(selfAs(RegistryInterest.class));
-    
+
     this.attributesAgent =
             AttributesAgent.instance(
                     stage(),
@@ -50,7 +50,7 @@ public class ClusterSnapshotActor
                     this.broadcaster,
                     communicationsHub.operationalOutboundStream(),
                     initializer.configuration());
-    
+
     this.localLiveNode =
             LocalLiveNode.instance(
                     stage(),
@@ -61,7 +61,7 @@ public class ClusterSnapshotActor
                     initializer.configuration());
 
     this.localLiveNode.registerNodeSynchronizer(this.attributesAgent);
-    
+
     this.communicationsHub.start();
   }
 
@@ -110,14 +110,18 @@ public class ClusterSnapshotActor
     if (isStopped()) {
       return;
     }
-    
+
     if (addressType.isOperational()) {
       final String textMessage = message.asTextMessage();
       final OperationalMessage typedMessage = OperationalMessage.messageFrom(textMessage);
-      if (typedMessage.isApp()) {
-        attributesAgent.handleInboundStreamMessage(addressType, message);
+      if (typedMessage != null) {
+        if (typedMessage.isApp()) {
+          attributesAgent.handleInboundStreamMessage(addressType, message);
+        } else {
+          localLiveNode.handle(typedMessage);
+        }
       } else {
-        localLiveNode.handle(typedMessage);
+        logger().warn("ClusterSnapshot received invalid raw message '{}'", textMessage);
       }
     } else if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message, communicationsHub.applicationOutboundStream()); // TODO
