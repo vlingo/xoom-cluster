@@ -21,6 +21,6 @@ public class NoOpConfirmationInterest implements ConfirmationInterest {
 
   @Override
   public void confirm(final Id confirmingNodeId, final String attributeSetName, final String attributeName, final ApplicationMessageType type) {
-    logger.log("ATTR CONFIRMATION: NODE: " + confirmingNodeId.value() + " SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
+    logger.debug("ATTR CONFIRMATION: NODE: " + confirmingNodeId.value() + " SET: " + attributeSetName + " ATTR: " + attributeName + " TYPE: " + type);
   }
 }

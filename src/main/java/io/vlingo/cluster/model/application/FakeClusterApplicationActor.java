@@ -7,14 +7,14 @@
 
 package io.vlingo.cluster.model.application;
 
-import java.util.Collection;
-
 import io.vlingo.cluster.model.attribute.Attribute;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
+
+import java.util.Collection;
 
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   private AttributesProtocol client;
@@ -26,80 +26,80 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
 
   @Override
   public void start() {
-    logger().log("APP: ClusterApplication started on node: " + localNode);
+    logger().debug("APP: ClusterApplication started on node: " + localNode);
   }
 
   @Override
   public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
-     logger().log("APP: Received application message: " + message.asTextMessage());
+     logger().debug("APP: Received application message: " + message.asTextMessage());
   }
 
   @Override
   public void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster) {
     for (final Node id : liveNodes) {
-       logger().log("APP: Live node confirmed: " + id);
+       logger().debug("APP: Live node confirmed: " + id);
     }
     printHealthy(isHealthyCluster);
   }
 
   @Override
   public void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading) {
-     logger().log("APP: Leader elected: " + leaderId);
+    logger().debug("APP: Leader elected: " + leaderId);
     printHealthy(isHealthyCluster);
     if (isLocalNodeLeading) {
-       logger().log("APP: Local node is leading.");
+       logger().debug("APP: Local node is leading.");
     }
   }
 
   @Override
   public void informLeaderLost(final Id lostLeaderId, final boolean isHealthyCluster) {
-     logger().log("APP: Leader lost: " + lostLeaderId);
+    logger().debug("APP: Leader lost: " + lostLeaderId);
     printHealthy(isHealthyCluster);
   }
 
   @Override
   public void informLocalNodeShutDown(final Id nodeId) {
-     logger().log("APP: Local node shut down: " + nodeId);
+     logger().debug("APP: Local node shut down: " + nodeId);
   }
 
   @Override
   public void informLocalNodeStarted(final Id nodeId) {
-     logger().log("APP: Local node started: " + nodeId);
+     logger().debug("APP: Local node started: " + nodeId);
   }
 
   @Override
   public void informNodeIsHealthy(final Id nodeId, final boolean isHealthyCluster) {
-     logger().log("APP: Node reported healthy: " + nodeId);
+    logger().debug("APP: Node reported healthy: " + nodeId);
     printHealthy(isHealthyCluster);
   }
 
   @Override
   public void informNodeJoinedCluster(final Id nodeId, final boolean isHealthyCluster) {
-     logger().log("APP: " + nodeId + " joined cluster");
+    logger().debug("APP: " + nodeId + " joined cluster");
     printHealthy(isHealthyCluster);
   }
 
   @Override
   public void informNodeLeftCluster(final Id nodeId, final boolean isHealthyCluster) {
-     logger().log("APP: " + nodeId + " left cluster");
+    logger().debug("APP: " + nodeId + " left cluster");
     printHealthy(isHealthyCluster);
   }
 
   @Override
   public void informQuorumAchieved() {
-     logger().log("APP: Quorum achieved");
+    logger().debug("APP: Quorum achieved");
     printHealthy(true);
   }
 
   @Override
   public void informQuorumLost() {
-     logger().log("APP: Quorum lost");
+    logger().debug("APP: Quorum lost");
     printHealthy(false);
   }
 
   @Override
   public void informAttributesClient(final AttributesProtocol client) {
-     logger().log("APP: Attributes Client received.");
+    logger().debug("APP: Attributes Client received.");
     this.client = client;
     if (localNode.id().value() == 1) {
       client.add("fake.set", "fake.attribute.name1", "value1");
@@ -109,13 +109,13 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
 
   @Override
   public void informAttributeSetCreated(final String attributeSetName) {
-     logger().log("APP: Attributes Set Created: " + attributeSetName);
+     logger().debug("APP: Attributes Set Created: " + attributeSetName);
   }
 
   @Override
   public void informAttributeAdded(final String attributeSetName, final String attributeName) {
     final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
-     logger().log("APP: Attribute Set " + attributeSetName + " Attribute Added: " + attributeName + " Value: " + attr.value);
+    logger().debug("APP: Attribute Set " + attributeSetName + " Attribute Added: " + attributeName + " Value: " + attr.value);
     if (localNode.id().value() == 1) {
       client.replace("fake.set", "fake.attribute.name1", "value-replaced-2");
       client.replace("fake.set", "fake.attribute.name2", "value-replaced-20");
@@ -125,18 +125,18 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   @Override
   public void informAttributeRemoved(final String attributeSetName, final String attributeName) {
     final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
-     logger().log("APP: Attribute Set " + attributeSetName + " Attribute Removed: " + attributeName + " Attribute: " + attr);
+    logger().debug("APP: Attribute Set " + attributeSetName + " Attribute Removed: " + attributeName + " Attribute: " + attr);
   }
 
   @Override
   public void informAttributeSetRemoved(final String attributeSetName) {
-    logger().log("APP: Attributes Set Removed: " + attributeSetName);
+    logger().debug("APP: Attributes Set Removed: " + attributeSetName);
   }
 
   @Override
   public void informAttributeReplaced(final String attributeSetName, final String attributeName) {
     final Attribute<String> attr = client.attribute(attributeSetName, attributeName);
-     logger().log("APP: Attribute Set " + attributeSetName + " Attribute Replaced: " + attributeName + " Value: " + attr.value);
+    logger().debug("APP: Attribute Set " + attributeSetName + " Attribute Replaced: " + attributeName + " Value: " + attr.value);
     if (localNode.id().value() == 1) {
       client.remove("fake.set", "fake.attribute.name1");
     }
@@ -144,9 +144,9 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
 
   private void printHealthy(final boolean isHealthyCluster) {
     if (isHealthyCluster) {
-       logger().log("APP: Cluster is healthy");
+       logger().debug("APP: Cluster is healthy");
     } else {
-       logger().log("APP: Cluster is NOT healthy");
+       logger().debug("APP: Cluster is NOT healthy");
     }
   }
 }

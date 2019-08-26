@@ -7,11 +7,6 @@
 
 package io.vlingo.cluster.model;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
-
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
@@ -19,6 +14,11 @@ import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
 
 class ClusterApplicationBroadcaster implements ClusterApplication {
   private List<ClusterApplication> clusterApplications;
@@ -122,6 +122,10 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
+  public void conclude() {
+  }
+
+  @Override
   public boolean isStopped() {
     return false;
   }
@@ -133,13 +137,13 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   @Override
   public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
   }
-  
+
   private void broadcast(final Consumer<ClusterApplication> inform) {
     for (final ClusterApplication app : clusterApplications) {
       try {
         inform.accept(app);
       } catch (Exception e) {
-        logger.log("Cannot inform because: " + e.getMessage(), e);
+        logger.error("Cannot inform because: " + e.getMessage(), e);
       }
     }
   }

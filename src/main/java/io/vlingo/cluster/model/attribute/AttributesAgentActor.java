@@ -178,7 +178,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
         confirmationInterest.confirm(request.sourceNodeId(), request.attributeSetName(), request.attributeName(), type);
         break;
       default:
-        configuration.logger().log("Received unknown message: " + type.name());
+        configuration.logger().warn("Received unknown message: " + type.name());
         break;
       }
     }

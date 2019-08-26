@@ -7,13 +7,17 @@
 
 package io.vlingo.cluster.model.attribute;
 
+import java.util.function.Consumer;
+
 import io.vlingo.actors.Actor;
 import io.vlingo.actors.DeadLetter;
 import io.vlingo.actors.LocalMessage;
 import io.vlingo.actors.Mailbox;
+import io.vlingo.actors.Stoppable;
 
 public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute.AttributesAgent {
 
+  private static final String representationConclude0 = "conclude()";
   private static final String addRepresentation1 = "add(java.lang.String, java.lang.String, T)";
   private static final String removeRepresentation2 = "remove(java.lang.String, java.lang.String)";
   private static final String replaceRepresentation3 = "replace(java.lang.String, java.lang.String, T)";
@@ -32,6 +36,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
     this.mailbox = mailbox;
   }
 
+  @Override
   public <T>void add(java.lang.String arg0, java.lang.String arg1, T arg2) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.add(arg0, arg1, arg2);
@@ -41,6 +46,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, addRepresentation1));
     }
   }
+  @Override
   public void remove(java.lang.String arg0, java.lang.String arg1) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.remove(arg0, arg1);
@@ -50,6 +56,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, removeRepresentation2));
     }
   }
+  @Override
   public <T>void replace(java.lang.String arg0, java.lang.String arg1, T arg2) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.replace(arg0, arg1, arg2);
@@ -59,6 +66,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, replaceRepresentation3));
     }
   }
+  @Override
   public void removeAll(java.lang.String arg0) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.removeAll(arg0);
@@ -68,6 +76,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, removeAllRepresentation4));
     }
   }
+  @Override
   public void synchronize(io.vlingo.wire.node.Node arg0) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.synchronize(arg0);
@@ -77,6 +86,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, synchronizeRepresentation5));
     }
   }
+  @Override
   public void handleInboundStreamMessage(io.vlingo.wire.node.AddressType arg0, io.vlingo.wire.message.RawMessage arg1) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.handleInboundStreamMessage(arg0, arg1);
@@ -86,6 +96,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, handleInboundStreamMessageRepresentation6));
     }
   }
+  @Override
   public void intervalSignal(io.vlingo.common.Scheduled<Object> arg0, Object arg1) {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.intervalSignal(arg0, arg1);
@@ -95,6 +106,17 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, intervalSignalRepresentation7));
     }
   }
+  @Override
+  public void conclude() {
+    if (!actor.isStopped()) {
+      final Consumer<Stoppable> consumer = (actor) -> actor.conclude();
+      if (mailbox.isPreallocated()) { mailbox.send(actor, Stoppable.class, consumer, null, representationConclude0); }
+      else { mailbox.send(new LocalMessage<Stoppable>(actor, Stoppable.class, consumer, representationConclude0)); }
+    } else {
+      actor.deadLetters().failedDelivery(new DeadLetter(actor, representationConclude0));
+    }
+  }
+  @Override
   public void stop() {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.stop();
@@ -104,6 +126,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
       actor.deadLetters().failedDelivery(new DeadLetter(actor, stopRepresentation8));
     }
   }
+  @Override
   public boolean isStopped() {
     if (!actor.isStopped()) {
       final java.util.function.Consumer<AttributesAgent> consumer = (actor) -> actor.isStopped();

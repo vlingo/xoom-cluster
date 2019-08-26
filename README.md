@@ -2,6 +2,8 @@
 
 [![Javadocs](http://javadoc.io/badge/io.vlingo/vlingo-cluster.svg?color=brightgreen)](http://javadoc.io/doc/io.vlingo/vlingo-cluster) [![Build Status](https://travis-ci.org/vlingo/vlingo-cluster.svg?branch=master)](https://travis-ci.org/vlingo/vlingo-cluster) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/vlingo-platform-java/cluster)
 
+The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.
+
 ### Bintray
 
 ```xml
@@ -15,7 +17,7 @@
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-cluster</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.7</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -23,7 +25,7 @@
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-cluster:0.8.3'
+    compile 'io.vlingo:vlingo-cluster:0.8.7'
 }
 
 repositories {

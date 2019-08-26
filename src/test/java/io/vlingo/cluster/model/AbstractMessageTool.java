@@ -7,15 +7,15 @@
 
 package io.vlingo.cluster.model;
 
-import java.nio.ByteBuffer;
-
-import io.vlingo.actors.plugin.logging.jdk.JDKLogger;
+import io.vlingo.actors.Logger;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Configuration;
 
+import java.nio.ByteBuffer;
+
 public class AbstractMessageTool {
-  protected Configuration config = new ClusterConfiguration(JDKLogger.testInstance());
+  protected Configuration config = new ClusterConfiguration(Logger.basicLogger());
   
   public RawMessage buildRawMessageBuffer(final ByteBuffer buffer, final String message) {
     buffer.clear();

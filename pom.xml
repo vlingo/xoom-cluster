@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vlingo</groupId>
   <artifactId>vlingo-cluster</artifactId>
-  <version>0.8.3</version>
+  <version>0.8.7</version>
   <name>vlingo-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.</description>
   <url>https://github.com/vlingo/vlingo-cluster</url>
@@ -106,19 +106,24 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.0.13</version>
+    </dependency>
+    <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-common</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.7</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-actors</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.7</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-wire</artifactId>
-      <version>0.8.3</version>
+      <version>0.8.7</version>
     </dependency>
   </dependencies>
   <distributionManagement>

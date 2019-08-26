@@ -19,10 +19,10 @@ import io.vlingo.wire.node.Node;
 
 public class MockClusterApplication implements ClusterApplication {
   public AttributesProtocol attributesClient;
-  
+
   public AtomicInteger allLiveNodes = new AtomicInteger(0);
   public AtomicInteger handleApplicationMessage = new AtomicInteger(0);
-  
+
   public AtomicInteger informLeaderElected = new AtomicInteger(0);
   public AtomicInteger informLeaderLost = new AtomicInteger(0);
   public AtomicInteger informLocalNodeShutDown = new AtomicInteger(0);
@@ -32,19 +32,24 @@ public class MockClusterApplication implements ClusterApplication {
   public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
   public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
   public AtomicInteger informQuorumLost = new AtomicInteger(0);
-  
+
   public AtomicInteger informAttributesClient = new AtomicInteger(0);
   public AtomicInteger informAttributeSetCreated = new AtomicInteger(0);
   public AtomicInteger informAttributeAdded = new AtomicInteger(0);
   public AtomicInteger informAttributeRemoved = new AtomicInteger(0);
   public AtomicInteger informAttributeReplaced = new AtomicInteger(0);
   public AtomicInteger informAttributeSetRemoved = new AtomicInteger(0);
-  
+
   public AtomicInteger stop = new AtomicInteger(0);
-  
+
   @Override
   public void start() {
-    
+
+  }
+
+  @Override
+  public void conclude() {
+    stop();
   }
 
   @Override

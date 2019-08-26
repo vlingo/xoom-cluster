@@ -24,11 +24,11 @@ final class ShutdownHook {
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        control._2.log("\n==========");
-        control._2.log("Stopping node: '" + nodeName + "' ...");
+        control._2.info("\n==========");
+        control._2.info("Stopping node: '" + nodeName + "' ...");
         control._1.shutDown();
         pause();
-        control._2.log("Stopped node: '" + nodeName + "'");
+        control._2.info("Stopped node: '" + nodeName + "'");
       }
     });
   }

@@ -7,14 +7,13 @@
 
 package io.vlingo.cluster.model;
 
+import io.vlingo.actors.Logger;
+import io.vlingo.common.Tuple2;
+import org.junit.Test;
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-import io.vlingo.actors.Logger;
-import io.vlingo.common.Tuple2;
 
 public class ClusterTest extends AbstractClusterTest {
   private static int count = 0;
@@ -26,7 +25,7 @@ public class ClusterTest extends AbstractClusterTest {
     assertNotNull(control);
 
     ++count;
-    control._2.log("======== ClusterTest#testClusterSnapshotControl(" + count + ") ========");
+    control._2.debug("======== ClusterTest#testClusterSnapshotControl(" + count + ") ========");
 
     assertTrue(Cluster.isRunning(true, 10));
 
