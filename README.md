@@ -17,7 +17,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-cluster</artifactId>
-      <version>0.8.8</version>
+      <version>0.8.9</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -25,7 +25,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-cluster:0.8.8'
+    compile 'io.vlingo:vlingo-cluster:0.8.9'
 }
 
 repositories {
