@@ -30,6 +30,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
 
   NetworkCommunicationsHub() { }
 
+  @Override
   public void close() {
     operationalInboundStream.stop();
     operationalOutboundStream.stop();
