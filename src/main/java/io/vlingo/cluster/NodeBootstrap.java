@@ -8,9 +8,12 @@
 package io.vlingo.cluster;
 
 import io.vlingo.actors.Logger;
+import io.vlingo.actors.World;
 import io.vlingo.cluster.model.Cluster;
 import io.vlingo.cluster.model.ClusterSnapshotControl;
 import io.vlingo.cluster.model.Properties;
+import io.vlingo.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
+import io.vlingo.cluster.model.application.ClusterApplication.DefaultClusterApplicationInstantiator;
 import io.vlingo.common.Tuple2;
 
 public final class NodeBootstrap {
@@ -36,17 +39,25 @@ public final class NodeBootstrap {
   }
 
   public static NodeBootstrap boot(final String nodeName, final boolean embedded) throws Exception {
+    return boot(World.start("vlingo-cluster"), nodeName, embedded);
+  }
+
+  public static NodeBootstrap boot(final World world, final String nodeName, final boolean embedded) throws Exception {
+    return boot(World.start("vlingo-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance, nodeName, embedded);
+  }
+
+  public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
     final boolean mustBoot = NodeBootstrap.instance == null || !Cluster.isRunning();
-    
+
     if (mustBoot) {
       Properties.instance.validateRequired(nodeName);
-      
-      final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(nodeName);
-      
+
+      final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
+
       NodeBootstrap.instance = new NodeBootstrap(control, nodeName);
-      
+
       control._2.info("Successfully started cluster node: '" + nodeName + "'");
-      
+
       if (!embedded) {
         control._2.info("==========");
       }
@@ -58,7 +69,7 @@ public final class NodeBootstrap {
   public static NodeBootstrap instance() {
     return instance;
   }
-  
+
   public ClusterSnapshotControl clusterSnapshotControl() {
     return clusterSnapshotControl._1;
   }
