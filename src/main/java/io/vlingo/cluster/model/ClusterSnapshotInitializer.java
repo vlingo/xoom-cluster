@@ -20,16 +20,16 @@ class ClusterSnapshotInitializer {
   private final Node localNode;
   private final Id localNodeId;
   private final Registry registry;
-  
+
   ClusterSnapshotInitializer(final String nodeNameText, final Properties properties, final Logger logger) {
     this.localNodeId = Id.of(properties.nodeId(nodeNameText));
-    
-    this.configuration = new ClusterConfiguration(logger);
-    
+
+    this.configuration = new ClusterConfiguration(properties, logger);
+
     this.localNode = configuration.nodeMatching(localNodeId);
-    
-    this.communicationsHub = new NetworkCommunicationsHub();
-    
+
+    this.communicationsHub = new NetworkCommunicationsHub(properties);
+
     this.registry = new LocalRegistry(this.localNode, this.configuration, logger);
   }
 
@@ -48,7 +48,7 @@ class ClusterSnapshotInitializer {
   Id localNodeId() {
     return localNodeId;
   }
-  
+
   Registry registry() {
     return registry;
   }
