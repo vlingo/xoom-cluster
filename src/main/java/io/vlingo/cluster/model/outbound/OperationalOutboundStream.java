@@ -10,6 +10,7 @@ package io.vlingo.cluster.model.outbound;
 import java.util.Collection;
 import java.util.Set;
 
+import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
@@ -25,17 +26,42 @@ public interface OperationalOutboundStream extends Stoppable {
           final Node node,
           final ManagedOutboundChannelProvider provider,
           final ByteBufferPool byteBufferPool) {
-    
+
     final Definition definition =
             Definition.has(
                     OperationalOutboundStreamActor.class,
-                    Definition.parameters(node, provider, byteBufferPool),
+                    new OperationalOutboundStreamInstantiator(node, provider, byteBufferPool),
                     "cluster-operational-outbound-stream");
-    
+
     final OperationalOutboundStream operationalOutboundStream =
             stage.actorFor(OperationalOutboundStream.class, definition);
-    
+
     return operationalOutboundStream;
+  }
+
+  static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
+    private final Node node;
+    private final ManagedOutboundChannelProvider provider;
+    private final ByteBufferPool byteBufferPool;
+
+    public OperationalOutboundStreamInstantiator(
+            final Node node,
+            final ManagedOutboundChannelProvider provider,
+            final ByteBufferPool byteBufferPool) {
+      this.node = node;
+      this.provider = provider;
+      this.byteBufferPool = byteBufferPool;
+    }
+
+    @Override
+    public OperationalOutboundStreamActor instantiate() {
+      return new OperationalOutboundStreamActor(node, provider, byteBufferPool);
+    }
+
+    @Override
+    public Class<OperationalOutboundStreamActor> type() {
+      return OperationalOutboundStreamActor.class;
+    }
   }
 
   void close(final Id id);
