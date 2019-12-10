@@ -28,7 +28,11 @@ class NetworkCommunicationsHub implements CommunicationsHub {
   private InboundStream operationalInboundStream;
   private OperationalOutboundStream operationalOutboundStream;
 
-  NetworkCommunicationsHub() { }
+  private final Properties properties;
+
+  NetworkCommunicationsHub(final Properties properties) {
+    this.properties = properties;
+  }
 
   @Override
   public void close() {
@@ -57,7 +61,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     node.operationalAddress().port(),
                     AddressType.OP,
                     OP_NAME,
-                    Properties.instance.operationalInboundProbeInterval());
+                    properties.operationalInboundProbeInterval());
 
     this.operationalOutboundStream =
             OperationalOutboundStream.instance(
@@ -65,8 +69,8 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     node,
                     new ManagedOutboundRSocketChannelProvider(node, AddressType.OP, configuration),
                     new ByteBufferPool(
-                            Properties.instance.operationalOutgoingPooledBuffers(),
-                            Properties.instance.operationalBufferSize()));
+                            properties.operationalOutgoingPooledBuffers(),
+                            properties.operationalBufferSize()));
 
     this.applicationInboundStream =
             InboundStream.instance(
@@ -76,15 +80,15 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     node.applicationAddress().port(),
                     AddressType.APP,
                     APP_NAME,
-                    Properties.instance.applicationInboundProbeInterval());
+                    properties.applicationInboundProbeInterval());
 
     this.applicationOutboundStream =
             ApplicationOutboundStream.instance(
                     stage,
                     new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration),
                     new ByteBufferPool(
-                            Properties.instance.applicationOutgoingPooledBuffers(),
-                            Properties.instance.applicationBufferSize()));
+                            properties.applicationOutgoingPooledBuffers(),
+                            properties.applicationBufferSize()));
   }
 
   @Override
