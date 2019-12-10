@@ -7,26 +7,22 @@
 
 package io.vlingo.cluster.model;
 
-import io.vlingo.actors.Logger;
-import io.vlingo.wire.message.Converters;
-import io.vlingo.wire.message.RawMessage;
-import io.vlingo.wire.node.Configuration;
-
 import java.nio.ByteBuffer;
 
-public class AbstractMessageTool {
-  protected Configuration config = new ClusterConfiguration(Logger.basicLogger());
-  
+import io.vlingo.wire.message.Converters;
+import io.vlingo.wire.message.RawMessage;
+
+public abstract class AbstractMessageTool {
   public RawMessage buildRawMessageBuffer(final ByteBuffer buffer, final String message) {
     buffer.clear();
     buffer.put(Converters.textToBytes(message));
     buffer.flip();
     final RawMessage rawMessage = RawMessage.from(1, 0, buffer.limit());
     rawMessage.put(buffer, false);
-    
+
     return rawMessage;
   }
-  
+
   public ByteBuffer bytesFrom(final RawMessage message, final ByteBuffer buffer) {
     buffer.clear();
     message.copyBytesTo(buffer);
