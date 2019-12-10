@@ -10,6 +10,7 @@ package io.vlingo.cluster.model.application;
 import java.util.Collection;
 
 import io.vlingo.actors.Actor;
+import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Startable;
@@ -23,20 +24,61 @@ import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public interface ClusterApplication extends Startable, Stoppable {
-  public static ClusterApplication instance(final World world, final Node node) {
-    final Class<? extends Actor> clusterApplicationActor =
-            Properties.instance.clusterApplicationClass();
-    
+  static ClusterApplication instance(
+          final World world,
+          final ClusterApplicationInstantiator<?> instantiator,
+          final Properties properties,
+          final Node node) {
+
     final Stage applicationStage =
-            world.stageNamed(Properties.instance.clusterApplicationStageName());
-    
+            world.stageNamed(properties.clusterApplicationStageName());
+
     return applicationStage.actorFor(
             ClusterApplication.class,
-            Definition.has(clusterApplicationActor, Definition.parameters(node), "cluster-application"));
+            Definition.has(instantiator.type(), instantiator, "cluster-application"));
+  }
+
+  static <A extends Actor> ClusterApplication instance(final Stage applicationStage, final ActorInstantiator<A> instantator) {
+    return applicationStage.actorFor(
+            ClusterApplication.class,
+            Definition.has(instantator.type(), instantator, "cluster-application"));
+  }
+
+  static abstract class ClusterApplicationInstantiator<A extends Actor> implements ActorInstantiator<A> {
+    private Node node;
+    private final Class<A> type;
+
+    public ClusterApplicationInstantiator(final Class<A> type) {
+      this.type = type;
+    }
+
+    public Node node() {
+      return this.node;
+    }
+
+    public void node(final Node node) {
+      this.node = node;
+    }
+
+    @Override
+    public Class<A> type() {
+      return type;
+    }
+  }
+
+  static class DefaultClusterApplicationInstantiator extends ClusterApplicationInstantiator<FakeClusterApplicationActor> {
+    public DefaultClusterApplicationInstantiator() {
+      super(FakeClusterApplicationActor.class);
+    }
+
+    @Override
+    public FakeClusterApplicationActor instantiate() {
+      return new FakeClusterApplicationActor(node());
+    }
   }
 
   void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder);
-  
+
   void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster);
   void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading);
   void informLeaderLost(final Id lostLeaderId, final boolean isHealthyCluster);
