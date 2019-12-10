@@ -25,17 +25,17 @@ public class OperationalMessageParserTest {
   @Test
   public void testParseDirectory() {
     OperationalMessage dir = OperationalMessage.messageFrom(MessageFixtures.directoryAsText(1, 2, 3));
-    
+
     assertEquals(true, dir.isDirectory());
-    assertEquals(Id.of(MessageFixtures.defaultNodeId), dir.id());
-    assertEquals(new Name(MessageFixtures.defaultNodeName), ((Directory) dir).name());
+    assertEquals(Id.of(MessageFixtures.defaultNodeId()), dir.id());
+    assertEquals(new Name(MessageFixtures.defaultNodeName()), ((Directory) dir).name());
 
     int index = 1;
     for (Node node : ((Directory) dir).nodes()) {
       assertEquals(Id.of(index), node.id());
       assertEquals(new Name("node"+index), node.name());
-      assertEquals(Address.from(MessageFixtures.opAddresses[index], AddressType.OP), node.operationalAddress());
-      assertEquals(Address.from(MessageFixtures.appAddresses[index], AddressType.APP), node.applicationAddress());
+      assertEquals(Address.from(MessageFixtures.opAddress(index), AddressType.OP), node.operationalAddress());
+      assertEquals(Address.from(MessageFixtures.appAddress(index), AddressType.APP), node.applicationAddress());
 
       ++index;
     }
@@ -44,20 +44,20 @@ public class OperationalMessageParserTest {
     nodeEntries.add(new Node(
         Id.of(1),
         new Name("node1"),
-        Address.from(MessageFixtures.opAddresses[1], AddressType.OP),
-        Address.from(MessageFixtures.appAddresses[1], AddressType.APP)));
+        Address.from(MessageFixtures.opAddress(1), AddressType.OP),
+        Address.from(MessageFixtures.appAddress(1), AddressType.APP)));
     nodeEntries.add(new Node(
         Id.of(2),
         new Name("node2"),
-        Address.from(MessageFixtures.opAddresses[2], AddressType.OP),
-        Address.from(MessageFixtures.appAddresses[2], AddressType.APP)));
+        Address.from(MessageFixtures.opAddress(2), AddressType.OP),
+        Address.from(MessageFixtures.appAddress(2), AddressType.APP)));
     nodeEntries.add(new Node(
         Id.of(3),
         new Name("node3"),
-        Address.from(MessageFixtures.opAddresses[3], AddressType.OP),
-        Address.from(MessageFixtures.appAddresses[3], AddressType.APP)));
+        Address.from(MessageFixtures.opAddress(3), AddressType.OP),
+        Address.from(MessageFixtures.appAddress(3), AddressType.APP)));
 
-    Directory expectedDir = new Directory(Id.of(MessageFixtures.defaultNodeId), new Name(MessageFixtures.defaultNodeName), nodeEntries);
+    Directory expectedDir = new Directory(Id.of(MessageFixtures.defaultNodeId()), new Name(MessageFixtures.defaultNodeName()), nodeEntries);
 
     assertEquals(expectedDir, dir);
   }
