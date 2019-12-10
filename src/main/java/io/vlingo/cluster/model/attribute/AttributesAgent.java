@@ -7,6 +7,7 @@
 
 package io.vlingo.cluster.model.attribute;
 
+import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
@@ -25,15 +26,43 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
           final Configuration configuration) {
-    
+
     final Definition definition =
             new Definition(
                     AttributesAgentActor.class,
-                    Definition.parameters(node, application, outbound, configuration),
+                    new AttributesAgentInstantiator(node, application, outbound, configuration),
                     "attributes-agent");
-    
+
     AttributesAgent attributesAgent = stage.actorFor(AttributesAgent.class, definition);
-    
+
     return attributesAgent;
+  }
+
+  static class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {
+    private final Node node;
+    private final ClusterApplication application;
+    private final OperationalOutboundStream outbound;
+    private final Configuration configuration;
+
+    public AttributesAgentInstantiator(
+            final Node node,
+            final ClusterApplication application,
+            final OperationalOutboundStream outbound,
+            final Configuration configuration) {
+      this.node = node;
+      this.application = application;
+      this.outbound = outbound;
+      this.configuration = configuration;
+    }
+
+    @Override
+    public AttributesAgentActor instantiate() {
+      return new AttributesAgentActor(node, application, outbound, configuration);
+    }
+
+    @Override
+    public Class<AttributesAgentActor> type() {
+      return AttributesAgentActor.class;
+    }
   }
 }
