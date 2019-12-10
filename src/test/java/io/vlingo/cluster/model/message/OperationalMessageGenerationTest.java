@@ -35,20 +35,20 @@ public class OperationalMessageGenerationTest {
     final Id id = Id.of(1);
     final Name name = new Name("node1");
     final String payload = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sagittis risus quis nulla blandit, a euismod massa egestas. Vivamus facilisis.";
-    
+
     final ApplicationSays app = ApplicationSays.from(id, name, payload);
     final String raw = OperationalMessage.APP + "\n" + "id=1 nm=node1 si=" + app.saysId + "\n" + payload;
     expectedBuffer.put(Converters.textToBytes(raw));
     MessageConverters.messageToBytes(app, messageBuffer);
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(app, ApplicationSays.from(raw));
   }
 
   @Test
   public void testGenerateDirectoryMessge() {
-    final String[] opAddresses = { "", "localhost:37371", "localhost:37373", "localhost:37375" };
-    final String[] appAddresses = { "", "localhost:37372", "localhost:37374", "localhost:37376" };
+    final String[] opAddresses = { "", "localhost:47471", "localhost:47473", "localhost:47475" };
+    final String[] appAddresses = { "", "localhost:47472", "localhost:47474", "localhost:47476" };
 
     Set<Node> nodeEntries = new HashSet<Node>();
     nodeEntries.add(new Node(
@@ -76,7 +76,7 @@ public class OperationalMessageGenerationTest {
                     + "id=3 nm=node3 op=" + opAddresses[3] + " app=" + appAddresses[3];
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(dir, Directory.from(raw));
   }
 
@@ -87,7 +87,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.ELECT + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(elect, Elect.from(raw));
   }
 
@@ -96,13 +96,13 @@ public class OperationalMessageGenerationTest {
     Join join = new Join(new Node(
         Id.of(1),
         new Name("node1"),
-        Address.from("localhost:37371", AddressType.OP),
-        Address.from("localhost:37372", AddressType.APP)));
+        Address.from("localhost:47471", AddressType.OP),
+        Address.from("localhost:47472", AddressType.APP)));
     MessageConverters.messageToBytes(join, messageBuffer);
-    final String raw = OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:37371 app=localhost:37372";
+    final String raw = OperationalMessage.JOIN + "\n" + "id=1 nm=node1 op=localhost:47471 app=localhost:47472";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(join, Join.from(raw));
   }
 
@@ -113,7 +113,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.LEADER + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(leader, Leader.from(raw));
   }
 
@@ -124,7 +124,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.LEAVE + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(leave, Leave.from(raw));
   }
 
@@ -135,7 +135,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.PING + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(ping, Ping.from(raw));
   }
 
@@ -146,7 +146,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.PULSE + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(pulse, Pulse.from(raw));
   }
 
@@ -157,7 +157,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.SPLIT + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(split, Split.from(raw));
   }
 
@@ -168,7 +168,7 @@ public class OperationalMessageGenerationTest {
     final String raw = OperationalMessage.VOTE + "\nid=1";
     expectedBuffer.put(Converters.textToBytes(raw));
     assertArrayEquals(expectedBuffer.array(), messageBuffer.array());
-    
+
     assertEquals(vote, Vote.from(raw));
   }
 
