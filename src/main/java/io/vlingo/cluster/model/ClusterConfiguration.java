@@ -25,11 +25,11 @@ public class ClusterConfiguration implements Configuration {
   private final Logger logger;
   private final Set<Node> nodes;
 
-  public ClusterConfiguration(final Logger logger) {
+  public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
     this.nodes = new TreeSet<Node>();
 
-    initializeConfiguredNodeEntries(Properties.instance);
+    initializeConfiguredNodeEntries(properties);
   }
 
   @Override
@@ -154,13 +154,6 @@ public class ClusterConfiguration implements Configuration {
   @Override
   public String toString() {
     return "ConfiguredCluster[" + nodes + "]";
-  }
-
-  ClusterConfiguration(Properties properties, final Logger logger) {
-    this.logger = logger;
-    this.nodes = new TreeSet<Node>();
-
-    initializeConfiguredNodeEntries(properties);
   }
 
   private void initializeConfiguredNodeEntries(final Properties properties) {
