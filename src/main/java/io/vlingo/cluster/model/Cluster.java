@@ -9,33 +9,47 @@ package io.vlingo.cluster.model;
 
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Logger;
 import io.vlingo.actors.World;
+import io.vlingo.cluster.model.application.ClusterApplication;
+import io.vlingo.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
 import io.vlingo.common.Tuple2;
 
 public class Cluster {
-  
+
   private static AtomicReference<ClusterSnapshotControl> control = new AtomicReference<>();
   private static World world;
 
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(final String name) throws Exception {
+  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+          final ClusterApplicationInstantiator<?> instantiator,
+          final Properties properties,
+          final String name)
+  throws Exception {
+
     if (world != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
-    return controlFor(World.start("vlingo-cluster"), name);
+    return controlFor(World.start("vlingo-cluster"), instantiator, properties, name);
   }
 
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(final World world, final String name) throws Exception {
+  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+          final World world,
+          final ClusterApplicationInstantiator<?> instantiator,
+          final Properties properties,
+          final String name)
+  throws Exception {
+
     if (control.get() != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
 
     Cluster.world = world;
 
-    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, name);
-    
+    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, instantiator, properties, name);
+
     Cluster.control.set(control._1);
-    
+
     return control;
   }
 
@@ -55,5 +69,29 @@ public class Cluster {
 
   static final synchronized void reset() {
     control.set(null);
+  }
+
+  static class ClusterSnapshotActorInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
+    private final ClusterApplication clusterApplication;
+    private final ClusterSnapshotInitializer initializer;
+
+    public ClusterSnapshotActorInstantiator(final ClusterSnapshotInitializer initializer, final ClusterApplication clusterApplication) {
+      this.initializer = initializer;
+      this.clusterApplication = clusterApplication;
+    }
+
+    @Override
+    public ClusterSnapshotActor instantiate() {
+      try {
+        return new ClusterSnapshotActor(initializer, clusterApplication);
+      } catch (Exception e) {
+        throw new IllegalArgumentException("Failed to instantiate " + type() + " because: " + e.getMessage(), e);
+      }
+    }
+
+    @Override
+    public Class<ClusterSnapshotActor> type() {
+      return ClusterSnapshotActor.class;
+    }
   }
 }
