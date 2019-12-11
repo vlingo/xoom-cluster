@@ -41,14 +41,14 @@ public interface LocalLiveNode extends Stoppable {
   static class LocalLiveNodeInstantiator implements ActorInstantiator<LocalLiveNodeActor> {
     private final Node node;
     private final ClusterSnapshot snapshot;
-    private final Registry registry;
+    private final io.vlingo.cluster.model.node.Registry registry;
     private final OperationalOutboundStream outbound;
     private final Configuration configuration;
 
     public LocalLiveNodeInstantiator(
             final Node node,
             final ClusterSnapshot snapshot,
-            final Registry registry,
+            final io.vlingo.cluster.model.node.Registry registry,
             final OperationalOutboundStream outbound,
             final Configuration configuration) {
       this.node = node;
