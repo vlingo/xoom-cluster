@@ -11,6 +11,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Logger;
+import io.vlingo.actors.Stage;
 import io.vlingo.actors.World;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
@@ -24,20 +25,30 @@ public class Cluster {
   public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String name)
+          final String nodeName)
   throws Exception {
 
     if (world != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
-    return controlFor(World.start("vlingo-cluster"), instantiator, properties, name);
+    return controlFor(World.start("vlingo-cluster"), instantiator, properties, nodeName);
   }
 
   public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String name)
+          final String nodeName)
+  throws Exception {
+    return controlFor(world, world.stage(), instantiator, properties, nodeName);
+  }
+
+  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+          final World world,
+          final Stage stage,
+          final ClusterApplicationInstantiator<?> instantiator,
+          final Properties properties,
+          final String nodeName)
   throws Exception {
 
     if (control.get() != null) {
@@ -46,7 +57,7 @@ public class Cluster {
 
     Cluster.world = world;
 
-    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, instantiator, properties, name);
+    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, instantiator, properties, nodeName);
 
     Cluster.control.set(control._1);
 
@@ -67,7 +78,8 @@ public class Cluster {
     return !expected;
   }
 
-  static final synchronized void reset() {
+  public static final synchronized void reset() {
+    world = null;
     control.set(null);
   }
 

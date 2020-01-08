@@ -21,20 +21,31 @@ public interface ClusterSnapshotControl {
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String name) {
-
-    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(name, properties, world.defaultLogger());
-    instantiator.node(initializer.localNode());
+          final String nodeName) {
 
     final String stageName = properties.clusterApplicationStageName();
     final Stage stage = world.stageNamed(stageName);
+
+    return instance(world, stage, instantiator, properties, nodeName);
+  }
+
+  public static Tuple2<ClusterSnapshotControl, Logger> instance(
+          final World world,
+          final Stage stage,
+          final ClusterApplicationInstantiator<?> instantiator,
+          final Properties properties,
+          final String nodeName) {
+
+    final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(nodeName, properties, world.defaultLogger());
+    instantiator.node(initializer.localNode());
+
     final ClusterApplication application = ClusterApplication.instance(stage, instantiator);
 
     final Definition definition =
             new Definition(
                     ClusterSnapshotActor.class,
                     new ClusterSnapshotInstantiator(initializer, application),
-                    "cluster-snapshot-" + name);
+                    "cluster-snapshot-" + nodeName);
 
     ClusterSnapshotControl control = world.actorFor(ClusterSnapshotControl.class, definition);
 
