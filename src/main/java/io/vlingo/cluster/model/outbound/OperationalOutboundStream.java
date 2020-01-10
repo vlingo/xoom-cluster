@@ -16,7 +16,7 @@ import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
-import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.ConsumerByteBufferPool;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
@@ -25,7 +25,7 @@ public interface OperationalOutboundStream extends Stoppable {
           final Stage stage,
           final Node node,
           final ManagedOutboundChannelProvider provider,
-          final ByteBufferPool byteBufferPool) {
+          final ConsumerByteBufferPool byteBufferPool) {
 
     final Definition definition =
             Definition.has(
@@ -42,12 +42,12 @@ public interface OperationalOutboundStream extends Stoppable {
   static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
     private final Node node;
     private final ManagedOutboundChannelProvider provider;
-    private final ByteBufferPool byteBufferPool;
+    private final ConsumerByteBufferPool byteBufferPool;
 
     public OperationalOutboundStreamInstantiator(
             final Node node,
             final ManagedOutboundChannelProvider provider,
-            final ByteBufferPool byteBufferPool) {
+            final ConsumerByteBufferPool byteBufferPool) {
       this.node = node;
       this.provider = provider;
       this.byteBufferPool = byteBufferPool;

@@ -27,8 +27,9 @@ import io.vlingo.cluster.model.outbound.MockManagedOutboundChannel;
 import io.vlingo.cluster.model.outbound.MockManagedOutboundChannelProvider;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStreamActor;
+import io.vlingo.common.pool.ElasticResourcePool;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannel;
-import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.ConsumerByteBufferPool;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
@@ -37,7 +38,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   private ConfirmingDistributor confirmingDistributor;
   private Id localNodeId;
   private Node localNode;
-  private ByteBufferPool pool;
+  private ConsumerByteBufferPool pool;
   private TestActor<OperationalOutboundStream> outboundStream;
   private AttributeSet set;
   private TrackedAttribute tracked;
@@ -45,13 +46,13 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   @Test
   public void testAcknowledgeConfirmation() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
-    
+
     final Collection<String> trackingIds = confirmingDistributor.allTrackingIds();
-    
+
     assertEquals(1, trackingIds.size());
-    
+
     final String tackingId = trackingIds.iterator().next();
-    
+
     assertEquals(2, confirmingDistributor.unconfirmedNodesFor(tackingId).size());
     confirmingDistributor.acknowledgeConfirmation(tackingId, confirmingDistributor.unconfirmedNodesFor(tackingId).iterator().next());
     assertEquals(1, confirmingDistributor.unconfirmedNodesFor(tackingId).size());
@@ -62,48 +63,48 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   @Test
   public void testConfirmCreateAttributeSet() {
     confirmingDistributor.confirmCreate("123", set, localNode);
-    
+
     singleChannelMessageAssertions();
-    
+
     assertEquals(1, application.informAttributeSetCreated.get());
   }
 
   @Test
   public void testConfirmAddAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.AddAttribute, localNode);
-    
+
     singleChannelMessageAssertions();
   }
 
   @Test
   public void testConfirmReplaceAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.ReplaceAttribute, localNode);
-    
+
     singleChannelMessageAssertions();
   }
 
   @Test
   public void testConfirmRemoveAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.RemoveAttribute, localNode);
-    
+
     singleChannelMessageAssertions();
   }
 
   @Test
   public void testConfirmRemoveAttributeSet() {
     confirmingDistributor.confirmRemove("123", set, localNode);
-    
+
     singleChannelMessageAssertions();
-    
+
     assertEquals(1, application.informAttributeSetRemoved.get());
   }
 
   @Test
   public void testDistributeCreateAttributeSet() {
     confirmingDistributor.distributeCreate(set);
-    
+
     multiChannelMessageAssertions(2);
-    
+
     assertEquals(1, application.informAttributeSetCreated.get());
     assertEquals(1, application.informAttributeAdded.get());
   }
@@ -111,36 +112,36 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   @Test
   public void testDistributeAddAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
-    
+
     multiChannelMessageAssertions(1);
-    
+
     assertEquals(1, application.informAttributeAdded.get());
   }
 
   @Test
   public void testDistributeReplaceAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.ReplaceAttribute);
-    
+
     multiChannelMessageAssertions(1);
-    
+
     assertEquals(1, application.informAttributeReplaced.get());
   }
 
   @Test
   public void testDistributeRemoveAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.RemoveAttribute);
-    
+
     multiChannelMessageAssertions(1);
-    
+
     assertEquals(1, application.informAttributeRemoved.get());
   }
 
   @Test
   public void testDistributeRemoveAttributeSet() {
     confirmingDistributor.distributeRemove(set);
-    
+
     multiChannelMessageAssertions(2);
-    
+
     assertEquals(1, application.informAttributeSetRemoved.get());
     assertEquals(1, application.informAttributeRemoved.get());
   }
@@ -154,12 +155,12 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
     final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
     mock(channel3).until = TestUntil.happenings(1);
-    
+
     final AttributeSet set = AttributeSet.named("test-set");
     final TrackedAttribute tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
-    
+
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
-    
+
     confirmingDistributor.redistributeUnconfirmed();
 
     mock(channel2).until.completes();
@@ -168,33 +169,35 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     mock(channel3).until.completes();
     assertEquals(1, mock(channel3).writes.size());
   }
-  
+
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();
-    
+
     localNodeId = Id.of(1);
-    
+
     localNode = config.nodeMatching(localNodeId);
-    
+
     set = AttributeSet.named("test-set");
-    
+
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
-    
+
     channelProvider = new MockManagedOutboundChannelProvider(localNodeId, config);
-    
-    pool = new ByteBufferPool(10, properties.operationalBufferSize());
-    
+
+    pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.operationalBufferSize());
+
     outboundStream =
             testWorld.actorFor(
                     OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
                             Definition.parameters(localNode, channelProvider, pool)));
-    
+
     confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), config);
   }
-  
+
+  @Override
   @After
   public void tearDown() {
     super.tearDown();

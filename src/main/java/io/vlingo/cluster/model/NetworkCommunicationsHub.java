@@ -9,12 +9,13 @@ package io.vlingo.cluster.model;
 
 import io.vlingo.actors.Stage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
+import io.vlingo.common.pool.ElasticResourcePool;
 import io.vlingo.wire.fdx.inbound.InboundStream;
 import io.vlingo.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.wire.fdx.inbound.rsocket.RSocketInboundChannelReaderProvider;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.fdx.outbound.rsocket.ManagedOutboundRSocketChannelProvider;
-import io.vlingo.wire.message.ByteBufferPool;
+import io.vlingo.wire.message.ConsumerByteBufferPool;
 import io.vlingo.wire.node.AddressType;
 import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Node;
@@ -68,8 +69,8 @@ class NetworkCommunicationsHub implements CommunicationsHub {
                     stage,
                     node,
                     new ManagedOutboundRSocketChannelProvider(node, AddressType.OP, configuration),
-                    new ByteBufferPool(
-                            properties.operationalOutgoingPooledBuffers(),
+                    new ConsumerByteBufferPool(
+                            ElasticResourcePool.Config.of(properties.operationalOutgoingPooledBuffers()),
                             properties.operationalBufferSize()));
 
     this.applicationInboundStream =
@@ -86,8 +87,8 @@ class NetworkCommunicationsHub implements CommunicationsHub {
             ApplicationOutboundStream.instance(
                     stage,
                     new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration),
-                    new ByteBufferPool(
-                            properties.applicationOutgoingPooledBuffers(),
+                    new ConsumerByteBufferPool(
+                            ElasticResourcePool.Config.of(properties.applicationOutgoingPooledBuffers()),
                             properties.applicationBufferSize()));
   }
 

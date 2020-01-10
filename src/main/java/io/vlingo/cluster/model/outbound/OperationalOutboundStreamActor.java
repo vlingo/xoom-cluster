@@ -19,8 +19,8 @@ import io.vlingo.cluster.model.message.OperationalMessageCache;
 import io.vlingo.cluster.model.message.Split;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.wire.fdx.outbound.Outbound;
-import io.vlingo.wire.message.ByteBufferPool;
 import io.vlingo.wire.message.ConsumerByteBuffer;
+import io.vlingo.wire.message.ConsumerByteBufferPool;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
@@ -32,12 +32,12 @@ public class OperationalOutboundStreamActor extends Actor
   private final OperationalMessageCache cache;
   private final Node node;
   private final Outbound outbound;
-  
+
   public OperationalOutboundStreamActor(
           final Node node,
           final ManagedOutboundChannelProvider provider,
-          final ByteBufferPool byteBufferPool) {
-    
+          final ConsumerByteBufferPool byteBufferPool) {
+
     this.node = node;
     this.outbound = new Outbound(provider, byteBufferPool);
     this.cache = new OperationalMessageCache(node);
@@ -55,11 +55,11 @@ public class OperationalOutboundStreamActor extends Actor
 
   @Override
   public void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes) {
-    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
     MessageConverters.messageToBytes(says, buffer.asByteBuffer());
 
     final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
-    
+
     outbound.broadcast(unconfirmedNodes, outbound.bytesFrom(message, buffer));
   }
 
@@ -67,11 +67,11 @@ public class OperationalOutboundStreamActor extends Actor
   public void directory(final Set<Node> allLiveNodes) {
     final Directory dir = new Directory(node.id(), node.name(), allLiveNodes);
 
-    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
     MessageConverters.messageToBytes(dir, buffer.asByteBuffer());
 
     final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
-    
+
     outbound.broadcast(outbound.bytesFrom(message, buffer));
   }
 
@@ -124,7 +124,7 @@ public class OperationalOutboundStreamActor extends Actor
   public void split(final Id targetNodeId, final Id currentLeaderId) {
     final Split split = new Split(currentLeaderId);
 
-    final ConsumerByteBuffer buffer = outbound.pooledByteBuffer();
+    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
     MessageConverters.messageToBytes(split, buffer.asByteBuffer());
 
     final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
@@ -141,10 +141,11 @@ public class OperationalOutboundStreamActor extends Actor
   //===================================
   // Stoppable
   //===================================
-  
+
+  @Override
   public void stop() {
     outbound.close();
-    
+
     super.stop();
   }
 }
