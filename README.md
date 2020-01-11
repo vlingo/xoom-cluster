@@ -17,7 +17,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-cluster</artifactId>
-      <version>0.9.3-RC4</version>
+      <version>1.0.0</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -25,7 +25,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-cluster:0.9.3-RC4'
+    compile 'io.vlingo:vlingo-cluster:1.0.0'
 }
 
 repositories {
@@ -84,7 +84,7 @@ Have fun!
 
 License (See LICENSE file for full license)
 -------------------------------------------
-Copyright © 2012-2018 Vaughn Vernon. All rights reserved.
+Copyright © 2012-2020 VLINGO LABS. All rights reserved.
 
 This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL
