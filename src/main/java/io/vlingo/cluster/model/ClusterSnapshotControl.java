@@ -38,6 +38,7 @@ public interface ClusterSnapshotControl {
 
     final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(nodeName, properties, world.defaultLogger());
     instantiator.node(initializer.localNode());
+    instantiator.hub(initializer.communicationsHub());
 
     final ClusterApplication application = ClusterApplication.instance(stage, instantiator);
 

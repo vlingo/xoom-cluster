@@ -16,6 +16,7 @@ import io.vlingo.actors.Stage;
 import io.vlingo.actors.Startable;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.actors.World;
+import io.vlingo.cluster.model.CommunicationsHub;
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.message.RawMessage;
@@ -44,11 +45,20 @@ public interface ClusterApplication extends Startable, Stoppable {
   }
 
   static abstract class ClusterApplicationInstantiator<A extends Actor> implements ActorInstantiator<A> {
+    private CommunicationsHub hub;
     private Node node;
     private final Class<A> type;
 
     public ClusterApplicationInstantiator(final Class<A> type) {
       this.type = type;
+    }
+
+    public CommunicationsHub hub() {
+      return this.hub;
+    }
+
+    public void hub(final CommunicationsHub hub) {
+      this.hub = hub;
     }
 
     public Node node() {
