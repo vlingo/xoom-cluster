@@ -10,7 +10,6 @@ package io.vlingo.cluster.model;
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
-import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
@@ -135,7 +134,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message) {
   }
 
   private void broadcast(final Consumer<ClusterApplication> inform) {

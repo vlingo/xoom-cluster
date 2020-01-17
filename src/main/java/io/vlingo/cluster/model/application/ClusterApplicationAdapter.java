@@ -10,7 +10,6 @@ package io.vlingo.cluster.model.application;
 import java.util.Collection;
 
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
-import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
@@ -33,7 +32,7 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message) {
   }
 
   @Override

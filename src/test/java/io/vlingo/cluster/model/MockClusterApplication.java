@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
-import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
@@ -63,7 +62,7 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(RawMessage message, ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(RawMessage message) {
     handleApplicationMessage.incrementAndGet();
   }
 

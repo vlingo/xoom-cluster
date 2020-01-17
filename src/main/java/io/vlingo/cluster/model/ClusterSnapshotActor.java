@@ -124,7 +124,7 @@ public class ClusterSnapshotActor
         logger().warn("ClusterSnapshot received invalid raw message '{}'", textMessage);
       }
     } else if (addressType.isApplication()) {
-      clusterApplication.handleApplicationMessage(message, communicationsHub.applicationOutboundStream()); // TODO
+      clusterApplication.handleApplicationMessage(message); // TODO
     } else {
       logger().warn(
               "ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
