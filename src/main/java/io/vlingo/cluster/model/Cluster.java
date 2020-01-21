@@ -25,9 +25,7 @@ public class Cluster {
   public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
-
+          final String nodeName) {
     if (world != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
@@ -38,19 +36,7 @@ public class Cluster {
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
-    return controlFor(world, world.stage(), instantiator, properties, nodeName);
-  }
-
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
-          final World world,
-          final Stage stage,
-          final ClusterApplicationInstantiator<?> instantiator,
-          final Properties properties,
-          final String nodeName)
-  throws Exception {
-
+          final String nodeName) {
     if (control.get() != null) {
       throw new IllegalArgumentException("Cluster snapshot control already exists.");
     }
