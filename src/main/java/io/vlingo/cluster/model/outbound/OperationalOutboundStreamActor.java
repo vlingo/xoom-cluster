@@ -7,24 +7,19 @@
 
 package io.vlingo.cluster.model.outbound;
 
-import java.util.Collection;
-import java.util.Set;
-
 import io.vlingo.actors.Actor;
-import io.vlingo.cluster.model.message.ApplicationSays;
-import io.vlingo.cluster.model.message.Directory;
-import io.vlingo.cluster.model.message.MessageConverters;
-import io.vlingo.cluster.model.message.OperationalMessage;
-import io.vlingo.cluster.model.message.OperationalMessageCache;
-import io.vlingo.cluster.model.message.Split;
+import io.vlingo.cluster.model.message.*;
+import io.vlingo.common.pool.ResourcePool;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.wire.fdx.outbound.Outbound;
 import io.vlingo.wire.message.ConsumerByteBuffer;
-import io.vlingo.wire.message.ConsumerByteBufferPool;
 import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
+
+import java.util.Collection;
+import java.util.Set;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {
@@ -36,7 +31,7 @@ public class OperationalOutboundStreamActor extends Actor
   public OperationalOutboundStreamActor(
           final Node node,
           final ManagedOutboundChannelProvider provider,
-          final ConsumerByteBufferPool byteBufferPool) {
+          final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
     this.node = node;
     this.outbound = new Outbound(provider, byteBufferPool);
