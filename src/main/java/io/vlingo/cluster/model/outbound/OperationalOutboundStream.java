@@ -7,25 +7,26 @@
 
 package io.vlingo.cluster.model.outbound;
 
-import java.util.Collection;
-import java.util.Set;
-
 import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
 import io.vlingo.actors.Stoppable;
 import io.vlingo.cluster.model.message.ApplicationSays;
+import io.vlingo.common.pool.ResourcePool;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
-import io.vlingo.wire.message.ConsumerByteBufferPool;
+import io.vlingo.wire.message.ConsumerByteBuffer;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
+
+import java.util.Collection;
+import java.util.Set;
 
 public interface OperationalOutboundStream extends Stoppable {
   public static OperationalOutboundStream instance(
           final Stage stage,
           final Node node,
           final ManagedOutboundChannelProvider provider,
-          final ConsumerByteBufferPool byteBufferPool) {
+          final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
     final Definition definition =
             Definition.has(
@@ -42,12 +43,12 @@ public interface OperationalOutboundStream extends Stoppable {
   static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
     private final Node node;
     private final ManagedOutboundChannelProvider provider;
-    private final ConsumerByteBufferPool byteBufferPool;
+    private final ResourcePool<ConsumerByteBuffer, String> byteBufferPool;
 
     public OperationalOutboundStreamInstantiator(
             final Node node,
             final ManagedOutboundChannelProvider provider,
-            final ConsumerByteBufferPool byteBufferPool) {
+            final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
       this.node = node;
       this.provider = provider;
       this.byteBufferPool = byteBufferPool;
