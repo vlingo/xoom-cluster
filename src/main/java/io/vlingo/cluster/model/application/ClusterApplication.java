@@ -77,7 +77,7 @@ public interface ClusterApplication extends Startable, Stoppable {
     }
   }
 
-  void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder);
+  void handleApplicationMessage(final RawMessage message);
 
   void informAllLiveNodes(final Collection<Node> liveNodes, final boolean isHealthyCluster);
   void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading);
@@ -89,6 +89,7 @@ public interface ClusterApplication extends Startable, Stoppable {
   void informNodeLeftCluster(final Id nodeId, final boolean isHealthyCluster);
   void informQuorumAchieved();
   void informQuorumLost();
+  void informResponder(final ApplicationOutboundStream responder);
 
   void informAttributesClient(final AttributesProtocol client);
   void informAttributeSetCreated(final String attributeSetName);

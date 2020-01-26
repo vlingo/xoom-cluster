@@ -7,6 +7,8 @@
 
 package io.vlingo.cluster.model.application;
 
+import java.util.Collection;
+
 import io.vlingo.cluster.model.attribute.Attribute;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
@@ -14,12 +16,11 @@ import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
-import java.util.Collection;
-
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   private AttributesProtocol client;
   private final Node localNode;
-  
+  private ApplicationOutboundStream responder;
+
   public FakeClusterApplicationActor(final Node localNode) {
     this.localNode = localNode;
   }
@@ -30,7 +31,7 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message) {
      logger().debug("APP: Received application message: " + message.asTextMessage());
   }
 
@@ -95,6 +96,12 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   public void informQuorumLost() {
     logger().debug("APP: Quorum lost");
     printHealthy(false);
+  }
+
+  @Override
+  public void informResponder(final ApplicationOutboundStream responder) {
+    this.responder = responder;
+    logger().debug("APP: Informed of responder: " + this.responder);
   }
 
   @Override

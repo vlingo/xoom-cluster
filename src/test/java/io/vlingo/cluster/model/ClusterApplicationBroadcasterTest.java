@@ -76,31 +76,38 @@ public class ClusterApplicationBroadcasterTest extends AbstractClusterTest {
     broadcaster.informQuorumLost();
     assertEquals(1, application.informQuorumLost.get());
   }
-  
+
+  @Test
+  public void testInformResponder() throws Exception {
+    broadcaster.informResponder(null); // production must not be null
+    assertEquals(1, application.informResponder.get());
+  }
+
   @Test
   public void testInformAttributeSetCreated() throws Exception {
     broadcaster.informAttributeSetCreated("test");
     assertEquals(1, application.informAttributeSetCreated.get());
   }
-  
+
   @Test
   public void testInformAttributeAdded() throws Exception {
     broadcaster.informAttributeAdded("test", "test");
     assertEquals(1, application.informAttributeAdded.get());
   }
-  
+
   @Test
   public void testInformAttributeRemoved() throws Exception {
     broadcaster.informAttributeRemoved("test", "test");
     assertEquals(1, application.informAttributeRemoved.get());
   }
-  
+
   @Test
   public void testInformAttributeReplaced() throws Exception {
     broadcaster.informAttributeReplaced("test", "test");
     assertEquals(1, application.informAttributeReplaced.get());
   }
-  
+
+  @Override
   @Before
   public void setUp() throws Exception {
     super.setUp();

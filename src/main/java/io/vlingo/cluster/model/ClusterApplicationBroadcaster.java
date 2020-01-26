@@ -7,6 +7,11 @@
 
 package io.vlingo.cluster.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
+
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.application.ClusterApplication;
 import io.vlingo.cluster.model.attribute.AttributesProtocol;
@@ -14,11 +19,6 @@ import io.vlingo.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Consumer;
 
 class ClusterApplicationBroadcaster implements ClusterApplication {
   private List<ClusterApplication> clusterApplications;
@@ -88,6 +88,11 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
+  public void informResponder(final ApplicationOutboundStream responder) {
+    broadcast((app) -> app.informResponder(responder));
+  }
+
+  @Override
   public void informAttributesClient(final AttributesProtocol client) {
     broadcast((app) -> app.informAttributesClient(client));
   }
@@ -135,7 +140,8 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message) {
+    broadcast((app) -> app.handleApplicationMessage(message));
   }
 
   private void broadcast(final Consumer<ClusterApplication> inform) {

@@ -33,7 +33,7 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
   }
 
   @Override
-  public void handleApplicationMessage(final RawMessage message, final ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(final RawMessage message) {
   }
 
   @Override
@@ -74,6 +74,10 @@ public abstract class ClusterApplicationAdapter extends ClusterApplicationActor 
 
   @Override
   public void informQuorumLost() {
+  }
+
+  @Override
+  public void informResponder(final ApplicationOutboundStream responder) {
   }
 
   @Override

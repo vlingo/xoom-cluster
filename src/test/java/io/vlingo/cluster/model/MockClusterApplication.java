@@ -32,6 +32,7 @@ public class MockClusterApplication implements ClusterApplication {
   public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
   public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
   public AtomicInteger informQuorumLost = new AtomicInteger(0);
+  public AtomicInteger informResponder = new AtomicInteger(0);
 
   public AtomicInteger informAttributesClient = new AtomicInteger(0);
   public AtomicInteger informAttributeSetCreated = new AtomicInteger(0);
@@ -63,7 +64,7 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void handleApplicationMessage(RawMessage message, ApplicationOutboundStream responder) {
+  public void handleApplicationMessage(RawMessage message) {
     handleApplicationMessage.incrementAndGet();
   }
 
@@ -115,6 +116,11 @@ public class MockClusterApplication implements ClusterApplication {
   @Override
   public void informQuorumLost() {
     informQuorumLost.incrementAndGet();
+  }
+
+  @Override
+  public void informResponder(final ApplicationOutboundStream responder) {
+    informResponder.incrementAndGet();
   }
 
   @Override
