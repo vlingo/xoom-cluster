@@ -55,6 +55,8 @@ public interface ClusterSnapshotControl {
   void shutDown();
 
   static class ClusterSnapshotInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
+    private static final long serialVersionUID = -5766576644564817563L;
+
     final ClusterApplication application;
     final ClusterSnapshotInitializer initializer;
 

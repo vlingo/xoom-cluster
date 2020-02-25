@@ -7,6 +7,9 @@
 
 package io.vlingo.cluster.model.outbound;
 
+import java.util.Collection;
+import java.util.Set;
+
 import io.vlingo.actors.ActorInstantiator;
 import io.vlingo.actors.Definition;
 import io.vlingo.actors.Stage;
@@ -17,9 +20,6 @@ import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.wire.message.ConsumerByteBuffer;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
-
-import java.util.Collection;
-import java.util.Set;
 
 public interface OperationalOutboundStream extends Stoppable {
   public static OperationalOutboundStream instance(
@@ -41,6 +41,8 @@ public interface OperationalOutboundStream extends Stoppable {
   }
 
   static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
+    private static final long serialVersionUID = 8429839979141981981L;
+
     private final Node node;
     private final ManagedOutboundChannelProvider provider;
     private final ResourcePool<ConsumerByteBuffer, String> byteBufferPool;

@@ -39,6 +39,8 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
   }
 
   static class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {
+    private static final long serialVersionUID = 3269867041246996465L;
+
     private final Node node;
     private final ClusterApplication application;
     private final OperationalOutboundStream outbound;

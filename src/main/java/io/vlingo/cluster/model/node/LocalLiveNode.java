@@ -39,6 +39,8 @@ public interface LocalLiveNode extends Stoppable {
   }
 
   static class LocalLiveNodeInstantiator implements ActorInstantiator<LocalLiveNodeActor> {
+    private static final long serialVersionUID = -1254550990754440942L;
+
     private final Node node;
     private final ClusterSnapshot snapshot;
     private final io.vlingo.cluster.model.node.Registry registry;

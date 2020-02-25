@@ -84,6 +84,8 @@ public class Cluster {
   }
 
   static class ClusterSnapshotActorInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
+    private static final long serialVersionUID = 6105119774787607965L;
+
     private final ClusterApplication clusterApplication;
     private final ClusterSnapshotInitializer initializer;
 
