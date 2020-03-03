@@ -92,7 +92,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
   @After
   public void tearDown() {
     testWorld.terminate();
-    Cluster.reset();
   }
 
 

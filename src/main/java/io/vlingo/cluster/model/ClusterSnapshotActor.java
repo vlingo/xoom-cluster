@@ -88,7 +88,6 @@ public class ClusterSnapshotActor
   @Override
   public void shutDown() {
     if (isStopped()) {
-      Cluster.reset();
       return;
     }
 
@@ -98,7 +97,6 @@ public class ClusterSnapshotActor
     communicationsHub.close();
     stop();
     stage().world().terminate();
-    Cluster.reset();
   }
 
 

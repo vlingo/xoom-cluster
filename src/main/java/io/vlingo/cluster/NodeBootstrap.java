@@ -17,8 +17,6 @@ import io.vlingo.cluster.model.application.ClusterApplication.DefaultClusterAppl
 import io.vlingo.common.Tuple2;
 
 public final class NodeBootstrap {
-  private static NodeBootstrap instance;
-
   private final Tuple2<ClusterSnapshotControl, Logger> clusterSnapshotControl;
   private final ShutdownHook shutdownHook;
 
@@ -47,26 +45,20 @@ public final class NodeBootstrap {
   }
 
   public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
-    final boolean mustBoot = NodeBootstrap.instance == null || !Cluster.isRunning();
+    NodeBootstrap instance = null;
 
-    if (mustBoot) {
-      Properties.instance.validateRequired(nodeName);
+    Properties.instance.validateRequired(nodeName);
 
-      final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
+    final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
 
-      NodeBootstrap.instance = new NodeBootstrap(control, nodeName);
+    instance = new NodeBootstrap(control, nodeName);
 
-      control._2.info("Successfully started cluster node: '" + nodeName + "'");
+    control._2.info("Successfully started cluster node: '" + nodeName + "'");
 
-      if (!embedded) {
-        control._2.info("==========");
-      }
+    if (!embedded) {
+      control._2.info("==========");
     }
 
-    return NodeBootstrap.instance;
-  }
-
-  public static NodeBootstrap instance() {
     return instance;
   }
 
