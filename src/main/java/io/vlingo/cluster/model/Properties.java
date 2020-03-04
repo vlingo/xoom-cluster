@@ -36,10 +36,10 @@ public final class Properties {
     return new Properties(properties);
   }
 
-  static Properties openForTest(java.util.Properties properties) {
+  public static Properties openForTest(java.util.Properties properties) {
     return new Properties(properties);
   }
-  
+
   public int applicationBufferSize() {
     final int size = getInteger("cluster.app.buffer.size", 10240);
     return size;
@@ -96,7 +96,7 @@ public final class Properties {
 
     return classname;
   }
-  
+
   public final String clusterApplicationStageName() {
     final String name = getString("cluster.app.stage", "");
 
@@ -111,17 +111,17 @@ public final class Properties {
     final int interval = getInteger("cluster.attributes.redistribution.interval", 1000);
     return interval;
   }
-  
+
   public int clusterAttributesRedistributionRetries() {
     final int interval = getInteger("cluster.attributes.redistribution.retries", 10);
     return interval;
   }
-  
+
   public long clusterHealthCheckInterval() {
     final int interval = getInteger("cluster.health.check.interval", 3000);
     return interval;
   }
-  
+
   public long clusterHeartbeatInterval() {
     final int interval = getInteger("cluster.heartbeat.interval", 7000);
     return interval;
@@ -194,7 +194,7 @@ public final class Properties {
 
     return pooledBuffers;
   }
-  
+
   public int operationalPort(String nodeName) {
     final int port = getInteger(nodeName, "op.port", 0);
 
