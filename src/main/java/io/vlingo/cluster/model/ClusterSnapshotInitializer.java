@@ -10,13 +10,12 @@ package io.vlingo.cluster.model;
 import io.vlingo.actors.Logger;
 import io.vlingo.cluster.model.node.LocalRegistry;
 import io.vlingo.cluster.model.node.Registry;
-import io.vlingo.wire.node.Configuration;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 class ClusterSnapshotInitializer {
   private final CommunicationsHub communicationsHub;
-  private final Configuration configuration;
+  private final ClusterConfiguration configuration;
   private final Node localNode;
   private final Id localNodeId;
   private final Registry registry;
@@ -37,7 +36,7 @@ class ClusterSnapshotInitializer {
     return this.communicationsHub;
   }
 
-  Configuration configuration() {
+  ClusterConfiguration configuration() {
     return configuration;
   }
 

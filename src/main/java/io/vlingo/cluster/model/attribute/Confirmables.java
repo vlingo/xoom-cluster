@@ -7,11 +7,7 @@
 
 package io.vlingo.cluster.model.attribute;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import io.vlingo.cluster.model.Properties;
 import io.vlingo.cluster.model.attribute.message.ApplicationMessage;
@@ -58,7 +54,7 @@ final class Confirmables {
 
   Confirmable confirmableOf(final String trackingId) {
     for (final Confirmable confirmable : expectedConfirmables) {
-      if (confirmable.trackingId.equals(trackingId)) {
+      if (Objects.equals(confirmable.trackingId(), trackingId)) {
         return confirmable;
       }
     }
@@ -79,30 +75,48 @@ final class Confirmables {
   }
 
   static final class Confirmable {
-    static final int TotalRetries = Properties.instance.clusterAttributesRedistributionRetries();
     static final Confirmable NoConfirmable = new Confirmable();
-    
+
+    private final int clusterAttributesRedistributionRetries;
+    private final long clusterAttributesRedistributionInterval;
     private final long createdOn;
     private final ApplicationMessage message;
-    private final String trackingId;
     private Map<Node, Integer> unconfirmedNodes;
     
     Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
+      this(message, allOtherNodes, System.currentTimeMillis(), Properties.instance);
+    }
+
+    Confirmable(final ApplicationMessage message,
+                final Collection<Node> allOtherNodes,
+                final long createdOn,
+                final Properties clusterProperties) {
       this.message = message;
       this.unconfirmedNodes = allUnconfirmedFor(allOtherNodes);
-      this.createdOn = System.currentTimeMillis();
-      this.trackingId = message.trackingId;
+      this.createdOn = createdOn;
+
+      this.clusterAttributesRedistributionRetries =
+          clusterProperties.clusterAttributesRedistributionRetries();
+      this.clusterAttributesRedistributionInterval =
+          clusterProperties.clusterAttributesRedistributionInterval();
+
     }
 
     private Confirmable() {
-      this.message = null;
-      this.unconfirmedNodes = new HashMap<>(0);
-      this.createdOn = 0L;
-      this.trackingId = "";
+      this(null,
+          Collections.emptyList(),
+          System.currentTimeMillis(),
+          Properties.instance);
+    }
+
+    private static String apply(ApplicationMessage m) {
+      return m.trackingId;
     }
 
     private Map<Node, Integer> allUnconfirmedFor(final Collection<Node> allOtherNodes) {
-      final Map<Node, Integer> allUnconfirmed = new HashMap<>(allOtherNodes.size());
+      final Map<Node, Integer> allUnconfirmed =
+          new HashMap<>(allOtherNodes.size(), 1);
+
       for (final Node node : allOtherNodes) {
         allUnconfirmed.put(node, 0);
       }
@@ -122,13 +136,13 @@ final class Confirmables {
     }
 
     boolean isRedistributableAsOf() {
-      final long targetTime = createdOn + Properties.instance.clusterAttributesRedistributionInterval();
+      final long targetTime = createdOn + clusterAttributesRedistributionInterval;
       if (targetTime < System.currentTimeMillis()) {
         final Map<Node, Integer> allUnconfirmed = new HashMap<>(unconfirmedNodes.size());
         
         for (final Node node : unconfirmedNodes.keySet()) {
           final int tries = unconfirmedNodes.get(node) + 1;
-          if (tries <= TotalRetries) {
+          if (tries <= clusterAttributesRedistributionRetries) {
             allUnconfirmed.put(node, tries);
           }
         }
@@ -148,13 +162,17 @@ final class Confirmables {
       if (other == null || other.getClass() != Confirmable.class) {
         return false;
       }
-      
-      return this.trackingId.equals(((Confirmable)other).trackingId);
+
+      return Objects.equals(this.trackingId(), ((Confirmable)other).trackingId());
+    }
+
+    String trackingId() {
+      return (message != null) ? message.trackingId : null;
     }
     
     @Override
     public String toString() {
-      return "Confirmable[trackingId=" + trackingId + " nodes=" + unconfirmedNodes + "]";
+      return "Confirmable[trackingId=" + trackingId() + " nodes=" + unconfirmedNodes + "]";
     }
   }
 }
