@@ -52,7 +52,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
   throws Exception {
 
     final RSocketInboundChannelReaderProvider channelReaderProvider = new RSocketInboundChannelReaderProvider(
-            Properties.instance.operationalBufferSize(), stage.world().defaultLogger());
+            properties.operationalBufferSize(), stage.world().defaultLogger());
 
     this.operationalInboundStream =
             InboundStream.instance(

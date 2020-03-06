@@ -23,13 +23,20 @@ import io.vlingo.wire.node.Node;
 
 public class ClusterConfiguration implements Configuration {
   private final Logger logger;
+  private final Properties properties;
   private final Set<Node> nodes;
 
   public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
+    this.properties = properties;
     this.nodes = new TreeSet<Node>();
 
     initializeConfiguredNodeEntries(properties);
+  }
+
+
+  public Properties properties() {
+    return properties;
   }
 
   @Override
