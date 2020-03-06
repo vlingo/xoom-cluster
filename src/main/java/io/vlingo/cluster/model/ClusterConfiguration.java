@@ -158,7 +158,7 @@ public class ClusterConfiguration implements Configuration {
   }
 
   private void initializeConfiguredNodeEntries(final Properties properties) {
-    for (String configuredNodeName : Properties.instance.seedNodes()) {
+    for (String configuredNodeName : properties.seedNodes()) {
       final Id nodeId = Id.of(properties.nodeId(configuredNodeName));
       final Name nodeName = new Name(configuredNodeName);
       final Host host = Host.of(properties.host(configuredNodeName));
