@@ -8,7 +8,7 @@
 package io.vlingo.cluster.model.attribute;
 
 public final class Attribute<T> {
-  public static enum Type {
+  public enum Type {
     Byte { @Override public boolean isByte() { return true; } },
     Short { @Override public boolean isShort() { return true; } },
     Integer { @Override public boolean isInteger() { return true; } },

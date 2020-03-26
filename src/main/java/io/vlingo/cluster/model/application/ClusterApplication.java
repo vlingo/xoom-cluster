@@ -44,7 +44,7 @@ public interface ClusterApplication extends Startable, Stoppable {
             Definition.has(instantator.type(), instantator, "cluster-application"));
   }
 
-  static abstract class ClusterApplicationInstantiator<A extends Actor> implements ActorInstantiator<A> {
+  abstract class ClusterApplicationInstantiator<A extends Actor> implements ActorInstantiator<A> {
     private static final long serialVersionUID = -2002705648453794614L;
 
     private Node node;
@@ -68,7 +68,7 @@ public interface ClusterApplication extends Startable, Stoppable {
     }
   }
 
-  static class DefaultClusterApplicationInstantiator extends ClusterApplicationInstantiator<FakeClusterApplicationActor> {
+  class DefaultClusterApplicationInstantiator extends ClusterApplicationInstantiator<FakeClusterApplicationActor> {
     private static final long serialVersionUID = -4275208628986318945L;
 
     public DefaultClusterApplicationInstantiator() {

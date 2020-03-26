@@ -17,11 +17,11 @@ import io.vlingo.cluster.model.application.ClusterApplication.ClusterApplication
 import io.vlingo.common.Tuple2;
 
 public interface ClusterSnapshotControl {
-  public static Tuple2<ClusterSnapshotControl, Logger> instance(
-          final World world,
-          final ClusterApplicationInstantiator<?> instantiator,
-          final Properties properties,
-          final String nodeName) {
+  static Tuple2<ClusterSnapshotControl, Logger> instance(
+      final World world,
+      final ClusterApplicationInstantiator<?> instantiator,
+      final Properties properties,
+      final String nodeName) {
 
     final String stageName = properties.clusterApplicationStageName();
     final Stage stage = world.stageNamed(stageName);
@@ -29,12 +29,12 @@ public interface ClusterSnapshotControl {
     return instance(world, stage, instantiator, properties, nodeName);
   }
 
-  public static Tuple2<ClusterSnapshotControl, Logger> instance(
-          final World world,
-          final Stage stage,
-          final ClusterApplicationInstantiator<?> instantiator,
-          final Properties properties,
-          final String nodeName) {
+  static Tuple2<ClusterSnapshotControl, Logger> instance(
+      final World world,
+      final Stage stage,
+      final ClusterApplicationInstantiator<?> instantiator,
+      final Properties properties,
+      final String nodeName) {
 
     final ClusterSnapshotInitializer initializer = new ClusterSnapshotInitializer(nodeName, properties, world.defaultLogger());
     instantiator.node(initializer.localNode());
@@ -54,7 +54,7 @@ public interface ClusterSnapshotControl {
 
   void shutDown();
 
-  static class ClusterSnapshotInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
+  class ClusterSnapshotInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
     private static final long serialVersionUID = -5766576644564817563L;
 
     final ClusterApplication application;
