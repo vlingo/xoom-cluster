@@ -14,16 +14,13 @@ import io.vlingo.wire.node.Node;
 
 public class MessageConverters {
   public static void messageToBytes(final ApplicationSays app, final ByteBuffer buffer) {
-    final StringBuilder builder = new StringBuilder(OperationalMessage.APP).append("\n");
-    
-    builder
-      .append("id=").append(app.id().value())
-      .append(" nm=").append(app.name().value())
-      .append(" si=").append(app.saysId())
-      .append("\n").append(app.payload());
-    
-    final byte[] bytes = Converters.textToBytes(builder.toString());
+    final String message = OperationalMessage.APP + "\n" +
+        "id=" + app.id().value() +
+        " nm=" + app.name().value() +
+        " si=" + app.saysId() +
+        "\n" + app.payload();
 
+    final byte[] bytes = Converters.textToBytes(message);
     buffer.put(bytes);
   }
 
@@ -57,23 +54,21 @@ public class MessageConverters {
   }
 
   public static void messageToBytes(final Join join, final ByteBuffer buffer) {
-    final StringBuilder builder =
-        new StringBuilder(OperationalMessage.JOIN)
-            .append("\n")
-            .append("id=")
-            .append(join.node().id().value())
-            .append(" nm=")
-            .append(join.node().name().value())
-            .append(" op=")
-            .append(join.node().operationalAddress().hostName())
-            .append(":")
-            .append(join.node().operationalAddress().port())
-            .append(" app=")
-            .append(join.node().applicationAddress().hostName())
-            .append(":")
-            .append(join.node().applicationAddress().port());
-
-    final byte[] bytes = Converters.textToBytes(builder.toString());
+    final String message = OperationalMessage.JOIN +
+        "\n" +
+        "id=" +
+        join.node().id().value() +
+        " nm=" +
+        join.node().name().value() +
+        " op=" +
+        join.node().operationalAddress().hostName() +
+        ":" +
+        join.node().operationalAddress().port() +
+        " app=" +
+        join.node().applicationAddress().hostName() +
+        ":" +
+        join.node().applicationAddress().port();
+    final byte[] bytes = Converters.textToBytes(message);
 
     buffer.put(bytes);
   }
@@ -103,13 +98,12 @@ public class MessageConverters {
   }
 
   private static void basicMessageToBytes(final OperationalMessage message, final String type, final ByteBuffer buffer) {
-    final StringBuilder builder =
-        new StringBuilder(type)
-            .append("\n")
-            .append("id=")
-            .append(message.id().value());
 
-    final byte[] bytes = Converters.textToBytes(builder.toString());
+    final String _message = type +
+        "\n" +
+        "id=" +
+        message.id().value();
+    final byte[] bytes = Converters.textToBytes(_message);
 
     buffer.clear();
     buffer.put(bytes);

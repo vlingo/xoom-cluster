@@ -20,19 +20,14 @@ public final class ConfirmCreateAttributeSet extends ApplicationMessage {
   
   @Override
   public String toPayload() {
-    final StringBuffer buffer = new StringBuffer();
-    
-    buffer
-      .append(getClass().getSimpleName())
-      .append("\n")
-      .append(correlatingMessageId)
-      .append("\n")
-      .append(trackingId)
-      .append("\n")
-      .append(type.name())
-      .append("\n")
-      .append(attributeSetName);
-    
-    return buffer.toString();
+    return getClass().getSimpleName() +
+        "\n" +
+        correlatingMessageId +
+        "\n" +
+        trackingId +
+        "\n" +
+        type.name() +
+        "\n" +
+        attributeSetName;
   }
 }
