@@ -20,9 +20,8 @@ class OperationalMessagePartsBuilder {
     if (index1 == -1) return "";
     final int index2 = content.indexOf('\n', index1+1);
     if (index2 == -1) return "";
-    final String payload = content.substring(index2+1);
-    
-    return payload;
+
+    return content.substring(index2+1);
   }
 
   public static String saysIdFrom(final String content) {
@@ -32,9 +31,7 @@ class OperationalMessagePartsBuilder {
       return "";
     }
 
-    final String saysId = MessagePartsBuilder.parseField(parts[2], "si=");
-    
-    return saysId;
+    return MessagePartsBuilder.parseField(parts[2], "si=");
   }
 
   static Set<Node> nodesFrom(String content) {

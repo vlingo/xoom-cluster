@@ -33,9 +33,7 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
                     new AttributesAgentInstantiator(node, application, outbound, configuration),
                     "attributes-agent");
 
-    AttributesAgent attributesAgent = stage.actorFor(AttributesAgent.class, definition);
-
-    return attributesAgent;
+    return stage.actorFor(AttributesAgent.class, definition);
   }
 
   static class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {

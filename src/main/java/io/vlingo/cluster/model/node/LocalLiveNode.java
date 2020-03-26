@@ -33,9 +33,7 @@ public interface LocalLiveNode extends Stoppable {
                     new LocalLiveNodeInstantiator(node, snapshot, registry, outbound, configuration),
                     "local-live-node");
 
-    LocalLiveNode localLiveNode = stage.actorFor(LocalLiveNode.class, definition);
-
-    return localLiveNode;
+    return stage.actorFor(LocalLiveNode.class, definition);
   }
 
   static class LocalLiveNodeInstantiator implements ActorInstantiator<LocalLiveNodeActor> {

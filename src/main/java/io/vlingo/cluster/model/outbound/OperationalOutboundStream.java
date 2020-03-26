@@ -34,10 +34,7 @@ public interface OperationalOutboundStream extends Stoppable {
                     new OperationalOutboundStreamInstantiator(node, provider, byteBufferPool),
                     "cluster-operational-outbound-stream");
 
-    final OperationalOutboundStream operationalOutboundStream =
-            stage.actorFor(OperationalOutboundStream.class, definition);
-
-    return operationalOutboundStream;
+    return stage.actorFor(OperationalOutboundStream.class, definition);
   }
 
   static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {

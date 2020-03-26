@@ -19,7 +19,6 @@ import io.vlingo.wire.node.Node;
 public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   private AttributesProtocol client;
   private final Node localNode;
-  private ApplicationOutboundStream responder;
 
   public FakeClusterApplicationActor(final Node localNode) {
     this.localNode = localNode;
@@ -100,8 +99,7 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
 
   @Override
   public void informResponder(final ApplicationOutboundStream responder) {
-    this.responder = responder;
-    logger().debug("APP: Informed of responder: " + this.responder);
+    logger().debug("APP: Informed of responder: " + responder);
   }
 
   @Override

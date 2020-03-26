@@ -18,7 +18,6 @@ import io.vlingo.common.Tuple2;
 
 public final class NodeBootstrap {
   private final Tuple2<ClusterSnapshotControl, Logger> clusterSnapshotControl;
-  private final ShutdownHook shutdownHook;
 
   public static void main(final String[] args) throws Exception {
     if (args.length == 1) {
@@ -69,7 +68,7 @@ public final class NodeBootstrap {
   private NodeBootstrap(final Tuple2<ClusterSnapshotControl, Logger> control, final String nodeName) throws Exception {
     this.clusterSnapshotControl = control;
 
-    this.shutdownHook = new ShutdownHook(nodeName, control);
-    this.shutdownHook.register();
+    ShutdownHook shutdownHook = new ShutdownHook(nodeName, control);
+    shutdownHook.register();
   }
 }
