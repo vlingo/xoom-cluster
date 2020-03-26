@@ -42,8 +42,7 @@ public class Cluster {
           final Stage stage,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
+          final String nodeName) {
 
     if (isRunningInside(world)) {
       throw new IllegalArgumentException("Cluster is already running inside World: " + world.name());

@@ -20,7 +20,7 @@ final class ShutdownHook {
     this.control = control;
   }
 
-  protected void register() throws Exception {
+  protected void register() {
     Runtime.getRuntime().addShutdownHook(new Thread(() -> {
       control._2.info("\n==========");
       control._2.info("Stopping node: '" + nodeName + "' ...");
