@@ -1,11 +1,7 @@
 package io.vlingo.cluster.model.node;
 
-import io.vlingo.actors.Actor;
-import io.vlingo.actors.ActorProxyBase;
-import io.vlingo.actors.DeadLetter;
+import io.vlingo.actors.*;
 import io.vlingo.actors.Definition.SerializationProxy;
-import io.vlingo.actors.LocalMessage;
-import io.vlingo.actors.Mailbox;
 import io.vlingo.common.SerializableConsumer;
 
 public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model.node.LocalLiveNode> implements io.vlingo.cluster.model.node.LocalLiveNode {
@@ -58,7 +54,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<LocalLiveNode> self = this;
-      final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.stop();
+      final SerializableConsumer<LocalLiveNode> consumer = Stoppable::stop;
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, stopRepresentation3); }
       else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, stopRepresentation3)); }
     } else {
@@ -70,7 +66,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<LocalLiveNode> self = this;
-      final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.isStopped();
+      final SerializableConsumer<LocalLiveNode> consumer = Stoppable::isStopped;
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, isStoppedRepresentation4); }
       else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, isStoppedRepresentation4)); }
     } else {
@@ -83,7 +79,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<LocalLiveNode> self = this;
-      final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.conclude();
+      final SerializableConsumer<LocalLiveNode> consumer = Stoppable::conclude;
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, concludeRepresentation5); }
       else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, concludeRepresentation5)); }
     } else {

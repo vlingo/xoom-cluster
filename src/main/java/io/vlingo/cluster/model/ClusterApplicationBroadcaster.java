@@ -79,12 +79,12 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
 
   @Override
   public void informQuorumAchieved() {
-    broadcast((app) -> app.informQuorumAchieved());
+    broadcast(ClusterApplication::informQuorumAchieved);
   }
 
   @Override
   public void informQuorumLost() {
-    broadcast((app) -> app.informQuorumLost());
+    broadcast(ClusterApplication::informQuorumLost);
   }
 
   @Override

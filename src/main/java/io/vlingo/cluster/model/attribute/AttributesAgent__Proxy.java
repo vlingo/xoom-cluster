@@ -104,7 +104,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
   @Override
   public void conclude() {
     if (!actor.isStopped()) {
-      final SerializableConsumer<Stoppable> consumer = (actor) -> actor.conclude();
+      final SerializableConsumer<Stoppable> consumer = Stoppable::conclude;
       if (mailbox.isPreallocated()) { mailbox.send(actor, Stoppable.class, consumer, null, representationConclude0); }
       else { mailbox.send(new LocalMessage<>(actor, Stoppable.class, consumer, representationConclude0)); }
     } else {
@@ -114,7 +114,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
   @Override
   public void stop() {
     if (!actor.isStopped()) {
-      final SerializableConsumer<AttributesAgent> consumer = (actor) -> actor.stop();
+      final SerializableConsumer<AttributesAgent> consumer = Stoppable::stop;
       if (mailbox.isPreallocated()) { mailbox.send(actor, AttributesAgent.class, consumer, null, stopRepresentation8); }
       else { mailbox.send(new LocalMessage<>(actor, AttributesAgent.class, consumer, stopRepresentation8)); }
     } else {
@@ -124,7 +124,7 @@ public class AttributesAgent__Proxy implements io.vlingo.cluster.model.attribute
   @Override
   public boolean isStopped() {
     if (!actor.isStopped()) {
-      final SerializableConsumer<AttributesAgent> consumer = (actor) -> actor.isStopped();
+      final SerializableConsumer<AttributesAgent> consumer = Stoppable::isStopped;
       if (mailbox.isPreallocated()) { mailbox.send(actor, AttributesAgent.class, consumer, null, isStoppedRepresentation9); }
       else { mailbox.send(new LocalMessage<>(actor, AttributesAgent.class, consumer, isStoppedRepresentation9)); }
     } else {

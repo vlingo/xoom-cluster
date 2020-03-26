@@ -7,12 +7,8 @@
 
 package io.vlingo.cluster.model.application;
 
-import io.vlingo.actors.Actor;
-import io.vlingo.actors.ActorProxyBase;
-import io.vlingo.actors.DeadLetter;
+import io.vlingo.actors.*;
 import io.vlingo.actors.Definition.SerializationProxy;
-import io.vlingo.actors.LocalMessage;
-import io.vlingo.actors.Mailbox;
 import io.vlingo.common.SerializableConsumer;
 
 public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.model.application.ClusterApplication> implements io.vlingo.cluster.model.application.ClusterApplication {
@@ -170,7 +166,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informQuorumAchieved();
+      final SerializableConsumer<ClusterApplication> consumer = ClusterApplication::informQuorumAchieved;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informQuorumAchievedRepresentation11); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informQuorumAchievedRepresentation11)); }
     } else {
@@ -182,7 +178,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informQuorumLost();
+      final SerializableConsumer<ClusterApplication> consumer = ClusterApplication::informQuorumLost;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informQuorumLostRepresentation12); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informQuorumLostRepresentation12)); }
     } else {
@@ -260,7 +256,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.start();
+      final SerializableConsumer<ClusterApplication> consumer = Startable::start;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, startRepresentation19); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, startRepresentation19)); }
     } else {
@@ -272,7 +268,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.stop();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::stop;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, stopRepresentation20); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, stopRepresentation20)); }
     } else {
@@ -284,7 +280,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.conclude();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::conclude;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, concludeRepresentation21); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, concludeRepresentation21)); }
     } else {
@@ -296,7 +292,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.isStopped();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::isStopped;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, isStoppedRepresentation22); }
       else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, isStoppedRepresentation22)); }
     } else {

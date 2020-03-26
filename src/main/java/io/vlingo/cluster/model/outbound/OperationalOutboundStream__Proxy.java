@@ -7,12 +7,8 @@
 
 package io.vlingo.cluster.model.outbound;
 
-import io.vlingo.actors.Actor;
-import io.vlingo.actors.ActorProxyBase;
-import io.vlingo.actors.DeadLetter;
+import io.vlingo.actors.*;
 import io.vlingo.actors.Definition.SerializationProxy;
-import io.vlingo.actors.LocalMessage;
-import io.vlingo.actors.Mailbox;
 import io.vlingo.common.SerializableConsumer;
 
 public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.cluster.model.outbound.OperationalOutboundStream> implements io.vlingo.cluster.model.outbound.OperationalOutboundStream {
@@ -66,7 +62,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.join();
+      final SerializableConsumer<OperationalOutboundStream> consumer = OperationalOutboundStream::join;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, joinRepresentation2); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, joinRepresentation2)); }
     } else {
@@ -122,7 +118,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.leave();
+      final SerializableConsumer<OperationalOutboundStream> consumer = OperationalOutboundStream::leave;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, leaveRepresentation7); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, leaveRepresentation7)); }
     } else {
@@ -146,7 +142,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.pulse();
+      final SerializableConsumer<OperationalOutboundStream> consumer = OperationalOutboundStream::pulse;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, pulseRepresentation9); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, pulseRepresentation9)); }
     } else {
@@ -191,7 +187,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.leader();
+      final SerializableConsumer<OperationalOutboundStream> consumer = OperationalOutboundStream::leader;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, leaderRepresentation13); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, leaderRepresentation13)); }
     } else {
@@ -214,7 +210,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.stop();
+      final SerializableConsumer<OperationalOutboundStream> consumer = Stoppable::stop;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, stopRepresentation15); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, stopRepresentation15)); }
     } else {
@@ -226,7 +222,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.isStopped();
+      final SerializableConsumer<OperationalOutboundStream> consumer = Stoppable::isStopped;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, isStoppedRepresentation16); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, isStoppedRepresentation16)); }
     } else {
@@ -239,7 +235,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<OperationalOutboundStream> self = this;
-      final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.conclude();
+      final SerializableConsumer<OperationalOutboundStream> consumer = Stoppable::conclude;
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, concludeRepresentation17); }
       else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, concludeRepresentation17)); }
     } else {
