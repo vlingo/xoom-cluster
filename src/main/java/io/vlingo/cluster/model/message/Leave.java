@@ -10,7 +10,7 @@ package io.vlingo.cluster.model.message;
 import io.vlingo.wire.node.Id;
 
 public final class Leave extends OperationalMessage {
-  public static final Leave from(final String content) {
+  public static Leave from(final String content) {
     return new Leave(OperationalMessagePartsBuilder.idFrom(content));
   }
 

@@ -17,7 +17,7 @@ public final class ApplicationSays extends OperationalMessage {
   public final String payload;
   public final String saysId;
 
-  public static final ApplicationSays from(final String content) {
+  public static ApplicationSays from(final String content) {
     final Id id = OperationalMessagePartsBuilder.idFrom(content);
     final Name name = OperationalMessagePartsBuilder.nameFrom(content);
     final String saysId = OperationalMessagePartsBuilder.saysIdFrom(content);

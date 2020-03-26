@@ -37,19 +37,19 @@ class OperationalMessagePartsBuilder {
     return saysId;
   }
 
-  static final Set<Node> nodesFrom(String content) {
+  static Set<Node> nodesFrom(String content) {
     return MessagePartsBuilder.nodesFrom(content);
   }
 
-  static final Node nodeFrom(final String content) {
+  static Node nodeFrom(final String content) {
     return MessagePartsBuilder.nodeFrom(content);
   }
 
-  static final Id idFrom(final String content) {
+  static Id idFrom(final String content) {
     return MessagePartsBuilder.idFrom(content);
   }
 
-  static final Name nameFrom(final String content) {
+  static Name nameFrom(final String content) {
     return MessagePartsBuilder.nameFrom(content);
   }
 }

@@ -12,7 +12,7 @@ import io.vlingo.wire.node.Node;
 public final class Join extends OperationalMessage {
   private final Node node;
 
-  public static final Join from(final String content) {
+  public static Join from(final String content) {
     return new Join(OperationalMessagePartsBuilder.nodeFrom(content));
   }
 

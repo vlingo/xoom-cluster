@@ -10,7 +10,7 @@ package io.vlingo.cluster.model.message;
 import io.vlingo.wire.node.Id;
 
 public final class Elect extends OperationalMessage {
-  public static final Elect from(final String content) {
+  public static Elect from(final String content) {
     return new Elect(OperationalMessagePartsBuilder.idFrom(content));
   }
 
