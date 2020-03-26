@@ -42,7 +42,7 @@ public class ClusterConfiguration implements Configuration {
   public Set<Node> allNodesOf(final Collection<Id> ids) {
     // Currently not used
 
-    return new TreeSet<Node>();
+    return new TreeSet<>();
   }
 
   @Override
