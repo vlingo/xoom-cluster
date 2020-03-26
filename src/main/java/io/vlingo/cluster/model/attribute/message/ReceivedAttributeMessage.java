@@ -7,14 +7,14 @@
 
 package io.vlingo.cluster.model.attribute.message;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import io.vlingo.cluster.model.attribute.Attribute;
 import io.vlingo.cluster.model.message.ApplicationSays;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Name;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public final class ReceivedAttributeMessage {
   private static final String SourceNodeIdKey = "sourceNodeIdKey";
@@ -108,48 +108,39 @@ public final class ReceivedAttributeMessage {
     final String[] parsed = says.payload().split("\n");
     
     map.put(ClassOfMessageKey, parsed[0]);
-    
+
     switch (parsed[0]) {
-    case "ConfirmCreateAttributeSet":
-      map.put(CorrelatingMessageIdKey, parsed[1]);
-      map.put(TrackingIdKey, parsed[2]);
-      map.put(MessageTypeKey, parsed[3]);
-      map.put(AttributeSetNameKey, parsed[4]);
-      break;
-    case "ConfirmRemoveAttributeSet":
-      map.put(CorrelatingMessageIdKey, parsed[1]);
-      map.put(TrackingIdKey, parsed[2]);
-      map.put(MessageTypeKey, parsed[3]);
-      map.put(AttributeSetNameKey, parsed[4]);
-      break;
-    case "ConfirmAttribute":
-      map.put(CorrelatingMessageIdKey, parsed[1]);
-      map.put(TrackingIdKey, parsed[2]);
-      map.put(MessageTypeKey, parsed[3]);
-      map.put(AttributeSetNameKey, parsed[4]);
-      map.put(AttributeNameKey, parsed[5]);
-      break;
-    case "CreateAttributeSet":
-      map.put(TrackingIdKey, parsed[1]);
-      map.put(MessageTypeKey, parsed[2]);
-      map.put(AttributeSetNameKey, parsed[3]);
-      break;
-    case "RemoveAttributeSet":
-      map.put(TrackingIdKey, parsed[1]);
-      map.put(MessageTypeKey, parsed[2]);
-      map.put(AttributeSetNameKey, parsed[3]);
-      break;
-    case "AddAttribute":
-    case "RemoveAttribute":
-    case "ReplaceAttribute":
-      map.put(CorrelatingMessageIdKey, parsed[1]);
-      map.put(TrackingIdKey, parsed[2]);
-      map.put(MessageTypeKey, parsed[3]);
-      map.put(AttributeSetNameKey, parsed[4]);
-      map.put(AttributeNameKey, parsed[5]);
-      map.put(AttributeTypeKey, parsed[6]);
-      map.put(AttributeValueKey, parsed[7]);
-      break;
+      case "ConfirmCreateAttributeSet":
+      case "ConfirmRemoveAttributeSet":
+        map.put(CorrelatingMessageIdKey, parsed[1]);
+        map.put(TrackingIdKey, parsed[2]);
+        map.put(MessageTypeKey, parsed[3]);
+        map.put(AttributeSetNameKey, parsed[4]);
+        break;
+      case "ConfirmAttribute":
+        map.put(CorrelatingMessageIdKey, parsed[1]);
+        map.put(TrackingIdKey, parsed[2]);
+        map.put(MessageTypeKey, parsed[3]);
+        map.put(AttributeSetNameKey, parsed[4]);
+        map.put(AttributeNameKey, parsed[5]);
+        break;
+      case "CreateAttributeSet":
+      case "RemoveAttributeSet":
+        map.put(TrackingIdKey, parsed[1]);
+        map.put(MessageTypeKey, parsed[2]);
+        map.put(AttributeSetNameKey, parsed[3]);
+        break;
+      case "AddAttribute":
+      case "RemoveAttribute":
+      case "ReplaceAttribute":
+        map.put(CorrelatingMessageIdKey, parsed[1]);
+        map.put(TrackingIdKey, parsed[2]);
+        map.put(MessageTypeKey, parsed[3]);
+        map.put(AttributeSetNameKey, parsed[4]);
+        map.put(AttributeNameKey, parsed[5]);
+        map.put(AttributeTypeKey, parsed[6]);
+        map.put(AttributeValueKey, parsed[7]);
+        break;
     }
     
     return map;
