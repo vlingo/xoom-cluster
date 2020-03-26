@@ -283,7 +283,7 @@ public final class Properties {
     this.properties = properties;
   }
 
-  private final String key(final String nodeName, final String key) {
+  private String key(final String nodeName, final String key) {
     if (nodeName == null || nodeName.length() == 0) {
       return key;
     }

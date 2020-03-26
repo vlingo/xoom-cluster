@@ -79,7 +79,7 @@ public final class Directory extends OperationalMessage {
     return "Directory[" + id() + "," + name + "," + nodes + "]";
   }
 
-  private final Set<Node> sorted(Set<Node> nodes) {
+  private Set<Node> sorted(Set<Node> nodes) {
     return new TreeSet<Node>(nodes);
   }
 }
