@@ -80,6 +80,6 @@ public final class Directory extends OperationalMessage {
   }
 
   private Set<Node> sorted(Set<Node> nodes) {
-    return new TreeSet<Node>(nodes);
+    return new TreeSet<>(nodes);
   }
 }

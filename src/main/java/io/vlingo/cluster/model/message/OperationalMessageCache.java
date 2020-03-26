@@ -21,7 +21,7 @@ public class OperationalMessageCache {
   private final Node node;
 
   public OperationalMessageCache(final Node node) {
-    this.messages = new HashMap<String, RawMessage>();
+    this.messages = new HashMap<>();
     this.node = node;
 
     cacheValidTypes();

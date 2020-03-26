@@ -199,7 +199,7 @@ public final class Properties {
   }
 
   public final List<String> seedNodes() {
-    final List<String> seedNodes = new ArrayList<String>();
+    final List<String> seedNodes = new ArrayList<>();
 
     final String commaSeparated = getString("cluster.seedNodes", "");
 

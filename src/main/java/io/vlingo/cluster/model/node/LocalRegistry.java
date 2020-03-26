@@ -31,7 +31,7 @@ public final class LocalRegistry implements Registry {
     this.configuration = confirguration;
     this.logger = logger;
     this.broadcaster = new RegistryInterestBroadcaster(logger);
-    this.registry = new TreeMap<Id, RegisteredNodeStatus>();
+    this.registry = new TreeMap<>();
   }
 
   //======================================
@@ -42,7 +42,7 @@ public final class LocalRegistry implements Registry {
     final long currentTime = System.currentTimeMillis();
     final long liveNodeTimeout = Properties.instance.clusterLiveNodeTimeout();
 
-    final Map<Id, RegisteredNodeStatus> nodesToKeep = new TreeMap<Id, RegisteredNodeStatus>();
+    final Map<Id, RegisteredNodeStatus> nodesToKeep = new TreeMap<>();
 
     for (final RegisteredNodeStatus status : registry.values()) {
       if (!status.isTimedOut(currentTime, liveNodeTimeout)) {
@@ -132,7 +132,7 @@ public final class LocalRegistry implements Registry {
 
   @Override
   public Set<Node> liveNodes() {
-    final Set<Node> liveNodes = new TreeSet<Node>();
+    final Set<Node> liveNodes = new TreeSet<>();
     for (RegisteredNodeStatus status : registry.values()) {
       liveNodes.add(status.node());
     }
@@ -174,8 +174,8 @@ public final class LocalRegistry implements Registry {
 
   @Override
   public void mergeAllDirectoryEntries(final Collection<Node> leaderRegisteredNodes) {
-    final Set<MergeResult> result = new TreeSet<MergeResult>();
-    final Map<Id, RegisteredNodeStatus> mergedNodes = new TreeMap<Id, RegisteredNodeStatus>();
+    final Set<MergeResult> result = new TreeSet<>();
+    final Map<Id, RegisteredNodeStatus> mergedNodes = new TreeMap<>();
 
     for (final Node node : leaderRegisteredNodes) {
       mergedNodes.put(node.id(), new RegisteredNodeStatus(node, isLeader(node.id()), true));

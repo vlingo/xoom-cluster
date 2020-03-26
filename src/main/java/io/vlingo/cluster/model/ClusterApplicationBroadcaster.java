@@ -26,7 +26,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
 
   ClusterApplicationBroadcaster(final Logger logger) {
     this.logger = logger;
-    this.clusterApplications = new ArrayList<ClusterApplication>();
+    this.clusterApplications = new ArrayList<>();
   }
 
   public void registerClusterApplication(final ClusterApplication clusterApplication) {

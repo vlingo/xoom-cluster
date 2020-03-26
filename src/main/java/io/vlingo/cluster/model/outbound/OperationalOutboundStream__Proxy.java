@@ -56,7 +56,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.split(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, splitRepresentation1); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, splitRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, splitRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, splitRepresentation1));
     }
@@ -68,7 +68,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.join();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, joinRepresentation2); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, joinRepresentation2)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, joinRepresentation2)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, joinRepresentation2));
     }
@@ -79,7 +79,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.close(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, closeRepresentation3); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, closeRepresentation3)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, closeRepresentation3)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, closeRepresentation3));
     }
@@ -90,7 +90,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.directory(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, directoryRepresentation4); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, directoryRepresentation4)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, directoryRepresentation4)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, directoryRepresentation4));
     }
@@ -101,7 +101,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.open(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, openRepresentation5); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, openRepresentation5)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, openRepresentation5)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, openRepresentation5));
     }
@@ -112,7 +112,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.elect(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, electRepresentation6); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, electRepresentation6)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, electRepresentation6)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, electRepresentation6));
     }
@@ -124,7 +124,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.leave();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, leaveRepresentation7); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, leaveRepresentation7)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, leaveRepresentation7)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, leaveRepresentation7));
     }
@@ -136,7 +136,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.ping(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, pingRepresentation8); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, pingRepresentation8)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, pingRepresentation8)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, pingRepresentation8));
     }
@@ -148,7 +148,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.pulse();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, pulseRepresentation9); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, pulseRepresentation9)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, pulseRepresentation9)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, pulseRepresentation9));
     }
@@ -159,7 +159,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.pulse(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, pulseRepresentation10); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, pulseRepresentation10)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, pulseRepresentation10)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, pulseRepresentation10));
     }
@@ -170,7 +170,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.vote(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, voteRepresentation11); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, voteRepresentation11)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, voteRepresentation11)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, voteRepresentation11));
     }
@@ -181,7 +181,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.leader(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, leaderRepresentation12); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, leaderRepresentation12)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, leaderRepresentation12)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, leaderRepresentation12));
     }
@@ -193,7 +193,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.leader();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, leaderRepresentation13); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, leaderRepresentation13)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, leaderRepresentation13)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, leaderRepresentation13));
     }
@@ -204,7 +204,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.application(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, applicationRepresentation14); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, applicationRepresentation14)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, applicationRepresentation14)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, applicationRepresentation14));
     }
@@ -216,7 +216,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.stop();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, stopRepresentation15); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, stopRepresentation15)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, stopRepresentation15)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, stopRepresentation15));
     }
@@ -228,7 +228,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.isStopped();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, isStoppedRepresentation16); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, isStoppedRepresentation16)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, isStoppedRepresentation16)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, isStoppedRepresentation16));
     }
@@ -241,7 +241,7 @@ public class OperationalOutboundStream__Proxy extends ActorProxyBase<io.vlingo.c
       ActorProxyBase<OperationalOutboundStream> self = this;
       final SerializableConsumer<OperationalOutboundStream> consumer = (actor) -> actor.conclude();
       if (mailbox.isPreallocated()) { mailbox.send(actor, OperationalOutboundStream.class, consumer, null, concludeRepresentation17); }
-      else { mailbox.send(new LocalMessage<OperationalOutboundStream>(actor, OperationalOutboundStream.class, consumer, concludeRepresentation17)); }
+      else { mailbox.send(new LocalMessage<>(actor, OperationalOutboundStream.class, consumer, concludeRepresentation17)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, concludeRepresentation17));
     }

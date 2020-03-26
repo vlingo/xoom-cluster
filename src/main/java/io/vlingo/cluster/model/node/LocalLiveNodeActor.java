@@ -128,7 +128,7 @@ public class LocalLiveNodeActor extends Actor
   }
 
   public void declareLeadership() {
-    outbound.directory(new TreeSet<Node>(registry.liveNodes()));
+    outbound.directory(new TreeSet<>(registry.liveNodes()));
     outbound.leader();
   }
 

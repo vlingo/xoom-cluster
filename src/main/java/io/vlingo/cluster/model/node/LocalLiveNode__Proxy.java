@@ -37,7 +37,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
       ActorProxyBase<LocalLiveNode> self = this;
       final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.handle(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, handleRepresentation1); }
-      else { mailbox.send(new LocalMessage<LocalLiveNode>(actor, LocalLiveNode.class, consumer, handleRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, handleRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, handleRepresentation1));
     }
@@ -48,7 +48,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
       ActorProxyBase<LocalLiveNode> self = this;
       final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.registerNodeSynchronizer(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, registerNodeSynchronizerRepresentation2); }
-      else { mailbox.send(new LocalMessage<LocalLiveNode>(actor, LocalLiveNode.class, consumer, registerNodeSynchronizerRepresentation2)); }
+      else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, registerNodeSynchronizerRepresentation2)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, registerNodeSynchronizerRepresentation2));
     }
@@ -60,7 +60,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
       ActorProxyBase<LocalLiveNode> self = this;
       final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.stop();
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, stopRepresentation3); }
-      else { mailbox.send(new LocalMessage<LocalLiveNode>(actor, LocalLiveNode.class, consumer, stopRepresentation3)); }
+      else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, stopRepresentation3)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, stopRepresentation3));
     }
@@ -72,7 +72,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
       ActorProxyBase<LocalLiveNode> self = this;
       final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.isStopped();
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, isStoppedRepresentation4); }
-      else { mailbox.send(new LocalMessage<LocalLiveNode>(actor, LocalLiveNode.class, consumer, isStoppedRepresentation4)); }
+      else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, isStoppedRepresentation4)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, isStoppedRepresentation4));
     }
@@ -85,7 +85,7 @@ public class LocalLiveNode__Proxy extends ActorProxyBase<io.vlingo.cluster.model
       ActorProxyBase<LocalLiveNode> self = this;
       final SerializableConsumer<LocalLiveNode> consumer = (actor) -> actor.conclude();
       if (mailbox.isPreallocated()) { mailbox.send(actor, LocalLiveNode.class, consumer, null, concludeRepresentation5); }
-      else { mailbox.send(new LocalMessage<LocalLiveNode>(actor, LocalLiveNode.class, consumer, concludeRepresentation5)); }
+      else { mailbox.send(new LocalMessage<>(actor, LocalLiveNode.class, consumer, concludeRepresentation5)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, concludeRepresentation5));
     }
