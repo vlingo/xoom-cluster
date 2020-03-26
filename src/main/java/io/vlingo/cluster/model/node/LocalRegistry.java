@@ -141,7 +141,7 @@ public final class LocalRegistry implements Registry {
 
   @Override
   public boolean hasMember(final Id id) {
-    return registry.keySet().contains(id);
+    return registry.containsKey(id);
   }
 
   @Override
