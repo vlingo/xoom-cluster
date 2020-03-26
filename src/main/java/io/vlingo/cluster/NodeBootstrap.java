@@ -44,7 +44,7 @@ public final class NodeBootstrap {
   }
 
   public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
-    NodeBootstrap instance = null;
+    NodeBootstrap instance;
 
     Properties.instance.validateRequired(nodeName);
 
