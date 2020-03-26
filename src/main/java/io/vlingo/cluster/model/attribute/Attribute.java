@@ -104,7 +104,7 @@ public final class Attribute<T> {
     case Short:
       return Short.parseShort(value);
     case Character:
-      return new Character(value.charAt(0));
+      return value.charAt(0);
     }
     
     throw new IllegalArgumentException();
