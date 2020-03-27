@@ -10,7 +10,7 @@ package io.vlingo.cluster.model.message;
 import io.vlingo.wire.node.Id;
 
 public final class Split extends OperationalMessage {
-  public static final Split from(final String content) {
+  public static Split from(final String content) {
     return new Split(OperationalMessagePartsBuilder.idFrom(content));
   }
 

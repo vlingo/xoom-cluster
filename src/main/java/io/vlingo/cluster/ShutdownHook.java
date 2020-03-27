@@ -20,17 +20,14 @@ final class ShutdownHook {
     this.control = control;
   }
 
-  protected void register() throws Exception {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        control._2.info("\n==========");
-        control._2.info("Stopping node: '" + nodeName + "' ...");
-        control._1.shutDown();
-        pause();
-        control._2.info("Stopped node: '" + nodeName + "'");
-      }
-    });
+  protected void register() {
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      control._2.info("\n==========");
+      control._2.info("Stopping node: '" + nodeName + "' ...");
+      control._1.shutDown();
+      pause();
+      control._2.info("Stopped node: '" + nodeName + "'");
+    }));
   }
   
   private void pause() {

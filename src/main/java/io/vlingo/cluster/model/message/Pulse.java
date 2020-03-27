@@ -10,7 +10,7 @@ package io.vlingo.cluster.model.message;
 import io.vlingo.wire.node.Id;
 
 public final class Pulse extends OperationalMessage {
-  public static final Pulse from(final String content) {
+  public static Pulse from(final String content) {
     return new Pulse(OperationalMessagePartsBuilder.idFrom(content));
   }
 

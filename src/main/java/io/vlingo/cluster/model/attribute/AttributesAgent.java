@@ -20,12 +20,12 @@ import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
 
 public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, InboundStreamInterest, Scheduled<Object>, Stoppable {
-  public static AttributesAgent instance(
-          final Stage stage,
-          final Node node,
-          final ClusterApplication application,
-          final OperationalOutboundStream outbound,
-          final Configuration configuration) {
+  static AttributesAgent instance(
+      final Stage stage,
+      final Node node,
+      final ClusterApplication application,
+      final OperationalOutboundStream outbound,
+      final Configuration configuration) {
 
     final Definition definition =
             new Definition(
@@ -33,12 +33,10 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
                     new AttributesAgentInstantiator(node, application, outbound, configuration),
                     "attributes-agent");
 
-    AttributesAgent attributesAgent = stage.actorFor(AttributesAgent.class, definition);
-
-    return attributesAgent;
+    return stage.actorFor(AttributesAgent.class, definition);
   }
 
-  static class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {
+  class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {
     private static final long serialVersionUID = 3269867041246996465L;
 
     private final Node node;

@@ -27,7 +27,7 @@ public class ClusterConfiguration implements Configuration {
 
   public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
-    this.nodes = new TreeSet<Node>();
+    this.nodes = new TreeSet<>();
 
     initializeConfiguredNodeEntries(properties);
   }
@@ -42,14 +42,12 @@ public class ClusterConfiguration implements Configuration {
   public Set<Node> allNodesOf(final Collection<Id> ids) {
     // Currently not used
 
-    final Set<Node> nodes = new TreeSet<Node>();
-
-    return nodes;
+    return new TreeSet<>();
   }
 
   @Override
   public final Set<Node> allOtherNodes(Id nodeId) {
-    final Set<Node> except = new TreeSet<Node>();
+    final Set<Node> except = new TreeSet<>();
 
     for (final Node node : nodes) {
       if (!node.id().equals(nodeId)) {
@@ -62,7 +60,7 @@ public class ClusterConfiguration implements Configuration {
 
   @Override
   public Set<Id> allOtherNodesId(final Id nodeId) {
-    final Set<Id> ids = new TreeSet<Id>();
+    final Set<Id> ids = new TreeSet<>();
 
     for (final Node node : allOtherNodes(nodeId)) {
       ids.add(node.id());
@@ -73,7 +71,7 @@ public class ClusterConfiguration implements Configuration {
 
   @Override
   public final Set<Node> allGreaterNodes(Id nodeId) {
-    final Set<Node> greater = new TreeSet<Node>();
+    final Set<Node> greater = new TreeSet<>();
 
     for (final Node node : nodes) {
       if (node.id().greaterThan(nodeId)) {
@@ -86,7 +84,7 @@ public class ClusterConfiguration implements Configuration {
 
   @Override
   public Set<String> allNodeNames() {
-    final Set<String> names = new TreeSet<String>();
+    final Set<String> names = new TreeSet<>();
 
     for (final Node node : nodes) {
       names.add(node.name().value());

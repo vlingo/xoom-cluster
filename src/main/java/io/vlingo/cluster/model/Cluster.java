@@ -20,7 +20,7 @@ import io.vlingo.common.Tuple2;
 public class Cluster {
   static final String INTERNAL_NAME = UUID.randomUUID().toString();
 
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
           final String nodeName)
@@ -28,7 +28,7 @@ public class Cluster {
     return controlFor(World.start("vlingo-cluster"), instantiator, properties, nodeName);
   }
 
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
@@ -37,13 +37,12 @@ public class Cluster {
     return controlFor(world, world.stage(), instantiator, properties, nodeName);
   }
 
-  public static final synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
           final World world,
           final Stage stage,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
+          final String nodeName) {
 
     if (isRunningInside(world)) {
       throw new IllegalArgumentException("Cluster is already running inside World: " + world.name());

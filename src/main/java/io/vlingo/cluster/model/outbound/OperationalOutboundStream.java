@@ -22,11 +22,11 @@ import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 
 public interface OperationalOutboundStream extends Stoppable {
-  public static OperationalOutboundStream instance(
-          final Stage stage,
-          final Node node,
-          final ManagedOutboundChannelProvider provider,
-          final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
+  static OperationalOutboundStream instance(
+      final Stage stage,
+      final Node node,
+      final ManagedOutboundChannelProvider provider,
+      final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
     final Definition definition =
             Definition.has(
@@ -34,13 +34,10 @@ public interface OperationalOutboundStream extends Stoppable {
                     new OperationalOutboundStreamInstantiator(node, provider, byteBufferPool),
                     "cluster-operational-outbound-stream");
 
-    final OperationalOutboundStream operationalOutboundStream =
-            stage.actorFor(OperationalOutboundStream.class, definition);
-
-    return operationalOutboundStream;
+    return stage.actorFor(OperationalOutboundStream.class, definition);
   }
 
-  static class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
+  class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
     private static final long serialVersionUID = 8429839979141981981L;
 
     private final Node node;

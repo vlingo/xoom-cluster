@@ -40,9 +40,9 @@ public class ClusterSnapshot__Proxy extends ActorProxyBase<io.vlingo.cluster.mod
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterSnapshot> self = this;
-      final SerializableConsumer<ClusterSnapshot> consumer = (actor) -> actor.quorumAchieved();
+      final SerializableConsumer<ClusterSnapshot> consumer = ClusterSnapshot::quorumAchieved;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterSnapshot.class, consumer, null, quorumAchievedRepresentation1); }
-      else { mailbox.send(new LocalMessage<ClusterSnapshot>(actor, ClusterSnapshot.class, consumer, quorumAchievedRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterSnapshot.class, consumer, quorumAchievedRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, quorumAchievedRepresentation1));
     }
@@ -52,9 +52,9 @@ public class ClusterSnapshot__Proxy extends ActorProxyBase<io.vlingo.cluster.mod
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterSnapshot> self = this;
-      final SerializableConsumer<ClusterSnapshot> consumer = (actor) -> actor.quorumLost();
+      final SerializableConsumer<ClusterSnapshot> consumer = ClusterSnapshot::quorumLost;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterSnapshot.class, consumer, null, quorumLostRepresentation2); }
-      else { mailbox.send(new LocalMessage<ClusterSnapshot>(actor, ClusterSnapshot.class, consumer, quorumLostRepresentation2)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterSnapshot.class, consumer, quorumLostRepresentation2)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, quorumLostRepresentation2));
     }

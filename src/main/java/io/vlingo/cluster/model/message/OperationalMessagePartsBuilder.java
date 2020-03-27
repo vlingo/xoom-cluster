@@ -20,9 +20,8 @@ class OperationalMessagePartsBuilder {
     if (index1 == -1) return "";
     final int index2 = content.indexOf('\n', index1+1);
     if (index2 == -1) return "";
-    final String payload = content.substring(index2+1);
-    
-    return payload;
+
+    return content.substring(index2+1);
   }
 
   public static String saysIdFrom(final String content) {
@@ -32,24 +31,22 @@ class OperationalMessagePartsBuilder {
       return "";
     }
 
-    final String saysId = MessagePartsBuilder.parseField(parts[2], "si=");
-    
-    return saysId;
+    return MessagePartsBuilder.parseField(parts[2], "si=");
   }
 
-  static final Set<Node> nodesFrom(String content) {
+  static Set<Node> nodesFrom(String content) {
     return MessagePartsBuilder.nodesFrom(content);
   }
 
-  static final Node nodeFrom(final String content) {
+  static Node nodeFrom(final String content) {
     return MessagePartsBuilder.nodeFrom(content);
   }
 
-  static final Id idFrom(final String content) {
+  static Id idFrom(final String content) {
     return MessagePartsBuilder.idFrom(content);
   }
 
-  static final Name nameFrom(final String content) {
+  static Name nameFrom(final String content) {
     return MessagePartsBuilder.nameFrom(content);
   }
 }

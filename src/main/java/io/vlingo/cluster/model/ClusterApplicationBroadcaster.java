@@ -26,7 +26,7 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
 
   ClusterApplicationBroadcaster(final Logger logger) {
     this.logger = logger;
-    this.clusterApplications = new ArrayList<ClusterApplication>();
+    this.clusterApplications = new ArrayList<>();
   }
 
   public void registerClusterApplication(final ClusterApplication clusterApplication) {
@@ -79,12 +79,12 @@ class ClusterApplicationBroadcaster implements ClusterApplication {
 
   @Override
   public void informQuorumAchieved() {
-    broadcast((app) -> app.informQuorumAchieved());
+    broadcast(ClusterApplication::informQuorumAchieved);
   }
 
   @Override
   public void informQuorumLost() {
-    broadcast((app) -> app.informQuorumLost());
+    broadcast(ClusterApplication::informQuorumLost);
   }
 
   @Override

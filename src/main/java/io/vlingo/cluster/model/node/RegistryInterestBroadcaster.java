@@ -21,7 +21,7 @@ public class RegistryInterestBroadcaster implements RegistryInterest {
   
   RegistryInterestBroadcaster(final Logger logger) {
     this.logger = logger;
-    this.registryInterests = new ArrayList<RegistryInterest>();
+    this.registryInterests = new ArrayList<>();
   }
 
   public void registerRegistryInterest(final RegistryInterest interest) {

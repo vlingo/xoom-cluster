@@ -7,12 +7,8 @@
 
 package io.vlingo.cluster.model.application;
 
-import io.vlingo.actors.Actor;
-import io.vlingo.actors.ActorProxyBase;
-import io.vlingo.actors.DeadLetter;
+import io.vlingo.actors.*;
 import io.vlingo.actors.Definition.SerializationProxy;
-import io.vlingo.actors.LocalMessage;
-import io.vlingo.actors.Mailbox;
 import io.vlingo.common.SerializableConsumer;
 
 public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.model.application.ClusterApplication> implements io.vlingo.cluster.model.application.ClusterApplication {
@@ -61,7 +57,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.handleApplicationMessage(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, handleApplicationMessageRepresentation1); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, handleApplicationMessageRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, handleApplicationMessageRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, handleApplicationMessageRepresentation1));
     }
@@ -72,7 +68,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informResponder(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informResponderRepresentation2); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informResponderRepresentation2)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informResponderRepresentation2)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informResponderRepresentation2));
     }
@@ -83,7 +79,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAllLiveNodes(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAllLiveNodesRepresentation3); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAllLiveNodesRepresentation3)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAllLiveNodesRepresentation3)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAllLiveNodesRepresentation3));
     }
@@ -94,7 +90,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informLeaderElected(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1), ActorProxyBase.thunk(self, (Actor)actor, arg2));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informLeaderElectedRepresentation4); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informLeaderElectedRepresentation4)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informLeaderElectedRepresentation4)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informLeaderElectedRepresentation4));
     }
@@ -105,7 +101,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informLeaderLost(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informLeaderLostRepresentation5); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informLeaderLostRepresentation5)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informLeaderLostRepresentation5)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informLeaderLostRepresentation5));
     }
@@ -116,7 +112,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informLocalNodeShutDown(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informLocalNodeShutDownRepresentation6); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informLocalNodeShutDownRepresentation6)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informLocalNodeShutDownRepresentation6)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informLocalNodeShutDownRepresentation6));
     }
@@ -127,7 +123,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informLocalNodeStarted(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informLocalNodeStartedRepresentation7); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informLocalNodeStartedRepresentation7)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informLocalNodeStartedRepresentation7)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informLocalNodeStartedRepresentation7));
     }
@@ -138,7 +134,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informNodeIsHealthy(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informNodeIsHealthyRepresentation8); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informNodeIsHealthyRepresentation8)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informNodeIsHealthyRepresentation8)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeIsHealthyRepresentation8));
     }
@@ -149,7 +145,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informNodeJoinedCluster(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informNodeJoinedClusterRepresentation9); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informNodeJoinedClusterRepresentation9)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informNodeJoinedClusterRepresentation9)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeJoinedClusterRepresentation9));
     }
@@ -160,7 +156,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informNodeLeftCluster(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informNodeLeftClusterRepresentation10); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informNodeLeftClusterRepresentation10)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informNodeLeftClusterRepresentation10)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeLeftClusterRepresentation10));
     }
@@ -170,9 +166,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informQuorumAchieved();
+      final SerializableConsumer<ClusterApplication> consumer = ClusterApplication::informQuorumAchieved;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informQuorumAchievedRepresentation11); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informQuorumAchievedRepresentation11)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informQuorumAchievedRepresentation11)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informQuorumAchievedRepresentation11));
     }
@@ -182,9 +178,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informQuorumLost();
+      final SerializableConsumer<ClusterApplication> consumer = ClusterApplication::informQuorumLost;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informQuorumLostRepresentation12); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informQuorumLostRepresentation12)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informQuorumLostRepresentation12)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informQuorumLostRepresentation12));
     }
@@ -195,7 +191,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributesClient(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributesClientRepresentation13); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributesClientRepresentation13)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributesClientRepresentation13)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributesClientRepresentation13));
     }
@@ -206,7 +202,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributeSetCreated(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributeSetCreatedRepresentation14); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributeSetCreatedRepresentation14)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributeSetCreatedRepresentation14)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributeSetCreatedRepresentation14));
     }
@@ -217,7 +213,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributeAdded(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributeAddedRepresentation15); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributeAddedRepresentation15)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributeAddedRepresentation15)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributeAddedRepresentation15));
     }
@@ -228,7 +224,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributeRemoved(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributeRemovedRepresentation16); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributeRemovedRepresentation16)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributeRemovedRepresentation16)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributeRemovedRepresentation16));
     }
@@ -239,7 +235,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributeSetRemoved(ActorProxyBase.thunk(self, (Actor)actor, arg0));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributeSetRemovedRepresentation17); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributeSetRemovedRepresentation17)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributeSetRemovedRepresentation17)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributeSetRemovedRepresentation17));
     }
@@ -250,7 +246,7 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
       ActorProxyBase<ClusterApplication> self = this;
       final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.informAttributeReplaced(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, informAttributeReplacedRepresentation18); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, informAttributeReplacedRepresentation18)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, informAttributeReplacedRepresentation18)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAttributeReplacedRepresentation18));
     }
@@ -260,9 +256,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.start();
+      final SerializableConsumer<ClusterApplication> consumer = Startable::start;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, startRepresentation19); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, startRepresentation19)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, startRepresentation19)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, startRepresentation19));
     }
@@ -272,9 +268,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.stop();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::stop;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, stopRepresentation20); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, stopRepresentation20)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, stopRepresentation20)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, stopRepresentation20));
     }
@@ -284,9 +280,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.conclude();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::conclude;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, concludeRepresentation21); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, concludeRepresentation21)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, concludeRepresentation21)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, concludeRepresentation21));
     }
@@ -296,9 +292,9 @@ public class ClusterApplication__Proxy extends ActorProxyBase<io.vlingo.cluster.
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterApplication> self = this;
-      final SerializableConsumer<ClusterApplication> consumer = (actor) -> actor.isStopped();
+      final SerializableConsumer<ClusterApplication> consumer = Stoppable::isStopped;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterApplication.class, consumer, null, isStoppedRepresentation22); }
-      else { mailbox.send(new LocalMessage<ClusterApplication>(actor, ClusterApplication.class, consumer, isStoppedRepresentation22)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterApplication.class, consumer, isStoppedRepresentation22)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, isStoppedRepresentation22));
     }

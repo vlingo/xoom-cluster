@@ -39,9 +39,9 @@ public class ClusterSnapshotControl__Proxy extends ActorProxyBase<io.vlingo.clus
     if (!actor.isStopped()) {
       @SuppressWarnings("unused")
       ActorProxyBase<ClusterSnapshotControl> self = this;
-      final SerializableConsumer<ClusterSnapshotControl> consumer = (actor) -> actor.shutDown();
+      final SerializableConsumer<ClusterSnapshotControl> consumer = ClusterSnapshotControl::shutDown;
       if (mailbox.isPreallocated()) { mailbox.send(actor, ClusterSnapshotControl.class, consumer, null, shutDownRepresentation1); }
-      else { mailbox.send(new LocalMessage<ClusterSnapshotControl>(actor, ClusterSnapshotControl.class, consumer, shutDownRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, ClusterSnapshotControl.class, consumer, shutDownRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, shutDownRepresentation1));
     }

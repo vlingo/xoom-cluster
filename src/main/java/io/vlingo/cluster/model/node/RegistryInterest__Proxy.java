@@ -48,7 +48,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informMergedAllDirectoryEntries(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1), ActorProxyBase.thunk(self, (Actor)actor, arg2));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informMergedAllDirectoryEntriesRepresentation1); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informMergedAllDirectoryEntriesRepresentation1)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informMergedAllDirectoryEntriesRepresentation1)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informMergedAllDirectoryEntriesRepresentation1));
     }
@@ -59,7 +59,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informCurrentLeader(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informCurrentLeaderRepresentation2); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informCurrentLeaderRepresentation2)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informCurrentLeaderRepresentation2)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informCurrentLeaderRepresentation2));
     }
@@ -70,7 +70,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informLeaderDemoted(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informLeaderDemotedRepresentation3); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informLeaderDemotedRepresentation3)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informLeaderDemotedRepresentation3)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informLeaderDemotedRepresentation3));
     }
@@ -81,7 +81,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informConfirmedByLeader(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informConfirmedByLeaderRepresentation4); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informConfirmedByLeaderRepresentation4)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informConfirmedByLeaderRepresentation4)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informConfirmedByLeaderRepresentation4));
     }
@@ -92,7 +92,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informNodeTimedOut(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informNodeTimedOutRepresentation5); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informNodeTimedOutRepresentation5)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informNodeTimedOutRepresentation5)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeTimedOutRepresentation5));
     }
@@ -103,7 +103,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informAllLiveNodes(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informAllLiveNodesRepresentation6); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informAllLiveNodesRepresentation6)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informAllLiveNodesRepresentation6)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informAllLiveNodesRepresentation6));
     }
@@ -114,7 +114,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informNodeIsHealthy(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informNodeIsHealthyRepresentation7); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informNodeIsHealthyRepresentation7)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informNodeIsHealthyRepresentation7)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeIsHealthyRepresentation7));
     }
@@ -125,7 +125,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informNodeJoinedCluster(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informNodeJoinedClusterRepresentation8); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informNodeJoinedClusterRepresentation8)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informNodeJoinedClusterRepresentation8)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeJoinedClusterRepresentation8));
     }
@@ -136,7 +136,7 @@ public class RegistryInterest__Proxy extends ActorProxyBase<io.vlingo.cluster.mo
       ActorProxyBase<RegistryInterest> self = this;
       final SerializableConsumer<RegistryInterest> consumer = (actor) -> actor.informNodeLeftCluster(ActorProxyBase.thunk(self, (Actor)actor, arg0), ActorProxyBase.thunk(self, (Actor)actor, arg1));
       if (mailbox.isPreallocated()) { mailbox.send(actor, RegistryInterest.class, consumer, null, informNodeLeftClusterRepresentation9); }
-      else { mailbox.send(new LocalMessage<RegistryInterest>(actor, RegistryInterest.class, consumer, informNodeLeftClusterRepresentation9)); }
+      else { mailbox.send(new LocalMessage<>(actor, RegistryInterest.class, consumer, informNodeLeftClusterRepresentation9)); }
     } else {
       actor.deadLetters().failedDelivery(new DeadLetter(actor, informNodeLeftClusterRepresentation9));
     }

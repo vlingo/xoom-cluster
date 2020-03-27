@@ -10,7 +10,7 @@ package io.vlingo.cluster.model.message;
 import io.vlingo.wire.node.Id;
 
 public final class Vote extends OperationalMessage {
-  public static final Vote from(final String content) {
+  public static Vote from(final String content) {
     return new Vote(OperationalMessagePartsBuilder.idFrom(content));
   }
 

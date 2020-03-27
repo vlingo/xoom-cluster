@@ -19,13 +19,13 @@ import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
 
 public interface LocalLiveNode extends Stoppable {
-  public static LocalLiveNode instance(
-          final Stage stage,
-          final Node node,
-          final ClusterSnapshot snapshot,
-          final Registry registry,
-          final OperationalOutboundStream outbound,
-          final Configuration configuration) {
+  static LocalLiveNode instance(
+      final Stage stage,
+      final Node node,
+      final ClusterSnapshot snapshot,
+      final Registry registry,
+      final OperationalOutboundStream outbound,
+      final Configuration configuration) {
 
     final Definition definition =
             new Definition(
@@ -33,12 +33,10 @@ public interface LocalLiveNode extends Stoppable {
                     new LocalLiveNodeInstantiator(node, snapshot, registry, outbound, configuration),
                     "local-live-node");
 
-    LocalLiveNode localLiveNode = stage.actorFor(LocalLiveNode.class, definition);
-
-    return localLiveNode;
+    return stage.actorFor(LocalLiveNode.class, definition);
   }
 
-  static class LocalLiveNodeInstantiator implements ActorInstantiator<LocalLiveNodeActor> {
+  class LocalLiveNodeInstantiator implements ActorInstantiator<LocalLiveNodeActor> {
     private static final long serialVersionUID = -1254550990754440942L;
 
     private final Node node;

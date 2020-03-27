@@ -41,8 +41,7 @@ public final class Properties {
   }
 
   public int applicationBufferSize() {
-    final int size = getInteger("cluster.app.buffer.size", 10240);
-    return size;
+    return getInteger("cluster.app.buffer.size", 10240);
   }
 
   public long applicationInboundProbeInterval() {
@@ -108,33 +107,27 @@ public final class Properties {
   }
 
   public long clusterAttributesRedistributionInterval() {
-    final int interval = getInteger("cluster.attributes.redistribution.interval", 1000);
-    return interval;
+    return getInteger("cluster.attributes.redistribution.interval", 1000);
   }
 
   public int clusterAttributesRedistributionRetries() {
-    final int interval = getInteger("cluster.attributes.redistribution.retries", 10);
-    return interval;
+    return getInteger("cluster.attributes.redistribution.retries", 10);
   }
 
   public long clusterHealthCheckInterval() {
-    final int interval = getInteger("cluster.health.check.interval", 3000);
-    return interval;
+    return getInteger("cluster.health.check.interval", 3000);
   }
 
   public long clusterHeartbeatInterval() {
-    final int interval = getInteger("cluster.heartbeat.interval", 7000);
-    return interval;
+    return getInteger("cluster.heartbeat.interval", 7000);
   }
 
   public long clusterLiveNodeTimeout() {
-    final int timeout = getInteger("cluster.live.node.timeout", 20000);
-    return timeout;
+    return getInteger("cluster.live.node.timeout", 20000);
   }
 
   public long clusterQuorumTimeout() {
-    final int timeout = getInteger("cluster.quorum.timeout", 60000);
-    return timeout;
+    return getInteger("cluster.quorum.timeout", 60000);
   }
 
   public final String host(String nodeName) {
@@ -171,8 +164,7 @@ public final class Properties {
   }
 
   public int operationalBufferSize() {
-    final int size = getInteger("cluster.op.buffer.size", 4096);
-    return size;
+    return getInteger("cluster.op.buffer.size", 4096);
   }
 
   public long operationalInboundProbeInterval() {
@@ -207,7 +199,7 @@ public final class Properties {
   }
 
   public final List<String> seedNodes() {
-    final List<String> seedNodes = new ArrayList<String>();
+    final List<String> seedNodes = new ArrayList<>();
 
     final String commaSeparated = getString("cluster.seedNodes", "");
 
@@ -283,7 +275,7 @@ public final class Properties {
     this.properties = properties;
   }
 
-  private final String key(final String nodeName, final String key) {
+  private String key(final String nodeName, final String key) {
     if (nodeName == null || nodeName.length() == 0) {
       return key;
     }

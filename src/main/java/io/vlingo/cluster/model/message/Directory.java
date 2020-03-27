@@ -19,7 +19,7 @@ public final class Directory extends OperationalMessage {
   private final Name name;
   private final Set<Node> nodes;
 
-  public static final Directory from(final String content) {
+  public static Directory from(final String content) {
     final Id id = OperationalMessagePartsBuilder.idFrom(content);
     final Name name = OperationalMessagePartsBuilder.nameFrom(content);
     final Set<Node> nodes = OperationalMessagePartsBuilder.nodesFrom(content);
@@ -79,7 +79,7 @@ public final class Directory extends OperationalMessage {
     return "Directory[" + id() + "," + name + "," + nodes + "]";
   }
 
-  private final Set<Node> sorted(Set<Node> nodes) {
-    return new TreeSet<Node>(nodes);
+  private Set<Node> sorted(Set<Node> nodes) {
+    return new TreeSet<>(nodes);
   }
 }

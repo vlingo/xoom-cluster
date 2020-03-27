@@ -128,7 +128,7 @@ public class LocalLiveNodeActor extends Actor
   }
 
   public void declareLeadership() {
-    outbound.directory(new TreeSet<Node>(registry.liveNodes()));
+    outbound.directory(new TreeSet<>(registry.liveNodes()));
     outbound.leader();
   }
 
@@ -137,7 +137,7 @@ public class LocalLiveNodeActor extends Actor
     registry.join(configuration.nodeMatching(electId));
     
     if (node.id().greaterThan(electId)) {
-      if (!state.leaderElectionTracker.hasStarted()) {
+      if (state.leaderElectionTracker.hasNotStarted()) {
         state.leaderElectionTracker.start(true);
         outbound.elect(configuration.allGreaterNodes(node.id()));
       } else if (state.leaderElectionTracker.hasTimedOut()) {
@@ -331,7 +331,7 @@ public class LocalLiveNodeActor extends Actor
     watchForQuorumAchievement();
 
     if (!registry.hasLeader()) {
-      if (!state.leaderElectionTracker.hasStarted()) {
+      if (state.leaderElectionTracker.hasNotStarted()) {
         state.leaderElectionTracker.start();
         outbound.elect(configuration.allGreaterNodes(node.id()));
       } else if (state.leaderElectionTracker.hasTimedOut()) {

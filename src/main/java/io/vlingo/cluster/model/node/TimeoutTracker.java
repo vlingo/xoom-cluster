@@ -34,8 +34,8 @@ final class TimeoutTracker {
     startTime = -1L;
   }
 
-  boolean hasStarted() {
-    return startTime > 0;
+  boolean hasNotStarted() {
+    return startTime <= 0;
   }
 
   void start() {

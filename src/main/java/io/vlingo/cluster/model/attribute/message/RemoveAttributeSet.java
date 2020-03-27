@@ -25,17 +25,12 @@ public class RemoveAttributeSet extends ApplicationMessage {
   
   @Override
   public String toPayload() {
-    final StringBuffer buffer = new StringBuffer();
-    
-    buffer
-      .append(getClass().getSimpleName())
-      .append("\n")
-      .append(trackingId)
-      .append("\n")
-      .append(type.name())
-      .append("\n")
-      .append(attributeSetName);
-    
-    return buffer.toString();
+    return getClass().getSimpleName() +
+        "\n" +
+        trackingId +
+        "\n" +
+        type.name() +
+        "\n" +
+        attributeSetName;
   }
 }
