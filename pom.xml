@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vlingo</groupId>
   <artifactId>vlingo-cluster</artifactId>
-  <version>1.2.9</version>
+  <version>1.2.10-SNAPSHOT</version>
   <name>vlingo-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.</description>
   <url>https://github.com/vlingo/vlingo-cluster</url>
@@ -94,17 +94,17 @@
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-common</artifactId>
-      <version>1.2.9</version>
+      <version>1.2.10-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-actors</artifactId>
-      <version>1.2.9</version>
+      <version>1.2.10-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-wire</artifactId>
-      <version>1.2.9</version>
+      <version>1.2.10-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -113,13 +113,29 @@
       <id>jcenter</id>
       <url>https://jcenter.bintray.com/</url>
     </repository>
+
+    <repository>
+      <id>oss-jfrog-snapshot</id>
+      <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <distributionManagement>
     <repository>
-      <id>bintray-vlingo-vlingo-platform-java</id>
+      <id>bintray-delivery</id>
       <name>vlingo-vlingo-platform-java</name>
       <url>https://api.bintray.com/maven/vlingo/vlingo-platform-java/vlingo-cluster/;publish=1</url>
     </repository>
+
+    <snapshotRepository>
+      <id>oss-jfrog-snapshot-deploy</id>
+      <url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
+    </snapshotRepository>
   </distributionManagement>
 </project>
