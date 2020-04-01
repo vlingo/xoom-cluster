@@ -7,6 +7,7 @@
 
 package io.vlingo.cluster.model;
 
+import io.vlingo.actors.Logger;
 import io.vlingo.actors.Stage;
 import io.vlingo.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.common.pool.ElasticResourcePool;
@@ -51,13 +52,12 @@ class NetworkCommunicationsHub implements CommunicationsHub {
           final Configuration configuration)
   throws Exception {
 
-    final RSocketInboundChannelReaderProvider channelReaderProvider = new RSocketInboundChannelReaderProvider(
-            Properties.instance.operationalBufferSize(), stage.world().defaultLogger());
+    final Logger logger = stage.world().defaultLogger();
 
     this.operationalInboundStream =
             InboundStream.instance(
                     stage,
-                    channelReaderProvider,
+                    new RSocketInboundChannelReaderProvider(properties.operationalBufferSize(), logger),
                     interest,
                     node.operationalAddress().port(),
                     AddressType.OP,
@@ -76,7 +76,7 @@ class NetworkCommunicationsHub implements CommunicationsHub {
     this.applicationInboundStream =
             InboundStream.instance(
                     stage,
-                    channelReaderProvider,
+                    new RSocketInboundChannelReaderProvider(properties.applicationBufferSize(), logger),
                     interest,
                     node.applicationAddress().port(),
                     AddressType.APP,
