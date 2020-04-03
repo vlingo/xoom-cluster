@@ -67,4 +67,9 @@ public class MockManagedOutboundChannelProvider implements ManagedOutboundChanne
   public void close(final Id id) {
     
   }
+
+  @Override
+  public void configureKnownChannels() {
+
+  }
 }
