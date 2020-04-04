@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vlingo</groupId>
   <artifactId>vlingo-cluster</artifactId>
-  <version>1.2.15</version>
+  <version>1.2.16-SNAPSHOT</version>
   <name>vlingo-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.</description>
   <url>https://github.com/vlingo/vlingo-cluster</url>
@@ -94,17 +94,17 @@
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-common</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.16-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-actors</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.16-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-wire</artifactId>
-      <version>1.2.15</version>
+      <version>1.2.16-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
