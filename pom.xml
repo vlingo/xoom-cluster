@@ -128,7 +128,7 @@
 
   <distributionManagement>
     <repository>
-      <id>bintray-delivery</id>
+      <id>bintray-deploy</id>
       <name>vlingo-vlingo-platform-java</name>
       <url>https://api.bintray.com/maven/vlingo/vlingo-platform-java/vlingo-cluster/;publish=1</url>
     </repository>
