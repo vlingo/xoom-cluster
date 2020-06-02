@@ -2,7 +2,9 @@
 
 [![Javadocs](http://javadoc.io/badge/io.vlingo/vlingo-cluster.svg?color=brightgreen)](http://javadoc.io/doc/io.vlingo/vlingo-cluster) [![Build Status](https://travis-ci.org/vlingo/vlingo-cluster.svg?branch=master)](https://travis-ci.org/vlingo/vlingo-cluster) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/vlingo-platform-java/cluster)
 
-The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.
+The VLINGO/PLATFORM cluster management for reactive, scalable resiliency of JVM tools and applications running on VLINGO/LATTICE and VLINGO/ACTORS.
+
+Docs: https://docs.vlingo.io/vlingo-cluster
 
 ### Bintray
 
@@ -17,7 +19,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
     <dependency>
       <groupId>io.vlingo</groupId>
       <artifactId>vlingo-cluster</artifactId>
-      <version>1.2.9</version>
+      <version>1.3.0</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -25,7 +27,7 @@ The vlingo/PLATFORM cluster management for reactive, scalable resiliency of JVM 
 
 ```gradle
 dependencies {
-    compile 'io.vlingo:vlingo-cluster:1.2.9'
+    compile 'io.vlingo:vlingo-cluster:1.3.0'
 }
 
 repositories {
@@ -33,23 +35,9 @@ repositories {
 }
 ```
 
-The **vlingo/cluster** supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. It has undergone much refinement and has reached version 0.3.3, and is very near minimum-viable feature completion.
+The VLINGO/CLUSTER supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. 
 
-To build and test, simply use the **vlingo-platform** build.:
-
-```
-console:vlingo> git clone [all available repositories]
-
-console:vlingo> cd vlingo-platform
-
-console:vlingo-platform> mvn install
-
-console:vlingo-platform> cd ../vlingo-cluster
-
-console:vlingo-cluster>
-```
-
-The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
+Normally you would use vlingo-lattice to get clustering features, but you may run the sample cluster application to see how it works. To do so, reference your `vlingo-*` dependecies, build, and run. The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
 
 ```
 console1:vlingo-cluster> mvn exec:java -Dexec.args=node1
@@ -65,7 +53,7 @@ To play around with the nodes, go into one consult window and type `^C` (interru
 the cluster will adjust. If you bring down the leader the cluster will elect a new leader. Starting the downed node again will
 enable it to re-join the cluster.
 
-You can develop JVM applications with **vlingo/cluster**. See the following package and sample ClusterApplication:
+See the following package and sample `ClusterApplication`:
 
 ```java
   io.vlingo.cluster.model.application
@@ -74,7 +62,7 @@ You can develop JVM applications with **vlingo/cluster**. See the following pack
     FakeClusterApplicationActor
 ```
 
-Try it out. As the cluster changes states all of the activity and health conditions will be reported to the registered ClusterApplication. You can see how to configure your own ClusterApplication by changing the vlingo-cluster.properties file:
+Try it out. As the cluster changes states all of the activity and health conditions will be reported to the registered `ClusterApplication`. You can see how to configure your own `ClusterApplication` by changing the `vlingo-cluster.properties` file:
 
 ```java
   cluster.app.class = io.vlingo.cluster.model.application.FakeClusterApplicationActor
