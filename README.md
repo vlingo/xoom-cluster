@@ -37,7 +37,7 @@ repositories {
 
 The VLINGO/CLUSTER supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. 
 
-Normally you would use vlingo-lattice to get clustering features, but you may run the sample cluster application to see how it works. To do so, reference your `vlingo-*` dependecies, build, and run. The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
+Normally you would use `vlingo-lattice` to get these clustering features, but you may run the build-in example cluster application to see how it works. To do so, reference your `vlingo-*` dependecies, build, and run. The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
 
 ```
 console1:vlingo-cluster> mvn exec:java -Dexec.args=node1
