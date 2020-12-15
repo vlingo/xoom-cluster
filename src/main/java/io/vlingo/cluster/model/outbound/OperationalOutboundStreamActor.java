@@ -7,20 +7,8 @@
 
 package io.vlingo.cluster.model.outbound;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vlingo.actors.Actor;
-import io.vlingo.cluster.model.message.ApplicationSays;
-import io.vlingo.cluster.model.message.Directory;
-import io.vlingo.cluster.model.message.MessageConverters;
-import io.vlingo.cluster.model.message.OperationalMessage;
-import io.vlingo.cluster.model.message.OperationalMessageCache;
-import io.vlingo.cluster.model.message.Split;
+import io.vlingo.cluster.model.message.*;
 import io.vlingo.common.pool.ResourcePool;
 import io.vlingo.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.wire.fdx.outbound.Outbound;
@@ -29,6 +17,12 @@ import io.vlingo.wire.message.Converters;
 import io.vlingo.wire.message.RawMessage;
 import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {
@@ -92,7 +86,7 @@ public class OperationalOutboundStreamActor extends Actor
 
   @Override
   public void elect(final Collection<Node> allGreaterNodes) {
-    logger.debug("Broadcasting ellect {}", debug(allGreaterNodes));
+    logger.debug("Broadcasting elect {}", debug(allGreaterNodes));
     outbound.broadcast(allGreaterNodes, cache.cachedRawMessage(OperationalMessage.ELECT));
   }
 
