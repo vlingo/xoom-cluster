@@ -94,6 +94,7 @@ public class ClusterSnapshotActor
     localLiveNode.stop();
     clusterApplication.stop();
     attributesAgent.stop();
+    pause(); // wait for graceful cluster shutdown
     communicationsHub.close();
     stop();
     stage().world().terminate();
@@ -191,5 +192,13 @@ public class ClusterSnapshotActor
   @Override
   public void informNodeTimedOut(final Node node, final boolean isHealthyCluster) {
     broadcaster.informNodeLeftCluster(node.id(), isHealthyCluster);
+  }
+
+  private void pause() {
+    try {
+      Thread.sleep(3000L);
+    } catch (Exception e) {
+      // ignore
+    }
   }
 }

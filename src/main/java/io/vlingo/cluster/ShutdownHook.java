@@ -32,7 +32,7 @@ final class ShutdownHook {
   
   private void pause() {
     try {
-      Thread.sleep(1000L);
+      Thread.sleep(4000L);
     } catch (Exception e) {
       // ignore
     }
