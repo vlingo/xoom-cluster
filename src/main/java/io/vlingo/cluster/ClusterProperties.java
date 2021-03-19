@@ -16,17 +16,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  * outside of {@code vlingo-cluster}.
  */
 public class ClusterProperties {
+  private static final String DefaultApplicationClassname = "io.vlingo.cluster.model.application.FakeClusterApplicationActor";
   private static final Random random = new Random();
-  private static AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
+  private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
 
   public static io.vlingo.cluster.model.Properties allNodes() {
     return allNodes(PORT_TO_USE);
   }
 
   public static io.vlingo.cluster.model.Properties allNodes(final AtomicInteger portSeed) {
+    return allNodes(PORT_TO_USE, 3);
+  }
+
+  public static io.vlingo.cluster.model.Properties allNodes(final AtomicInteger portSeed, final int totalNodes) {
+    return allNodes(PORT_TO_USE, totalNodes, DefaultApplicationClassname);
+  }
+
+  public static io.vlingo.cluster.model.Properties allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
     java.util.Properties properties = new java.util.Properties();
 
-    properties = common(allOf(properties, portSeed), 3);
+    properties = common(allOf(properties, portSeed), totalNodes, applicationClassname);
 
     final io.vlingo.cluster.model.Properties clusterProperties =
             io.vlingo.cluster.model.Properties.openForTest(properties);
@@ -39,9 +48,13 @@ public class ClusterProperties {
   }
 
   public static io.vlingo.cluster.model.Properties oneNode(final AtomicInteger portSeed) {
+    return oneNode(portSeed, DefaultApplicationClassname);
+  }
+
+  public static io.vlingo.cluster.model.Properties oneNode(final AtomicInteger portSeed, final String applicationClassname) {
     java.util.Properties properties = new java.util.Properties();
 
-    properties = common(oneOnly(properties, portSeed), 1);
+    properties = common(oneOnly(properties, portSeed), 1, applicationClassname);
 
     final io.vlingo.cluster.model.Properties clusterProperties =
             io.vlingo.cluster.model.Properties.openForTest(properties);
@@ -77,7 +90,7 @@ public class ClusterProperties {
     return properties;
   }
 
-  private static java.util.Properties common(final java.util.Properties properties, final int totalNodes) {
+  private static java.util.Properties common(final java.util.Properties properties, final int totalNodes, final String applicationClassname) {
     properties.setProperty("cluster.ssl", "false");
 
     properties.setProperty("cluster.op.buffer.size", "4096");
@@ -87,7 +100,7 @@ public class ClusterProperties {
 
     properties.setProperty("cluster.msg.charset", "UTF-8");
 
-    properties.setProperty("cluster.app.class", "io.vlingo.cluster.model.application.FakeClusterApplicationActor");
+    properties.setProperty("cluster.app.class", applicationClassname);
     properties.setProperty("cluster.app.stage", "fake.app.stage");
 
     properties.setProperty("cluster.health.check.interval", "2000");
