@@ -18,7 +18,7 @@ import io.vlingo.cluster.ClusterProperties;
 public class ClusterPropertiesTest {
 
   @Test
-  public void shouldConfigureMultiNodeClusterWorks() {
+  public void shouldConfigureMultiNodeCluster() {
     final Properties properties = ClusterProperties.allNodes();
 
     // common
@@ -47,7 +47,7 @@ public class ClusterPropertiesTest {
   }
 
   @Test
-  public void shouldConfigureFiveNodeClusterWorks() {
+  public void shouldConfigureFiveNodeCluster() {
     final Properties properties = ClusterProperties.allNodes(new AtomicInteger(37370), 5);
 
     // common
@@ -86,7 +86,7 @@ public class ClusterPropertiesTest {
   }
 
   @Test
-  public void shouldConfigureSingleNodeClusterWorks() {
+  public void shouldConfigureSingleNodeCluster() {
     final Properties properties = ClusterProperties.oneNode();
 
     // common
