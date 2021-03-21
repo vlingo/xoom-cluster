@@ -35,7 +35,7 @@ public class ClusterProperties {
   public static io.vlingo.cluster.model.Properties allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
     java.util.Properties properties = new java.util.Properties();
 
-    properties = common(allOf(properties, portSeed), totalNodes, applicationClassname);
+    properties = common(allOf(properties, totalNodes, portSeed), totalNodes, applicationClassname);
 
     final io.vlingo.cluster.model.Properties clusterProperties =
             io.vlingo.cluster.model.Properties.openForTest(properties);
@@ -63,29 +63,32 @@ public class ClusterProperties {
   }
 
   private static java.util.Properties oneOnly(final java.util.Properties properties, final AtomicInteger portSeed) {
-    properties.setProperty("node.node1.id", "1");
-    properties.setProperty("node.node1.name", "node1");
-    properties.setProperty("node.node1.host", "localhost");
-    properties.setProperty("node.node1.op.port", nextPortToUseString(portSeed));
-    properties.setProperty("node.node1.app.port", nextPortToUseString(portSeed));
 
-    return properties;
+    return allOf(properties, 1, portSeed);
   }
 
-  private static java.util.Properties allOf(final java.util.Properties properties, final AtomicInteger portSeed) {
-    oneOnly(properties, portSeed);
+  private static java.util.Properties allOf(final java.util.Properties properties, final int totalNodes, final AtomicInteger portSeed) {
+    final StringBuilder build = new StringBuilder();
 
-    properties.setProperty("node.node2.id", "2");
-    properties.setProperty("node.node2.name", "node2");
-    properties.setProperty("node.node2.host", "localhost");
-    properties.setProperty("node.node2.op.port", nextPortToUseString(portSeed));
-    properties.setProperty("node.node2.app.port", nextPortToUseString(portSeed));
+    for (int idx = 1; idx <= totalNodes; ++idx) {
+      final String node = "node" + idx;
 
-    properties.setProperty("node.node3.id", "3");
-    properties.setProperty("node.node3.name", "node3");
-    properties.setProperty("node.node3.host", "localhost");
-    properties.setProperty("node.node3.op.port", nextPortToUseString(portSeed));
-    properties.setProperty("node.node3.app.port", nextPortToUseString(portSeed));
+      if (idx > 1) {
+        build.append(",");
+      }
+
+      build.append(node);
+
+      final String nodePropertyName = "node." + node;
+
+      properties.setProperty(nodePropertyName + ".id", "" + idx);
+      properties.setProperty(nodePropertyName + ".name", node);
+      properties.setProperty(nodePropertyName + ".host", "localhost");
+      properties.setProperty(nodePropertyName + ".op.port", nextPortToUseString(portSeed));
+      properties.setProperty(nodePropertyName + ".app.port", nextPortToUseString(portSeed));
+    }
+
+    properties.setProperty("cluster.seedNodes", build.toString());
 
     return properties;
   }
@@ -107,14 +110,6 @@ public class ClusterProperties {
     properties.setProperty("cluster.live.node.timeout", "20000");
     properties.setProperty("cluster.heartbeat.interval", "7000");
     properties.setProperty("cluster.quorum.timeout", "60000");
-
-    if (totalNodes == 1) {
-      properties.setProperty("cluster.seedNodes", "node1");
-    } else if (totalNodes == 3) {
-      properties.setProperty("cluster.seedNodes", "node1,node2,node3");
-    } else {
-      throw new IllegalArgumentException("The totalNodes must be 1 or 3.");
-    }
 
     return properties;
   }
