@@ -2,7 +2,10 @@
 
 [![Javadocs](http://javadoc.io/badge/io.vlingo/vlingo-cluster.svg?color=brightgreen)](http://javadoc.io/doc/io.vlingo/vlingo-cluster) [![Build](https://github.com/vlingo/vlingo-cluster/workflows/Build/badge.svg)](https://github.com/vlingo/vlingo-cluster/actions?query=workflow%3ABuild) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/vlingo-platform-java/cluster)
 
-The VLINGO/PLATFORM cluster management for reactive, scalable resiliency of JVM tools and applications running on VLINGO/LATTICE and VLINGO/ACTORS.
+The VLINGO XOOM platform SDK cluster management for Reactive, scalable resiliency of JVM tools and applications running on XOOM LATTICE and XOOM ACTORS.
+
+### Important
+If using snapshot builds [follow these instructions](https://github.com/vlingo/vlingo-platform#snapshots-repository) or you will experience failures.
 
 Docs: https://docs.vlingo.io/vlingo-cluster
 
@@ -35,7 +38,7 @@ repositories {
 }
 ```
 
-The VLINGO/CLUSTER supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. 
+The XOOM CLUSTER supports scaling a JVM-based DDD Bounded Context (business-driven microservice) with fault tolerance. 
 
 Normally you would use `vlingo-lattice` to get these clustering features, but you may run the build-in example cluster application to see how it works. To do so, reference your `vlingo-*` dependecies, build, and run. The cluster is pre-configured for three nodes. To run a three-node cluster, start three different console windows and run the following, one in each console:
 
