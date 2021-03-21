@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Properties that are predefined for 1-node and 3-node clusters. These
+ * Properties that are predefined for single-node and multi-node clusters. These
  * are useful for test, but provided in {@code java/main} for access by tests
  * outside of {@code vlingo-cluster}.
  */
