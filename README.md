@@ -4,20 +4,11 @@
 
 The VLINGO XOOM platform SDK cluster management for Reactive, scalable resiliency of JVM tools and applications running on XOOM LATTICE and XOOM ACTORS.
 
-### Important
-If using snapshot builds [follow these instructions](https://github.com/vlingo/vlingo-platform#snapshots-repository) or you will experience failures.
-
 Docs: https://docs.vlingo.io/vlingo-cluster
 
-### Bintray
+### Installation
 
 ```xml
-  <repositories>
-    <repository>
-      <id>jcenter</id>
-      <url>https://jcenter.bintray.com/</url>
-    </repository>
-  </repositories>
   <dependencies>
     <dependency>
       <groupId>io.vlingo</groupId>
@@ -31,10 +22,6 @@ Docs: https://docs.vlingo.io/vlingo-cluster
 ```gradle
 dependencies {
     compile 'io.vlingo:vlingo-cluster:1.5.2'
-}
-
-repositories {
-    jcenter()
 }
 ```
 
