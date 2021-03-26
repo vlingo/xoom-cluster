@@ -1,6 +1,6 @@
 # vlingo-cluster
 
-[![Javadocs](http://javadoc.io/badge/io.vlingo/vlingo-cluster.svg?color=brightgreen)](http://javadoc.io/doc/io.vlingo/vlingo-cluster) [![Build](https://github.com/vlingo/vlingo-cluster/workflows/Build/badge.svg)](https://github.com/vlingo/vlingo-cluster/actions?query=workflow%3ABuild) [ ![Download](https://api.bintray.com/packages/vlingo/vlingo-platform-java/vlingo-cluster/images/download.svg) ](https://bintray.com/vlingo/vlingo-platform-java/vlingo-cluster/_latestVersion) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/vlingo-platform-java/cluster)
+[![Javadocs](http://javadoc.io/badge/io.vlingo/vlingo-cluster.svg?color=brightgreen)](http://javadoc.io/doc/io.vlingo/vlingo-cluster) [![Build](https://github.com/vlingo/vlingo-cluster/workflows/Build/badge.svg)](https://github.com/vlingo/vlingo-cluster/actions?query=workflow%3ABuild) [![Download](https://img.shields.io/maven-central/v/io.vlingo/vlingo-cluster?label=maven)](https://search.maven.org/artifact/io.vlingo/vlingo-cluster) [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/vlingo-platform-java/cluster)
 
 The VLINGO XOOM platform SDK cluster management for Reactive, scalable resiliency of JVM tools and applications running on XOOM LATTICE and XOOM ACTORS.
 
