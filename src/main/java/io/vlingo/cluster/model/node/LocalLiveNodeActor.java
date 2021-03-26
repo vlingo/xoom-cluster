@@ -7,6 +7,11 @@
 
 package io.vlingo.cluster.model.node;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 import io.vlingo.actors.Actor;
 import io.vlingo.cluster.model.ClusterSnapshot;
 import io.vlingo.cluster.model.Properties;
@@ -29,11 +34,6 @@ import io.vlingo.wire.node.Id;
 import io.vlingo.wire.node.Node;
 import io.vlingo.wire.node.NodeSynchronizer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 public class LocalLiveNodeActor extends Actor
   implements LocalLiveNode, LiveNodeMaintainer, Scheduled<Object> {
 
@@ -55,7 +55,7 @@ public class LocalLiveNodeActor extends Actor
           final Registry registry,
           final OperationalOutboundStream outbound,
           final Configuration configuration) {
-    
+
     this.node = node;
     this.snapshot = snapshot;
     this.registry = registry;
@@ -65,14 +65,15 @@ public class LocalLiveNodeActor extends Actor
     this.selfLocalLiveNode = selfAs(LocalLiveNode.class);
     this.checkHealth = new CheckHealth(node.id());
     this.cancellable = scheduleHealthCheck();
-    
-    declareIdle();
+
+    startNode();
   }
 
 
   //===================================
   // LocalLiveNode
   //===================================
+
 
   @Override
   public void handle(final OperationalMessage message) {
@@ -101,8 +102,9 @@ public class LocalLiveNodeActor extends Actor
   //== LiveNodeMaintainer
   //================================================
 
+  @Override
   public void assertNewLeadership(final Id assertingNodeId) {
-    
+
     //--------------------------------------------------------------------------------------------
     // -- Handles the following kinds of conditions:
     // --
@@ -113,7 +115,7 @@ public class LocalLiveNodeActor extends Actor
     // -- see node {3} so it tells {1} that it wants to be leader. Of course this can also
     // -- happen if the network partition occurs before {3} originally declares itself as
     // -- the leader, but both situations can be dealt with in the same way.
-    // -- 
+    // --
     // -- This is a simple solution and may need a better one.
     //--------------------------------------------------------------------------------------------
 
@@ -127,15 +129,17 @@ public class LocalLiveNodeActor extends Actor
     }
   }
 
+  @Override
   public void declareLeadership() {
     outbound.directory(new TreeSet<>(registry.liveNodes()));
     outbound.leader();
   }
 
+  @Override
   public void escalateElection(final Id electId) {
     registry.join(node);
     registry.join(configuration.nodeMatching(electId));
-    
+
     if (node.id().greaterThan(electId)) {
       if (state.leaderElectionTracker.hasNotStarted()) {
         state.leaderElectionTracker.start(true);
@@ -147,12 +151,14 @@ public class LocalLiveNodeActor extends Actor
       outbound.vote(electId);
     }
   }
-  
+
+  @Override
   public void declareNodeSplit(final Id leaderNodeId) {
     declareFollower();
     promoteElectedLeader(leaderNodeId);
   }
-  
+
+  @Override
   public void dropNode(final Id id) {
     final boolean droppedLeader = registry.isLeader(id);
 
@@ -168,30 +174,35 @@ public class LocalLiveNodeActor extends Actor
     }
   }
 
+  @Override
   public void join(final Node joiningNode) {
     registry.join(joiningNode);
     outbound.open(joiningNode.id());
-    
+
     if (state.isLeader()) {
       declareLeadership();
     }
 
     synchronize(joiningNode);
   }
-  
+
+  @Override
   public void joinLocalWith(final Node remoteNode) {
     join(node);
     join(remoteNode);
   }
-  
+
+  @Override
   public void mergeAllDirectoryEntries(final Set<Node> nodes) {
     registry.mergeAllDirectoryEntries(nodes);
   }
-  
+
+  @Override
   public void overtakeLeadership(final Id leaderNodeId) {
     declareFollower();
   }
-  
+
+  @Override
   public void placeVote(final Id voterId) {
     // should not happen that nodeId > voterId, unless
     // there is a late Join or Directory received
@@ -201,7 +212,8 @@ public class LocalLiveNodeActor extends Actor
       state.leaderElectionTracker.clear();
     }
   }
-  
+
+  @Override
   public void providePulseTo(final Id id) {
     outbound.pulse(id);
   }
@@ -213,10 +225,12 @@ public class LocalLiveNodeActor extends Actor
     }
   }
 
+  @Override
   public void updateLastHealthIndication(final Id id) {
     registry.updateLastHealthIndication(id);
   }
-  
+
+  @Override
   public void voteForLocalNode(final Id targetNodeId) {
     outbound.vote(targetNodeId);
     declareLeadership();
@@ -230,7 +244,7 @@ public class LocalLiveNodeActor extends Actor
   @Override
   public void intervalSignal(final Scheduled<Object> scheduled, final Object data) {
     registry.cleanTimedOutNodes();
-    
+
     selfLocalLiveNode.handle(checkHealth);
   }
 
@@ -263,7 +277,7 @@ public class LocalLiveNodeActor extends Actor
   private void declareFollower() {
     if (state == null || !state.isFollower()) {
       logger().info("Cluster follower: " + node);
-      
+
       state = new FollowerState(node, this, logger());
     }
   }
@@ -271,9 +285,9 @@ public class LocalLiveNodeActor extends Actor
   private void declareIdle() {
     if (state == null || !state.isIdle()) {
       logger().info("Cluster idle: " + node);
-      
+
       state = new IdleState(node, this, logger());
-      
+
       if (registry.currentLeader().equals(node)) {
         registry.demoteLeaderOf(node.id());
       }
@@ -342,28 +356,28 @@ public class LocalLiveNodeActor extends Actor
 
   private void promoteElectedLeader(final Id leaderNodeId) {
     if (node.id().equals(leaderNodeId)) {
-      
+
       // I've seen the leader get bumped out of its own
       // registry during a weird network partition or
       // something and it can never get back leadership
       // or even rejoin the cluster because it's missing
       // from the local registry
       registry.join(node);
-      
+
       registry.declareLeaderAs(leaderNodeId);
-      
+
       registry.confirmAllLiveNodesByLeader();
-      
+
     } else {
-      
+
       if (registry.isLeader(node.id())) {
         registry.demoteLeaderOf(node.id());
       }
-      
+
       if (!registry.hasMember(leaderNodeId)) {
         registry.join(configuration.nodeMatching(leaderNodeId));
       }
-      
+
       registry.declareLeaderAs(leaderNodeId);
     }
   }
@@ -378,6 +392,14 @@ public class LocalLiveNodeActor extends Actor
               null,
               1000L,
               Properties.instance.clusterHealthCheckInterval());
+  }
+
+  private void startNode() {
+    if (registry.isSingleNodeCluster()) {
+      declareLeader();
+    } else {
+      declareIdle();
+    }
   }
 
   private void watchForQuorumAchievement() {

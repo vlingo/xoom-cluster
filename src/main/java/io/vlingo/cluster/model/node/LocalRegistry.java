@@ -7,17 +7,17 @@
 
 package io.vlingo.cluster.model.node;
 
-import io.vlingo.actors.Logger;
-import io.vlingo.cluster.model.Properties;
-import io.vlingo.wire.node.Configuration;
-import io.vlingo.wire.node.Id;
-import io.vlingo.wire.node.Node;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import io.vlingo.actors.Logger;
+import io.vlingo.cluster.model.Properties;
+import io.vlingo.wire.node.Configuration;
+import io.vlingo.wire.node.Id;
+import io.vlingo.wire.node.Node;
 
 public final class LocalRegistry implements Registry {
   private final RegistryInterestBroadcaster broadcaster;
@@ -38,6 +38,7 @@ public final class LocalRegistry implements Registry {
   // Registry
   //======================================
 
+  @Override
   public void cleanTimedOutNodes() {
     final long currentTime = System.currentTimeMillis();
     final long liveNodeTimeout = Properties.instance.clusterLiveNodeTimeout();
@@ -195,7 +196,7 @@ public final class LocalRegistry implements Registry {
     }
 
     registry = mergedNodes;
-    
+
     broadcaster.informMergedAllDirectoryEntries(liveNodes(), result, isClusterHealthy());
     broadcaster.informAllLiveNodes(liveNodes(), isClusterHealthy());
   }
@@ -203,30 +204,35 @@ public final class LocalRegistry implements Registry {
   @Override
   public void promoteElectedLeader(Id leaderNodeId) {
     if (localNode.id().equals(leaderNodeId)) {
-      
+
       declareLeaderAs(leaderNodeId);
-      
+
       confirmAllLiveNodesByLeader();
-      
+
     } else {
-      
+
       if (isLeader(localNode.id())) {
         demoteLeaderOf(localNode.id());
       }
-      
+
       if (!hasMember(leaderNodeId)) {
         join(configuration.nodeMatching(leaderNodeId));
       }
-      
+
       declareLeaderAs(leaderNodeId);
     }
-    
+
     broadcaster.informCurrentLeader(registry.get(leaderNodeId).node(), isClusterHealthy());
   }
 
   @Override
   public void registerRegistryInterest(final RegistryInterest interest) {
     broadcaster.registerRegistryInterest(interest);
+  }
+
+  @Override
+  public boolean isSingleNodeCluster() {
+    return configuration.totalNodes() == 1;
   }
 
   @Override

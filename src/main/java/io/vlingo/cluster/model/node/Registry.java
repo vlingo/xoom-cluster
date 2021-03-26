@@ -30,5 +30,6 @@ public interface Registry {
   void mergeAllDirectoryEntries(final Collection<Node> nodes);
   void promoteElectedLeader(final Id leaderNodeId);
   void registerRegistryInterest(final RegistryInterest interest);
+  boolean isSingleNodeCluster();
   void updateLastHealthIndication(final Id id);
 }
