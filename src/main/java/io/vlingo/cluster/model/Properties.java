@@ -14,7 +14,7 @@ import java.util.List;
 import io.vlingo.actors.Actor;
 
 public final class Properties {
-  public static final Properties instance;
+  private static Properties instance;
 
   private static final String propertiesFile = "/vlingo-cluster.properties";
   private static final String propertiesFileLocation = "src/main/resources" + propertiesFile;
@@ -24,6 +24,10 @@ public final class Properties {
   }
 
   private final java.util.Properties properties;
+
+  public static Properties instance() {
+    return instance;
+  }
 
   public static Properties open() {
     final java.util.Properties properties = new java.util.Properties();
@@ -38,7 +42,8 @@ public final class Properties {
   }
 
   public static Properties openWith(java.util.Properties properties) {
-    return new Properties(properties);
+    instance = new Properties(properties);
+    return instance;
   }
 
   public static Properties openForTest(java.util.Properties properties) {

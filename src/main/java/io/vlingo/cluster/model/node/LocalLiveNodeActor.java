@@ -391,7 +391,7 @@ public class LocalLiveNodeActor extends Actor
               selfAs(Scheduled.class),
               null,
               1000L,
-              Properties.instance.clusterHealthCheckInterval());
+              Properties.instance().clusterHealthCheckInterval());
   }
 
   private void startNode() {

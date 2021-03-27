@@ -40,13 +40,13 @@ public final class NodeBootstrap {
   }
 
   public static NodeBootstrap boot(final World world, final String nodeName, final boolean embedded) throws Exception {
-    return boot(World.start("vlingo-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance, nodeName, embedded);
+    return boot(World.start("vlingo-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance(), nodeName, embedded);
   }
 
   public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
     NodeBootstrap instance;
 
-    Properties.instance.validateRequired(nodeName);
+    Properties.instance().validateRequired(nodeName);
 
     final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
 

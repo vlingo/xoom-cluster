@@ -40,11 +40,11 @@ final class Confirmables {
 
   Collection<String> allTrackingIds() {
     final List<String> all = new ArrayList<>();
-    
+
     for (final Confirmable confirmable : expectedConfirmables) {
       all.add(confirmable.message.trackingId);
     }
-    
+
     return all;
   }
 
@@ -79,14 +79,14 @@ final class Confirmables {
   }
 
   static final class Confirmable {
-    static final int TotalRetries = Properties.instance.clusterAttributesRedistributionRetries();
+    static final int TotalRetries = Properties.instance().clusterAttributesRedistributionRetries();
     static final Confirmable NoConfirmable = new Confirmable();
-    
+
     private final long createdOn;
     private final ApplicationMessage message;
     private final String trackingId;
     private Map<Node, Integer> unconfirmedNodes;
-    
+
     Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
       this.message = message;
       this.unconfirmedNodes = allUnconfirmedFor(allOtherNodes);
@@ -122,10 +122,10 @@ final class Confirmables {
     }
 
     boolean isRedistributableAsOf() {
-      final long targetTime = createdOn + Properties.instance.clusterAttributesRedistributionInterval();
+      final long targetTime = createdOn + Properties.instance().clusterAttributesRedistributionInterval();
       if (targetTime < System.currentTimeMillis()) {
         final Map<Node, Integer> allUnconfirmed = new HashMap<>(unconfirmedNodes.size());
-        
+
         for (final Node node : unconfirmedNodes.keySet()) {
           final int tries = unconfirmedNodes.get(node) + 1;
           if (tries <= TotalRetries) {
@@ -133,7 +133,7 @@ final class Confirmables {
           }
         }
         unconfirmedNodes = allUnconfirmed;
-        
+
         return true;
       }
       return false;
@@ -142,16 +142,16 @@ final class Confirmables {
     Collection<Node> unconfirmedNodes() {
       return unconfirmedNodes.keySet();
     }
-    
+
     @Override
     public boolean equals(final Object other) {
       if (other == null || other.getClass() != Confirmable.class) {
         return false;
       }
-      
+
       return this.trackingId.equals(((Confirmable)other).trackingId);
     }
-    
+
     @Override
     public String toString() {
       return "Confirmable[trackingId=" + trackingId + " nodes=" + unconfirmedNodes + "]";

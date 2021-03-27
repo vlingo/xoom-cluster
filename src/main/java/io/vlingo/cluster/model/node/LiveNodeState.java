@@ -27,10 +27,10 @@ abstract class LiveNodeState {
   final Type type;
 
   final TimeoutTracker noQuorumTracker =
-      new TimeoutTracker(Properties.instance.clusterQuorumTimeout());
+      new TimeoutTracker(Properties.instance().clusterQuorumTimeout());
 
   final TimeoutTracker leaderElectionTracker =
-      new TimeoutTracker(Properties.instance.clusterHeartbeatInterval());
+      new TimeoutTracker(Properties.instance().clusterHeartbeatInterval());
 
   @Override
   public String toString() {
@@ -63,7 +63,7 @@ abstract class LiveNodeState {
     logger.debug("" + type + " " + node.id() + " LEADER: " + leader);
     liveNodeMaintainer.assertNewLeadership(leader.id());
   }
-  
+
   protected void handle(final Leave leave) {
     logger.debug("" + type + " " + node.id() + " LEAVE: " + leave);
     liveNodeMaintainer.dropNode(leave.id());

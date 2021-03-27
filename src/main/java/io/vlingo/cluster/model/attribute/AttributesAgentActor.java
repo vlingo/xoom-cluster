@@ -27,7 +27,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   private final Node node;
   private final RemoteAttributeRequestHandler remoteRequestHandler;
   private final AttributeSetRepository repository;
-  
+
   public AttributesAgentActor(
           final Node node,
           final ClusterApplication application,
@@ -43,7 +43,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final OperationalOutboundStream outbound,
           final Configuration configuration,
           final ConfirmationInterest confirmationInterest) {
-    
+
     this.node = node;
     this.configuration = configuration;
     this.confirmationInterest = confirmationInterest;
@@ -51,11 +51,11 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, configuration);
     this.repository = new AttributeSetRepository();
     this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, configuration, repository);
-    
+
     application.informAttributesClient(this.client);
-    
+
     stage().scheduler()
-      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance.clusterAttributesRedistributionInterval());
+      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance().clusterAttributesRedistributionInterval());
   }
 
   //=========================================
@@ -65,7 +65,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   @Override
   public <T> void add(final String attributeSetName, final String attributeName, final T value) {
     final AttributeSet set = repository.attributeSetOf(attributeSetName);
-    
+
     if (set.isNone()) {
       final AttributeSet newSet = AttributeSet.named(attributeSetName);
       newSet.addIfAbsent(Attribute.from(attributeName, value));
@@ -83,16 +83,16 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   @Override
   public <T> void replace(final String attributeSetName, final String attributeName, final T value) {
     final AttributeSet set = repository.attributeSetOf(attributeSetName);
-    
+
     if (!set.isNone()) {
       final TrackedAttribute tracked = set.attributeNamed(attributeName);
-      
+
       if (tracked.isPresent()) {
         final Attribute<T> other = Attribute.from(attributeName, value);
-        
+
         if (!tracked.sameAs(other)) {
           final TrackedAttribute newlyTracked = set.replace(tracked.replacingValueWith(other));
-          
+
           if (newlyTracked.isPresent()) {
             client.syncWith(set);
             confirmingDistributor.distribute(set, newlyTracked, ApplicationMessageType.ReplaceAttribute);
@@ -105,30 +105,30 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   @Override
   public <T> void remove(final String attributeSetName, final String attributeName) {
     final AttributeSet set = repository.attributeSetOf(attributeSetName);
-    
+
     if (!set.isNone()) {
       final TrackedAttribute tracked = set.attributeNamed(attributeName);
-      
+
       if (tracked.isPresent()) {
         final TrackedAttribute untracked = set.remove(tracked.attribute);
-        
+
         if (untracked.isPresent()) {
           client.syncWith(set);
           confirmingDistributor.distribute(set, untracked, ApplicationMessageType.RemoveAttribute);
         }
       }
-    }    
+    }
   }
 
   @Override
   public <T> void removeAll(final String attributeSetName) {
     final AttributeSet set = repository.attributeSetOf(attributeSetName);
-    
+
     if (!set.isNone()) {
       repository.remove(attributeSetName);
       client.syncWithout(set);
       confirmingDistributor.distributeRemove(set);
-    }    
+    }
   }
 
   //=========================================
@@ -152,7 +152,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     if (addressType.isOperational()) {
       final ReceivedAttributeMessage request = new ReceivedAttributeMessage(message);
       final ApplicationMessageType type = request.type();
-      
+
       switch (type) {
       case CreateAttributeSet:
         remoteRequestHandler.createAttributeSet(request);
@@ -202,9 +202,9 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     if (isStopped()) {
       return;
     }
-    
+
     repository.removeAll();
-    
+
     super.stop();
   }
 }

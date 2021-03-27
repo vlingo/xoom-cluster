@@ -41,7 +41,7 @@ public final class LocalRegistry implements Registry {
   @Override
   public void cleanTimedOutNodes() {
     final long currentTime = System.currentTimeMillis();
-    final long liveNodeTimeout = Properties.instance.clusterLiveNodeTimeout();
+    final long liveNodeTimeout = Properties.instance().clusterLiveNodeTimeout();
 
     final Map<Id, RegisteredNodeStatus> nodesToKeep = new TreeMap<>();
 
