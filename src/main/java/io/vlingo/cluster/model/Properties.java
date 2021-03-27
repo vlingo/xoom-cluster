@@ -7,7 +7,6 @@
 
 package io.vlingo.cluster.model;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +33,7 @@ public final class Properties {
 
     try {
       properties.load(Properties.class.getResourceAsStream(propertiesFile));
-    } catch (IOException e) {
+    } catch (Throwable t) {
       System.out.println("WARNING: Missing file: " + propertiesFileLocation + " -- create or use ClusterProperties.");
     }
 
