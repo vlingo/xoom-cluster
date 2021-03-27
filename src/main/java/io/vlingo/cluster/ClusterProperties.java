@@ -38,7 +38,7 @@ public class ClusterProperties {
     properties = common(allOf(properties, totalNodes, portSeed), totalNodes, applicationClassname);
 
     final io.vlingo.cluster.model.Properties clusterProperties =
-            io.vlingo.cluster.model.Properties.openForTest(properties);
+            io.vlingo.cluster.model.Properties.openWith(properties);
 
     return clusterProperties;
   }
@@ -57,7 +57,7 @@ public class ClusterProperties {
     properties = common(oneOnly(properties, portSeed), 1, applicationClassname);
 
     final io.vlingo.cluster.model.Properties clusterProperties =
-            io.vlingo.cluster.model.Properties.openForTest(properties);
+            io.vlingo.cluster.model.Properties.openWith(properties);
 
     return clusterProperties;
   }

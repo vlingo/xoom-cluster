@@ -17,6 +17,7 @@ public final class Properties {
   public static final Properties instance;
 
   private static final String propertiesFile = "/vlingo-cluster.properties";
+  private static final String propertiesFileLocation = "src/main/resources" + propertiesFile;
 
   static {
     instance = open();
@@ -30,14 +31,18 @@ public final class Properties {
     try {
       properties.load(Properties.class.getResourceAsStream(propertiesFile));
     } catch (IOException e) {
-      throw new IllegalStateException("Must provide properties file on classpath: " + propertiesFile);
+      System.out.println("WARNING: Missing file: " + propertiesFileLocation + " -- create or use ClusterProperties.");
     }
 
     return new Properties(properties);
   }
 
-  public static Properties openForTest(java.util.Properties properties) {
+  public static Properties openWith(java.util.Properties properties) {
     return new Properties(properties);
+  }
+
+  public static Properties openForTest(java.util.Properties properties) {
+    return openWith(properties);
   }
 
   public int applicationBufferSize() {
