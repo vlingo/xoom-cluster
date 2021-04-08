@@ -7,7 +7,7 @@
     <logger name="io.netty" level="info"/>
     <logger name="io.rsocket" level="info"/>
     <logger name="reactor" level="info"/>
-    <logger name="io.vlingo" level="info"/>
+    <logger name="io.vlingo.xoom" level="info"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

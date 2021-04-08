@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>io.vlingo.xoom</groupId>
-  <artifactId>xoom-cluster</artifactId>
+  <groupId>io.vlingo</groupId>
+  <artifactId>vlingo-cluster</artifactId>
   <version>1.6.1-SNAPSHOT</version>
-  <name>xoom-cluster</name>
+  <name>vlingo-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.</description>
   <url>https://github.com/vlingo/xoom-cluster</url>
   <licenses>
@@ -31,6 +31,12 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
+  <distributionManagement>
+    <relocation>
+      <groupId>io.vlingo.xoom</groupId>
+      <artifactId>xoom-cluster</artifactId>
+    </relocation>
+  </distributionManagement>
   <build>
     <plugins>
       <plugin>
@@ -169,6 +175,10 @@
         </property>
       </activation>
       <distributionManagement>
+        <relocation>
+          <groupId>io.vlingo.xoom</groupId>
+          <artifactId>xoom-cluster</artifactId>
+        </relocation>
         <snapshotRepository>
           <id>central-repository-ossrh</id>
           <name>Snapshots Repository OSSRH</name>
@@ -200,6 +210,10 @@
         </property>
       </activation>
       <distributionManagement>
+        <relocation>
+          <groupId>io.vlingo.xoom</groupId>
+          <artifactId>xoom-cluster</artifactId>
+        </relocation>
         <repository>
           <id>github</id>
           <name>GitHub Packages</name>
