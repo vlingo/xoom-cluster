@@ -4,7 +4,7 @@
   <artifactId>vlingo-cluster</artifactId>
   <version>1.6.1-SNAPSHOT</version>
   <name>vlingo-cluster</name>
-  <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on vlingo/actors.</description>
+  <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on VLINGO XOOM Actors.</description>
   <url>https://github.com/vlingo/xoom-cluster</url>
   <licenses>
     <license>
@@ -15,7 +15,7 @@
   <developers>
     <developer>
       <id>vlingo</id>
-      <name>vlingo/PLATFORM Team</name>
+      <name>VLINGO XOOM Team</name>
       <email>info@vlingo.io</email>
       <organization>vlingo</organization>
       <organizationUrl>https://vlingo.io/contributors/</organizationUrl>

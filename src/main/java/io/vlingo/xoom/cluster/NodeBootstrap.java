@@ -23,10 +23,10 @@ public final class NodeBootstrap {
     if (args.length == 1) {
       boot(args[0]);
     } else if (args.length > 1) {
-      System.err.println("vlingo/cluster: Too many arguments; provide node name only.");
+      System.err.println("XOOM: Too many arguments; provide node name only.");
       System.exit(1);
     } else {
-      System.err.println("vlingo/cluster: This node must be named with a command-line argument.");
+      System.err.println("XOOM: This node must be named with a command-line argument.");
       System.exit(1);
     }
   }
