@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vlingo.xoom</groupId>
   <artifactId>xoom-cluster</artifactId>
-  <version>1.7.0</version>
+  <version>1.7.1-SNAPSHOT</version>
   <name>xoom-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on VLINGO XOOM Actors.</description>
   <url>https://github.com/vlingo/xoom-cluster</url>
@@ -103,17 +103,17 @@
     <dependency>
       <groupId>io.vlingo.xoom</groupId>
       <artifactId>xoom-common</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo.xoom</groupId>
       <artifactId>xoom-actors</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.vlingo.xoom</groupId>
       <artifactId>xoom-wire</artifactId>
-      <version>1.7.0</version>
+      <version>1.7.1-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
