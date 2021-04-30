@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>io.vlingo</groupId>
   <artifactId>vlingo-cluster</artifactId>
-  <version>1.7.5</version>
+  <version>1.7.6-SNAPSHOT</version>
   <name>vlingo-cluster</name>
   <description>Cluster management for reactive, scalable resiliency of JVM tools and applications running on VLINGO XOOM Actors.</description>
   <url>https://github.com/vlingo/xoom-cluster</url>
