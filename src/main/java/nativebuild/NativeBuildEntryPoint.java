@@ -1,4 +1,4 @@
-package io.vlingo.xoom.cluster.nativebuild;
+package nativebuild;
 
 import io.vlingo.xoom.actors.World;
 import io.vlingo.xoom.cluster.model.ClusterConfiguration;
