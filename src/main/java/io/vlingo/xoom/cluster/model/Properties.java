@@ -18,23 +18,34 @@ public final class Properties {
   private static final String propertiesFile = "/xoom-cluster.properties";
   private static final String propertiesFileLocation = "src/main/resources" + propertiesFile;
 
-  static {
-    instance = open();
-  }
-
   private final java.util.Properties properties;
 
   public static Properties instance() {
+    if (instance == null) {
+      instance = open();
+    }
     return instance;
   }
 
   public static Properties open() {
+    Properties properties = openQuietly();
+
+    if (properties == null) {
+      System.out.println("WARNING: Missing file: " + propertiesFileLocation + " -- create or use ClusterProperties.");
+
+      return new Properties(new java.util.Properties());
+    }
+
+    return properties;
+  }
+
+  public static Properties openQuietly() {
     final java.util.Properties properties = new java.util.Properties();
 
     try {
       properties.load(Properties.class.getResourceAsStream(propertiesFile));
     } catch (Throwable t) {
-      System.out.println("WARNING: Missing file: " + propertiesFileLocation + " -- create or use ClusterProperties.");
+      return null;
     }
 
     return new Properties(properties);
