@@ -23,15 +23,15 @@ public class AttributeTest {
     
     assertEquals((byte) 1, (byte) attribute1.value);
     
-    assertEquals(new Byte((byte) 1), (Byte) attribute1.value);
+    assertEquals(Byte.valueOf((byte) 1), (Byte) attribute1.value);
     
     assertTrue(attribute1.type.isByte());
     
-    final Attribute<Byte> attribute2 = Attribute.from("byte2", new Byte((byte) 2));
+    final Attribute<Byte> attribute2 = Attribute.from("byte2", Byte.valueOf((byte) 2));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("byte2", new Byte((byte) 2)));
+    assertEquals(attribute2, Attribute.from("byte2", Byte.valueOf((byte) 2)));
   }
 
   @Test
@@ -40,15 +40,15 @@ public class AttributeTest {
     
     assertEquals((short) 1, (short) attribute1.value);
     
-    assertEquals(new Short((short) 1), (Short) attribute1.value);
+    assertEquals(Short.valueOf((short) 1), (Short) attribute1.value);
     
     assertTrue(attribute1.type.isShort());
     
-    final Attribute<Short> attribute2 = Attribute.from("short2", new Short((short) 2));
+    final Attribute<Short> attribute2 = Attribute.from("short2", Short.valueOf((short) 2));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("short2", new Short((short) 2)));
+    assertEquals(attribute2, Attribute.from("short2", Short.valueOf((short) 2)));
   }
 
   @Test
@@ -57,15 +57,15 @@ public class AttributeTest {
     
     assertEquals(1, (int) attribute1.value);
     
-    assertEquals(new Integer(1), (Integer) attribute1.value);
+    assertEquals(Integer.valueOf(1), (Integer) attribute1.value);
     
     assertTrue(attribute1.type.isInteger());
     
-    final Attribute<Integer> attribute2 = Attribute.from("int2", new Integer(2));
+    final Attribute<Integer> attribute2 = Attribute.from("int2", Integer.valueOf(2));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("int2", new Integer(2)));
+    assertEquals(attribute2, Attribute.from("int2", Integer.valueOf(2)));
   }
 
   @Test
@@ -74,15 +74,15 @@ public class AttributeTest {
     
     assertEquals(1L, (long) attribute1.value);
     
-    assertEquals(new Long(1), (Long) attribute1.value);
+    assertEquals(Long.valueOf(1), (Long) attribute1.value);
     
     assertTrue(attribute1.type.isLong());
     
-    final Attribute<Long> attribute2 = Attribute.from("long2", new Long(2L));
+    final Attribute<Long> attribute2 = Attribute.from("long2", Long.valueOf(2L));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("long2", new Long(2L)));
+    assertEquals(attribute2, Attribute.from("long2", Long.valueOf(2L)));
   }
 
   @Test
@@ -91,15 +91,15 @@ public class AttributeTest {
     
     assertEquals('A', (long) attribute1.value);
     
-    assertEquals(new Character('A'), (Character) attribute1.value);
+    assertEquals(Character.valueOf('A'), (Character) attribute1.value);
     
     assertTrue(attribute1.type.isCharacter());
     
-    final Attribute<Character> attribute2 = Attribute.from("char2", new Character('B'));
+    final Attribute<Character> attribute2 = Attribute.from("char2", Character.valueOf('B'));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("char2", new Character('B')));
+    assertEquals(attribute2, Attribute.from("char2", Character.valueOf('B')));
   }
 
   @Test
@@ -108,15 +108,15 @@ public class AttributeTest {
     
     assertEquals(1.1f, (float) attribute1.value, 0.05);
     
-    assertEquals(new Float(1.1), (Float) attribute1.value);
+    assertEquals(Float.valueOf(1.1F), (Float) attribute1.value);
     
     assertTrue(attribute1.type.isFloat());
     
-    final Attribute<Float> attribute2 = Attribute.from("float2", new Float(2.2));
+    final Attribute<Float> attribute2 = Attribute.from("float2", Float.valueOf(2.2F));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("float2", new Float(2.2)));
+    assertEquals(attribute2, Attribute.from("float2", Float.valueOf(2.2F)));
   }
 
   @Test
@@ -125,15 +125,15 @@ public class AttributeTest {
     
     assertEquals(1.1, (double) attribute1.value, 0.05);
     
-    assertEquals(new Double(1.1), (Double) attribute1.value);
+    assertEquals(Double.valueOf(1.1), (Double) attribute1.value);
     
     assertTrue(attribute1.type.isDouble());
     
-    final Attribute<Double> attribute2 = Attribute.from("double2", new Double(2.2));
+    final Attribute<Double> attribute2 = Attribute.from("double2", Double.valueOf(2.2));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("double2", new Double(2.2)));
+    assertEquals(attribute2, Attribute.from("double2", Double.valueOf(2.2)));
   }
 
   @Test
@@ -142,15 +142,15 @@ public class AttributeTest {
     
     assertEquals(true, (boolean) attribute1.value);
     
-    assertEquals(new Boolean(true), (Boolean) attribute1.value);
+    assertEquals(Boolean.valueOf(true), (Boolean) attribute1.value);
     
     assertTrue(attribute1.type.isBoolean());
     
-    final Attribute<Boolean> attribute2 = Attribute.from("boolean2", new Boolean(false));
+    final Attribute<Boolean> attribute2 = Attribute.from("boolean2", Boolean.valueOf(false));
     
     assertNotEquals(attribute1, attribute2);
     
-    assertEquals(attribute2, Attribute.from("boolean2", new Boolean(false)));
+    assertEquals(attribute2, Attribute.from("boolean2", Boolean.valueOf(false)));
   }
 
   @Test
