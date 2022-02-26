@@ -45,7 +45,6 @@ public class LocalLiveNodeActor extends Actor
   private final List<NodeSynchronizer> nodeSynchronizers;
   private final OperationalOutboundStream outbound;
   private boolean quorumAchieved;
-  private final LocalLiveNode selfLocalLiveNode;
   private final ClusterSnapshot snapshot;
   private final Registry registry;
 
@@ -62,7 +61,6 @@ public class LocalLiveNodeActor extends Actor
     this.outbound = outbound;
     this.configuration = configuration;
     this.nodeSynchronizers = new ArrayList<>();
-    this.selfLocalLiveNode = selfAs(LocalLiveNode.class);
     this.checkHealth = new CheckHealth(node.id());
     this.cancellable = scheduleHealthCheck();
 
@@ -243,9 +241,8 @@ public class LocalLiveNodeActor extends Actor
 
   @Override
   public void intervalSignal(final Scheduled<Object> scheduled, final Object data) {
+    handle(checkHealth); // refresh lastHealthIndication; prevent timeout for single node scenario
     registry.cleanTimedOutNodes();
-
-    selfLocalLiveNode.handle(checkHealth);
   }
 
 
