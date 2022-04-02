@@ -88,7 +88,7 @@ public class ClusterProperties {
       properties.setProperty(nodePropertyName + ".app.port", nextPortToUseString(portSeed));
     }
 
-    properties.setProperty("cluster.seedNodes", build.toString());
+    properties.setProperty("cluster.nodes", build.toString());
 
     return properties;
   }

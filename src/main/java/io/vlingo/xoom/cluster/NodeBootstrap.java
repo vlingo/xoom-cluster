@@ -10,14 +10,14 @@ package io.vlingo.xoom.cluster;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.World;
 import io.vlingo.xoom.cluster.model.Cluster;
-import io.vlingo.xoom.cluster.model.ClusterSnapshotControl;
+import io.vlingo.xoom.cluster.model.ClusterControl;
 import io.vlingo.xoom.cluster.model.Properties;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication.DefaultClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication2.ClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication2.DefaultClusterApplicationInstantiator;
 import io.vlingo.xoom.common.Tuple2;
 
 public final class NodeBootstrap {
-  private final Tuple2<ClusterSnapshotControl, Logger> clusterSnapshotControl;
+  private final Tuple2<ClusterControl, Logger> clusterControl;
 
   public static void main(final String[] args) throws Exception {
     if (args.length == 1) {
@@ -48,7 +48,7 @@ public final class NodeBootstrap {
 
     Properties.instance().validateRequired(nodeName);
 
-    final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
+    final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
 
     instance = new NodeBootstrap(control, nodeName);
 
@@ -61,12 +61,12 @@ public final class NodeBootstrap {
     return instance;
   }
 
-  public ClusterSnapshotControl clusterSnapshotControl() {
-    return clusterSnapshotControl._1;
+  public ClusterControl clusterControl() {
+    return clusterControl._1;
   }
 
-  private NodeBootstrap(final Tuple2<ClusterSnapshotControl, Logger> control, final String nodeName) throws Exception {
-    this.clusterSnapshotControl = control;
+  private NodeBootstrap(final Tuple2<ClusterControl, Logger> control, final String nodeName) throws Exception {
+    this.clusterControl = control;
 
     ShutdownHook shutdownHook = new ShutdownHook(nodeName, control);
     shutdownHook.register();

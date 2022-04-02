@@ -7,10 +7,7 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.wire.node.Address;
@@ -24,10 +21,12 @@ import io.vlingo.xoom.wire.node.Node;
 public class ClusterConfiguration implements Configuration {
   private final Logger logger;
   private final Set<Node> nodes;
+  private final List<Address> seeds;
 
   public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
     this.nodes = new TreeSet<>();
+    this.seeds = new ArrayList<>();
 
     initializeConfiguredNodeEntries(properties);
   }
@@ -37,7 +36,6 @@ public class ClusterConfiguration implements Configuration {
     return Collections.unmodifiableSet(nodes);
   }
 
-  // Currently not used
   @Override
   public Set<Node> allNodesOf(final Collection<Id> ids) {
     // Currently not used
@@ -155,8 +153,12 @@ public class ClusterConfiguration implements Configuration {
     return "ConfiguredCluster[" + nodes + "]";
   }
 
+  public List<Address> allSeeds() {
+    return Collections.unmodifiableList(seeds);
+  }
+
   private void initializeConfiguredNodeEntries(final Properties properties) {
-    for (String configuredNodeName : properties.seedNodes()) {
+    for (String configuredNodeName : properties.nodes()) {
       final Id nodeId = Id.of(properties.nodeId(configuredNodeName));
       final Name nodeName = new Name(configuredNodeName);
       final Host host = Host.of(properties.host(configuredNodeName));
@@ -164,6 +166,10 @@ public class ClusterConfiguration implements Configuration {
       final Address appNodeAddress = Address.from(host, properties.applicationPort(configuredNodeName), AddressType.APP);
 
       nodes.add(new Node(nodeId, nodeName, opNodeAddress, appNodeAddress));
+    }
+
+    for (String configuredSeed : properties.seeds()) {
+      seeds.add(Address.from(configuredSeed, AddressType.OP));
     }
   }
 }

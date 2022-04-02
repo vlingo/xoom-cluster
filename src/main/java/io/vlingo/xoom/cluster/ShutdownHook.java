@@ -8,14 +8,14 @@
 package io.vlingo.xoom.cluster;
 
 import io.vlingo.xoom.actors.Logger;
-import io.vlingo.xoom.cluster.model.ClusterSnapshotControl;
+import io.vlingo.xoom.cluster.model.ClusterControl;
 import io.vlingo.xoom.common.Tuple2;
 
 final class ShutdownHook {
-  private final Tuple2<ClusterSnapshotControl, Logger> control;
+  private final Tuple2<ClusterControl, Logger> control;
   private final String nodeName;
 
-  protected ShutdownHook(final String nodeName, final Tuple2<ClusterSnapshotControl, Logger> control) {
+  protected ShutdownHook(final String nodeName, final Tuple2<ClusterControl, Logger> control) {
     this.nodeName = nodeName;
     this.control = control;
   }

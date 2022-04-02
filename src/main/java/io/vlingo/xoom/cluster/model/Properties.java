@@ -218,32 +218,47 @@ public final class Properties {
     return port;
   }
 
-  public final List<String> seedNodes() {
-    final List<String> seedNodes = new ArrayList<>();
+  public List<String> nodes() {
+    final List<String> nodes = new ArrayList<>();
 
-    final String commaSeparated = getString("cluster.seedNodes", "");
+    final String commaSeparated = getString("cluster.nodes", "");
 
     if (commaSeparated.length() == 0) {
-      throw new IllegalStateException("Must declare seed nodes in properties file.");
+      throw new IllegalStateException("Must declare nodes in properties file.");
     }
 
-    for (final String seedNode : commaSeparated.split(",")) {
-      seedNodes.add(seedNode.trim());
+    for (final String node : commaSeparated.split(",")) {
+      nodes.add(node.trim());
     }
 
-    return seedNodes;
+    return nodes;
+  }
+
+  public List<String> seeds() {
+    final List<String> nodes = new ArrayList<>();
+    final String commaSeparated = getString("cluster.seeds", "");
+
+    if (commaSeparated.length() == 0) {
+      throw new IllegalStateException("Must declare seeds in properties file.");
+    }
+
+    for (final String seed : commaSeparated.split(",")) {
+      nodes.add(seed.trim());
+    }
+
+    return nodes;
   }
 
   public boolean useSSL() {
     return getBoolean("cluster.ssl", false);
   }
 
-  public final Boolean getBoolean(final String nodeName, final String key, final Boolean defaultValue) {
+  public Boolean getBoolean(final String nodeName, final String key, final Boolean defaultValue) {
     final String value = getString(nodeName, key, defaultValue.toString());
     return Boolean.parseBoolean(value);
   }
 
-  public final Boolean getBoolean(final String key, final Boolean defaultValue) {
+  public Boolean getBoolean(final String key, final Boolean defaultValue) {
     return getBoolean("", key, defaultValue);
   }
 
@@ -252,24 +267,24 @@ public final class Properties {
     return Float.parseFloat(value);
   }
 
-  public final Float getFloat(final String key, final Float defaultValue) {
+  public Float getFloat(final String key, final Float defaultValue) {
     return getFloat("", key, defaultValue);
   }
 
-  public final Integer getInteger(final String nodeName, final String key, final Integer defaultValue) {
+  public Integer getInteger(final String nodeName, final String key, final Integer defaultValue) {
     final String value = getString(nodeName, key, defaultValue.toString());
     return Integer.parseInt(value);
   }
 
-  public final Integer getInteger(final String key, final Integer defaultValue) {
+  public Integer getInteger(final String key, final Integer defaultValue) {
     return getInteger("", key, defaultValue);
   }
 
-  public final String getString(final String nodeName, final String key, final String defaultValue) {
+  public String getString(final String nodeName, final String key, final String defaultValue) {
     return properties.getProperty(key(nodeName, key), defaultValue);
   }
 
-  public final String getString(final String key, final String defaultValue) {
+  public String getString(final String key, final String defaultValue) {
     return properties.getProperty(key, defaultValue);
   }
 
@@ -286,7 +301,7 @@ public final class Properties {
 
     applicationPort(nodeName);
 
-    seedNodes();
+    nodes();
 
     clusterApplicationClassname();
   }
