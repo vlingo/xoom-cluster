@@ -13,7 +13,7 @@ Docs: https://docs.vlingo.io/xoom-cluster
     <dependency>
       <groupId>io.vlingo.xoom</groupId>
       <artifactId>xoom-cluster</artifactId>
-      <version>1.9.1</version>
+      <version>1.9.2</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>
@@ -21,7 +21,7 @@ Docs: https://docs.vlingo.io/xoom-cluster
 
 ```gradle
 dependencies {
-    compile 'io.vlingo.xoom:xoom-cluster:1.9.1'
+    compile 'io.vlingo.xoom:xoom-cluster:1.9.2'
 }
 ```
 
