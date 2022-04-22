@@ -9,7 +9,7 @@ package io.vlingo.xoom.cluster.model.attribute;
 
 import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.cluster.model.Properties;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
 import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.xoom.cluster.model.attribute.message.ReceivedAttributeMessage;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
@@ -30,7 +30,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
 
   public AttributesAgentActor(
           final Node node,
-          final ClusterApplication application,
+          final ClusterApplication2 application,
           final OperationalOutboundStream outbound,
           final Configuration configuration) {
     this(node, application, outbound, configuration, new NoOpConfirmationInterest(configuration));
@@ -39,7 +39,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   @SuppressWarnings("unchecked")
   public AttributesAgentActor(
           final Node node,
-          final ClusterApplication application,
+          final ClusterApplication2 application,
           final OperationalOutboundStream outbound,
           final Configuration configuration,
           final ConfirmationInterest confirmationInterest) {

@@ -10,14 +10,14 @@ package io.vlingo.xoom.cluster.model;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.vlingo.xoom.cluster.model.application.ClusterApplication;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
 import io.vlingo.xoom.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
-public class MockClusterApplication implements ClusterApplication {
+public class MockClusterApplication implements ClusterApplication2 {
   public AttributesProtocol attributesClient;
 
   public AtomicInteger allLiveNodes = new AtomicInteger(0);
@@ -28,6 +28,7 @@ public class MockClusterApplication implements ClusterApplication {
   public AtomicInteger informLocalNodeShutDown = new AtomicInteger(0);
   public AtomicInteger informLocalNodeStarted = new AtomicInteger(0);
   public AtomicInteger informNodeIsHealthy = new AtomicInteger(0);
+  public AtomicInteger informClusterIsHealthy = new AtomicInteger(0);
   public AtomicInteger informNodeJoinedCluster = new AtomicInteger(0);
   public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
   public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
@@ -74,23 +75,8 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void informLeaderElected(Id leaderId, boolean isHealthyCluster, boolean isLocalNodeLeading) {
-    informLeaderElected.incrementAndGet();
-  }
-
-  @Override
-  public void informLeaderLost(Id lostLeaderId, boolean isHealthyCluster) {
-    informLeaderLost.incrementAndGet();
-  }
-
-  @Override
-  public void informLocalNodeShutDown(Id nodeId) {
-    informLocalNodeShutDown.incrementAndGet();
-  }
-
-  @Override
-  public void informLocalNodeStarted(Id nodeId) {
-    informLocalNodeStarted.incrementAndGet();
+  public void informClusterIsHealthy(boolean isHealthyCluster) {
+    informClusterIsHealthy.incrementAndGet();
   }
 
   @Override
@@ -106,16 +92,6 @@ public class MockClusterApplication implements ClusterApplication {
   @Override
   public void informNodeLeftCluster(Id nodeId, boolean isHealthyCluster) {
     informNodeLeftCluster.incrementAndGet();
-  }
-
-  @Override
-  public void informQuorumAchieved() {
-    informQuorumAchieved.incrementAndGet();
-  }
-
-  @Override
-  public void informQuorumLost() {
-    informQuorumLost.incrementAndGet();
   }
 
   @Override

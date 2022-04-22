@@ -33,9 +33,9 @@ public interface ClusterControl {
 
     final Definition definition =
         new Definition(
-            ClusterSnapshotActor.class,
+            ClusterActor.class,
             new ClusterControl.ClusterInstantiator(initializer, application),
-            "cluster-snapshot-" + nodeName);
+            "cluster-actor-" + nodeName);
 
     ClusterControl control = world.actorFor(ClusterControl.class, definition);
 
