@@ -8,7 +8,7 @@ import io.scalecube.net.Address;
 import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.actors.Logger;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.xoom.wire.message.RawMessage;
@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest {
-  private final ClusterApplication2 clusterApplication; // only one application for now
+  private final ClusterApplication clusterApplication; // only one application for now
   private final ClusterImpl cluster;
   private final ClusterCommunicationsHub communicationsHub;
 
-  public ClusterActor(final ClusterInitializer initializer, final ClusterApplication2 clusterApplication) throws Exception {
+  public ClusterActor(final ClusterInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
     this.clusterApplication = clusterApplication;
 
     Node localNode = initializer.localNode();
@@ -63,7 +63,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
     if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message);
     } else {
-      logger().warn("ClusterSnapshot couldn't dispatch incoming message; unknown address type: " +
+      logger().warn("ClusterActor couldn't dispatch incoming message; unknown address type: " +
               addressType + " for message: " + message.asTextMessage());
     }
   }
@@ -84,13 +84,13 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
   private static final class MessageHandler implements ClusterMessageHandler {
     private final Logger logger;
-    private final ClusterApplication2 clusterApplication;
+    private final ClusterApplication clusterApplication;
     private final io.scalecube.cluster.Cluster cluster;
     private final Registry registry;
     private final ClusterConfiguration configuration;
     private final Properties properties;
 
-    private MessageHandler(Logger logger, ClusterApplication2 clusterApplication, io.scalecube.cluster.Cluster cluster,
+    private MessageHandler(Logger logger, ClusterApplication clusterApplication, io.scalecube.cluster.Cluster cluster,
                            ClusterInitializer initializer) {
       this.logger = logger;
       this.clusterApplication = clusterApplication;

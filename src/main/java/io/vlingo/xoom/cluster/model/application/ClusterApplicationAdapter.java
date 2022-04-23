@@ -9,7 +9,7 @@ import io.vlingo.xoom.wire.node.Node;
 
 import java.util.Collection;
 
-public class ClusterApplication2Adapter extends Actor implements ClusterApplication2 {
+public class ClusterApplicationAdapter extends Actor implements ClusterApplication {
   @Override
   public void start() {
   }

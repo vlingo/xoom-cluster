@@ -13,8 +13,8 @@ import io.vlingo.xoom.actors.ActorInstantiator;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.Stage;
 import io.vlingo.xoom.actors.World;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2.ClusterApplicationInstantiator;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.common.Tuple2;
 
 public class Cluster {
@@ -60,10 +60,10 @@ public class Cluster {
   static class ClusterActorInstantiator implements ActorInstantiator<ClusterActor> {
     private static final long serialVersionUID = 6105119774787607965L;
 
-    private final ClusterApplication2 clusterApplication;
+    private final ClusterApplication clusterApplication;
     private final ClusterInitializer initializer;
 
-    public ClusterActorInstantiator(final ClusterInitializer initializer, final ClusterApplication2 clusterApplication) {
+    public ClusterActorInstantiator(final ClusterInitializer initializer, final ClusterApplication clusterApplication) {
       this.initializer = initializer;
       this.clusterApplication = clusterApplication;
     }

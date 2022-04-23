@@ -11,7 +11,7 @@ import io.vlingo.xoom.actors.ActorInstantiator;
 import io.vlingo.xoom.actors.Definition;
 import io.vlingo.xoom.actors.Stage;
 import io.vlingo.xoom.actors.Stoppable;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
@@ -23,7 +23,7 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
   static AttributesAgent instance(
       final Stage stage,
       final Node node,
-      final ClusterApplication2 application,
+      final ClusterApplication application,
       final OperationalOutboundStream outbound,
       final Configuration configuration) {
 
@@ -40,13 +40,13 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
     private static final long serialVersionUID = 3269867041246996465L;
 
     private final Node node;
-    private final ClusterApplication2 application;
+    private final ClusterApplication application;
     private final OperationalOutboundStream outbound;
     private final Configuration configuration;
 
     public AttributesAgentInstantiator(
             final Node node,
-            final ClusterApplication2 application,
+            final ClusterApplication application,
             final OperationalOutboundStream outbound,
             final Configuration configuration) {
       this.node = node;

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.World;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2.DefaultClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication.DefaultClusterApplicationInstantiator;
 import io.vlingo.xoom.common.Tuple2;
 
 public class ClusterTest extends AbstractClusterTest {

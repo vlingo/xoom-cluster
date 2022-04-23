@@ -51,15 +51,15 @@ public final class ApplicationSays extends OperationalMessage {
     return true;
   }
 
-  public final Name name() {
+  public Name name() {
     return name;
   }
 
-  public final String payload() {
+  public String payload() {
     return payload;
   }
 
-  public final String saysId() {
+  public String saysId() {
     return saysId;
   }
 

@@ -66,16 +66,4 @@ public interface OperationalOutboundStream extends Stoppable {
 
   void close(final Id id);
   void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes);
-  void directory(final Set<Node> allLiveNodes);
-  void elect(final Collection<Node> allGreaterNodes);
-  void join();
-  void leader();
-  void leader(Id id);
-  void leave();
-  void open(final Id id);
-  void ping(final Id targetNodeId);
-  void pulse(final Id targetNodeId);
-  void pulse();
-  void split(final Id targetNodeId, final Id currentLeaderId);
-  void vote(final Id targetNodeId);
 }

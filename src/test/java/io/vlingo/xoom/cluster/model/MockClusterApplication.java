@@ -10,14 +10,14 @@ package io.vlingo.xoom.cluster.model;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.attribute.AttributesProtocol;
 import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
-public class MockClusterApplication implements ClusterApplication2 {
+public class MockClusterApplication implements ClusterApplication {
   public AttributesProtocol attributesClient;
 
   public AtomicInteger allLiveNodes = new AtomicInteger(0);

@@ -12,8 +12,8 @@ import io.vlingo.xoom.actors.World;
 import io.vlingo.xoom.cluster.model.Cluster;
 import io.vlingo.xoom.cluster.model.ClusterControl;
 import io.vlingo.xoom.cluster.model.Properties;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2.ClusterApplicationInstantiator;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2.DefaultClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication.DefaultClusterApplicationInstantiator;
 import io.vlingo.xoom.common.Tuple2;
 
 public final class NodeBootstrap {

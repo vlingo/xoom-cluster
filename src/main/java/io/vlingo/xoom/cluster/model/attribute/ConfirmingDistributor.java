@@ -8,17 +8,9 @@
 package io.vlingo.xoom.cluster.model.attribute;
 
 import io.vlingo.xoom.actors.Logger;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.attribute.Confirmables.Confirmable;
-import io.vlingo.xoom.cluster.model.attribute.message.AddAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmCreateAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmRemoveAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.CreateAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.RemoveAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.RemoveAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.ReplaceAttribute;
+import io.vlingo.xoom.cluster.model.attribute.message.*;
 import io.vlingo.xoom.cluster.model.message.ApplicationSays;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.wire.node.Configuration;
@@ -27,7 +19,7 @@ import io.vlingo.xoom.wire.node.Node;
 import java.util.Collection;
 
 public final class ConfirmingDistributor {
-  private final ClusterApplication2 application;
+  private final ClusterApplication application;
   private final Confirmables confirmables;
   
   private final Collection<Node> allOtherNodes;
@@ -35,7 +27,7 @@ public final class ConfirmingDistributor {
   private final Node node;
   private final OperationalOutboundStream outbound;
 
-  ConfirmingDistributor(final ClusterApplication2 application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
+  ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
     this.application = application;
     this.logger = configuration.logger();
     this.node = node;

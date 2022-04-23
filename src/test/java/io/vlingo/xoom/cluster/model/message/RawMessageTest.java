@@ -30,8 +30,8 @@ public class RawMessageTest extends AbstractClusterTest {
   public void testKnownSizeWithAppend() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = nextNodeWith(1);
-    final Join join = new Join(node1);
-    MessageConverters.messageToBytes(join, buffer);
+    final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
+    MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();
     final int messageSize = buffer.limit();
     final RawMessage message = new RawMessage(messageSize); // known size
@@ -40,15 +40,15 @@ public class RawMessageTest extends AbstractClusterTest {
     
     assertEquals(node1.id().value(), message.header().nodeId());
     assertEquals(messageSize, message.header().length());
-    assertEquals(join, OperationalMessage.messageFrom(message.asTextMessage()));
+    assertEquals(appSays, OperationalMessage.messageFrom(message.asTextMessage()));
   }
 
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = nextNodeWith(1);
-    final Join join = new Join(node1);
-    MessageConverters.messageToBytes(join, buffer);
+    final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
+    MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();
     final int messageSize = buffer.limit();
     final byte[] messageBytes = new byte[messageSize];
@@ -59,15 +59,15 @@ public class RawMessageTest extends AbstractClusterTest {
     assertEquals(node1.id().value(), message.header().nodeId());
     assertEquals(message.length(), message.header().length());
     assertEquals(message.length(), message.requiredMessageLength());
-    assertEquals(join, OperationalMessage.messageFrom(message.asTextMessage()));
+    assertEquals(appSays, OperationalMessage.messageFrom(message.asTextMessage()));
   }
 
   @Test
   public void testCopyBytesTo() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = nextNodeWith(1);
-    final Join join = new Join(node1);
-    MessageConverters.messageToBytes(join, buffer);
+    final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
+    MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();
     final int messageSize = buffer.limit();
     final byte[] messageBytes = new byte[messageSize];
@@ -78,7 +78,7 @@ public class RawMessageTest extends AbstractClusterTest {
     buffer.clear();
     message.copyBytesTo(buffer); // copyBytesTo
     final String text = Converters.bytesToText(buffer.array(), RawMessageHeader.BYTES, message.length());
-    assertTrue(OperationalMessage.messageFrom(text).isJoin());
+    assertTrue(OperationalMessage.messageFrom(text).isApp());
   }
 
   @Test
@@ -98,8 +98,8 @@ public class RawMessageTest extends AbstractClusterTest {
   public void testPut() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
     final Node node1 = Node.with(Id.of(1), Name.of("node1"), Host.of("localhost"), 37371, 37372);
-    final Join join = new Join(node1);
-    MessageConverters.messageToBytes(join, buffer);
+    final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
+    MessageConverters.messageToBytes(appSays, buffer);
     final RawMessage message = new RawMessage(1000);
     message.put(buffer);
     buffer.position(0);

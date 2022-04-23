@@ -30,7 +30,6 @@ public class OperationalOutboundStreamActor extends Actor
   private static final Logger logger = LoggerFactory.getLogger(
       OperationalOutboundStreamActor.class);
 
-  private final OperationalMessageCache cache;
   private final Node node;
   private final Outbound outbound;
 
@@ -41,7 +40,6 @@ public class OperationalOutboundStreamActor extends Actor
 
     this.node = node;
     this.outbound = new Outbound(provider, byteBufferPool);
-    this.cache = new OperationalMessageCache(node);
   }
 
 
@@ -69,92 +67,6 @@ public class OperationalOutboundStreamActor extends Actor
   private <E> String debug(Collection<E> collection) {
     if (logger.isDebugEnabled()) return "";
     return String.format("[%s]", collection.stream().map(Object::toString).collect(Collectors.joining(", ")));
-  }
-
-  @Override
-  public void directory(final Set<Node> allLiveNodes) {
-    final Directory dir = new Directory(node.id(), node.name(), allLiveNodes);
-
-    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
-    MessageConverters.messageToBytes(dir, buffer.asByteBuffer());
-
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
-
-    logger.debug("Broadcasting directory {}", debug(allLiveNodes));
-    outbound.broadcast(outbound.bytesFrom(message, buffer));
-  }
-
-  @Override
-  public void elect(final Collection<Node> allGreaterNodes) {
-    logger.debug("Broadcasting elect {}", debug(allGreaterNodes));
-    outbound.broadcast(allGreaterNodes, cache.cachedRawMessage(OperationalMessage.ELECT));
-  }
-
-  @Override
-  public void join() {
-    logger.debug("Broadcasting join");
-    outbound.broadcast(cache.cachedRawMessage(OperationalMessage.JOIN));
-  }
-
-  @Override
-  public void leader() {
-    logger.debug("Broadcasting leader");
-    outbound.broadcast(cache.cachedRawMessage(OperationalMessage.LEADER));
-  }
-
-  @Override
-  public void leader(final Id id) {
-    logger.debug("Broadcasting leader Id: {}", id);
-    outbound.sendTo(cache.cachedRawMessage(OperationalMessage.LEADER), id);
-  }
-
-  @Override
-  public void leave() {
-    logger.debug("Broadcasting leave");
-    outbound.broadcast(cache.cachedRawMessage(OperationalMessage.LEAVE));
-  }
-
-  @Override
-  public void open(final Id id) {
-    logger.debug("open Id: {}", id);
-    outbound.open(id);
-  }
-
-  @Override
-  public void ping(final Id targetNodeId) {
-    logger.debug("Sending ping to: {}", targetNodeId);
-    outbound.sendTo(cache.cachedRawMessage(OperationalMessage.PING), targetNodeId);
-  }
-
-  @Override
-  public void pulse(final Id targetNodeId) {
-    logger.debug("Sending pulse to: {}", targetNodeId);
-    outbound.sendTo(cache.cachedRawMessage(OperationalMessage.PULSE), targetNodeId);
-  }
-
-  @Override
-  public void pulse() {
-    logger.debug("Broadcasting pulse");
-    outbound.broadcast(cache.cachedRawMessage(OperationalMessage.PULSE));
-  }
-
-  @Override
-  public void split(final Id targetNodeId, final Id currentLeaderId) {
-    final Split split = new Split(currentLeaderId);
-
-    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
-    MessageConverters.messageToBytes(split, buffer.asByteBuffer());
-
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
-
-    logger.debug("Sending split: {} to: {}", split, currentLeaderId);
-    outbound.sendTo(outbound.bytesFrom(message, buffer), targetNodeId);
-  }
-
-  @Override
-  public void vote(final Id targetNodeId) {
-    logger.debug("Sending vote to: {}", targetNodeId);
-    outbound.sendTo(cache.cachedRawMessage(OperationalMessage.VOTE), targetNodeId);
   }
 
 

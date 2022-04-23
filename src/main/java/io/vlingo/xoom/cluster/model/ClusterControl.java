@@ -1,7 +1,7 @@
 package io.vlingo.xoom.cluster.model;
 
 import io.vlingo.xoom.actors.*;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication2;
+import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.common.Tuple2;
 
 public interface ClusterControl {
@@ -9,7 +9,7 @@ public interface ClusterControl {
 
   static Tuple2<ClusterControl, Logger> instance(
       final World world,
-      final ClusterApplication2.ClusterApplicationInstantiator<?> instantiator,
+      final ClusterApplication.ClusterApplicationInstantiator<?> instantiator,
       final Properties properties,
       final String nodeName) {
 
@@ -22,14 +22,14 @@ public interface ClusterControl {
   static Tuple2<ClusterControl, Logger> instance(
       final World world,
       final Stage stage,
-      final ClusterApplication2.ClusterApplicationInstantiator<?> instantiator,
+      final ClusterApplication.ClusterApplicationInstantiator<?> instantiator,
       final Properties properties,
       final String nodeName) {
 
     final ClusterInitializer initializer = new ClusterInitializer(nodeName, properties, world.defaultLogger());
     instantiator.node(initializer.localNode());
 
-    final ClusterApplication2 application = ClusterApplication2.instance(stage, instantiator);
+    final ClusterApplication application = ClusterApplication.instance(stage, instantiator);
 
     final Definition definition =
         new Definition(
@@ -45,10 +45,10 @@ public interface ClusterControl {
   class ClusterInstantiator implements ActorInstantiator<ClusterActor> {
     private static final long serialVersionUID = -5766576644564817563L;
 
-    final ClusterApplication2 application;
+    final ClusterApplication application;
     final ClusterInitializer initializer;
 
-    public ClusterInstantiator(final ClusterInitializer initializer, final ClusterApplication2 application) {
+    public ClusterInstantiator(final ClusterInitializer initializer, final ClusterApplication application) {
       this.initializer = initializer;
       this.application = application;
     }

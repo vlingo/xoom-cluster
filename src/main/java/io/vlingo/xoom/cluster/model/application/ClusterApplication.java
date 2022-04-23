@@ -6,13 +6,13 @@ import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Node;
 
-public interface ClusterApplication2 extends Startable, Stoppable, ClusterContextAware, ClusterAttributesAware {
+public interface ClusterApplication extends Startable, Stoppable, ClusterContextAware, ClusterAttributesAware {
   void informResponder(final ApplicationOutboundStream responder);
   void handleApplicationMessage(final RawMessage message);
 
-  static ClusterApplication2 instance(
+  static ClusterApplication instance(
       final World world,
-      final ClusterApplication2.ClusterApplicationInstantiator<?> instantiator,
+      final ClusterApplication.ClusterApplicationInstantiator<?> instantiator,
       final Properties properties,
       final Node node) {
 
@@ -20,13 +20,13 @@ public interface ClusterApplication2 extends Startable, Stoppable, ClusterContex
         world.stageNamed(properties.clusterApplicationStageName());
 
     return applicationStage.actorFor(
-        ClusterApplication2.class,
+        ClusterApplication.class,
         Definition.has(instantiator.type(), instantiator, "cluster-application"));
   }
 
-  static <A extends Actor> ClusterApplication2 instance(final Stage applicationStage, final ActorInstantiator<A> instantator) {
+  static <A extends Actor> ClusterApplication instance(final Stage applicationStage, final ActorInstantiator<A> instantator) {
     return applicationStage.actorFor(
-        ClusterApplication2.class,
+        ClusterApplication.class,
         Definition.has(instantator.type(), instantator, "cluster-application"));
   }
 

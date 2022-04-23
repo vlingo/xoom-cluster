@@ -11,12 +11,11 @@ import java.util.Collection;
 
 import io.vlingo.xoom.cluster.model.attribute.Attribute;
 import io.vlingo.xoom.cluster.model.attribute.AttributesProtocol;
-import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
-public class FakeClusterApplicationActor extends ClusterApplication2Adapter {
+public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   private AttributesProtocol client;
   private final Node localNode;
 
