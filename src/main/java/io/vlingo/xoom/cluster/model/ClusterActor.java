@@ -1,3 +1,10 @@
+// Copyright © 2012-2022 VLINGO LABS. All rights reserved.
+//
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL
+// was not distributed with this file, You can obtain
+// one at https://mozilla.org/MPL/2.0/.
+
 package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterConfig;
@@ -10,6 +17,7 @@ import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;
+import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.AddressType;
@@ -19,9 +27,10 @@ import io.vlingo.xoom.wire.node.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest {
+public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest, Scheduled<Object> {
   private final ClusterApplication clusterApplication; // only one application for now
   private final ClusterImpl cluster;
+  private final ClusterMembershipControl membershipControl;
   private final ClusterCommunicationsHub communicationsHub;
 
   public ClusterActor(final ClusterInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
@@ -41,8 +50,12 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
         .membership(membershipConfig -> membershipConfig.seedMembers(seeds))
         .transport(transportConfig -> transportConfig.port(localNodePort).transportFactory(new TcpTransportFactory()));
 
+    this.membershipControl = new ClusterMembershipControl(logger(), clusterApplication, initializer);
     this.cluster = new ClusterImpl(config)
-        .handler(c -> new MessageHandler(logger(), clusterApplication, c, initializer));
+        .handler(c -> {
+          this.membershipControl.setCluster(c);
+          return new ClusterMessagingHandler(logger(), membershipControl, initializer.configuration(), initializer.properties());
+        });
 
     this.communicationsHub = initializer.communicationsHub();
     this.communicationsHub.open(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
@@ -52,6 +65,9 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
     this.cluster.startAwait();
     initializer.registry().join(localNode);
+
+    stage().scheduler()
+        .scheduleOnce(selfAs(Scheduled.class), null, 1000L, initializer.properties().clusterStartupGracePeriod());
   }
 
   @Override
@@ -69,73 +85,21 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
   }
 
   @Override
+  public void intervalSignal(Scheduled<Object> scheduled, Object data) {
+    membershipControl.startupIsCompleted();
+  }
+
+  @Override
   public void shutDown() {
     if (isStopped()) {
       return;
     }
 
-    cluster.shutdown();
     clusterApplication.stop();
     communicationsHub.close();
+    cluster.shutdown();
 
     stop();
     stage().world().terminate();
-  }
-
-  private static final class MessageHandler implements ClusterMessageHandler {
-    private final Logger logger;
-    private final ClusterApplication clusterApplication;
-    private final io.scalecube.cluster.Cluster cluster;
-    private final Registry registry;
-    private final ClusterConfiguration configuration;
-    private final Properties properties;
-
-    private MessageHandler(Logger logger, ClusterApplication clusterApplication, io.scalecube.cluster.Cluster cluster,
-                           ClusterInitializer initializer) {
-      this.logger = logger;
-      this.clusterApplication = clusterApplication;
-      this.cluster = cluster;
-      this.registry = initializer.registry();
-      this.configuration = initializer.configuration();
-      this.properties = initializer.properties();
-    }
-
-    @Override
-    public void onMembershipEvent(MembershipEvent event) {
-      logger.debug("Received cluster membership event: " + event);
-      String nodeName = event.member().alias();
-
-      if (nodeName != null && nodeName.startsWith("seed")) {
-        if (event.isAdded()) {
-          clusterApplication.informClusterIsHealthy(true);
-        } else if (event.isRemoved() || event.isLeaving()) {
-          clusterApplication.informClusterIsHealthy(false);
-        }
-      } else {
-        Node sender = configuration.nodeMatching(Id.of(properties.nodeId(nodeName)));
-
-        if (event.isAdded()) {
-          registry.join(sender);
-          clusterApplication.informNodeJoinedCluster(sender.id(), true);
-          clusterApplication.informNodeIsHealthy(sender.id(), true);
-          informAllLiveNodes();
-        } else if (event.isLeaving() || event.isRemoved()) {
-          registry.leave(sender.id());
-          clusterApplication.informNodeLeftCluster(sender.id(), true);
-          informAllLiveNodes();
-        } else {
-          logger.warn("Event type: " + event.type() + " is not handled for now. Received from cluster member: " + event.member());
-        }
-      }
-    }
-
-    private void informAllLiveNodes() {
-      List<Node> liveNodes = cluster.members().stream()
-          .filter(member -> member.alias() != null && !member.alias().startsWith("seed"))
-          .map(member -> configuration.nodeMatching(Id.of(properties.nodeId(member.alias()))))
-          .collect(Collectors.toList());
-
-      clusterApplication.informAllLiveNodes(liveNodes, true);
-    }
   }
 }

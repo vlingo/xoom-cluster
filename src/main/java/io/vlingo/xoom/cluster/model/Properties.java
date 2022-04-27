@@ -106,7 +106,7 @@ public final class Properties {
     }
   }
 
-  public final String clusterApplicationClassname() {
+  public String clusterApplicationClassname() {
     final String classname = getString("cluster.app.class", "");
 
     if (classname.length() == 0) {
@@ -116,7 +116,7 @@ public final class Properties {
     return classname;
   }
 
-  public final String clusterApplicationStageName() {
+  public String clusterApplicationStageName() {
     final String name = getString("cluster.app.stage", "");
 
     if (name.length() == 0) {
@@ -150,7 +150,15 @@ public final class Properties {
     return getInteger("cluster.quorum.timeout", 60000);
   }
 
-  public final String host(String nodeName) {
+  public int clusterMinimumNodes() {
+    return getInteger("cluster.minimum.nodes", 2);
+  }
+
+  public long clusterStartupGracePeriod() {
+    return getInteger("cluster.startup.grace.period", 5000);
+  }
+
+  public String host(String nodeName) {
     final String host = getString(nodeName, "host", "");
 
     if (host.length() == 0) {
@@ -172,7 +180,7 @@ public final class Properties {
     return (short) nodeId;
   }
 
-  public final String nodeName(String nodeName) {
+  public String nodeName(String nodeName) {
     final String name = getString(nodeName, "name", "");
 
     if (name.length() == 0) {

@@ -56,30 +56,4 @@ public class Cluster {
   public static boolean isRunningInside(final World world) {
     return world.resolveDynamic(INTERNAL_NAME, ClusterControl.class) != null;
   }
-
-  static class ClusterActorInstantiator implements ActorInstantiator<ClusterActor> {
-    private static final long serialVersionUID = 6105119774787607965L;
-
-    private final ClusterApplication clusterApplication;
-    private final ClusterInitializer initializer;
-
-    public ClusterActorInstantiator(final ClusterInitializer initializer, final ClusterApplication clusterApplication) {
-      this.initializer = initializer;
-      this.clusterApplication = clusterApplication;
-    }
-
-    @Override
-    public ClusterActor instantiate() {
-      try {
-        return new ClusterActor(initializer, clusterApplication);
-      } catch (Exception e) {
-        throw new IllegalArgumentException("Failed to instantiate " + type() + " because: " + e.getMessage(), e);
-      }
-    }
-
-    @Override
-    public Class<ClusterActor> type() {
-      return ClusterActor.class;
-    }
-  }
 }
