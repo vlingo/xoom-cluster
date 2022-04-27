@@ -85,6 +85,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
   @Override
   public void intervalSignal(Scheduled<Object> scheduled, Object data) {
     registry.startupIsCompleted();
+    membershipControl.informAllLiveNodes();
   }
 
   @Override

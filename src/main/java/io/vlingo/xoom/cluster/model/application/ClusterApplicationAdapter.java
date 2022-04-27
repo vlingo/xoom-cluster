@@ -31,10 +31,6 @@ public class ClusterApplicationAdapter extends Actor implements ClusterApplicati
   }
 
   @Override
-  public void informNodeIsHealthy(Id nodeId, boolean isHealthyCluster) {
-  }
-
-  @Override
   public void informClusterIsHealthy(boolean isHealthyCluster) {
   }
 

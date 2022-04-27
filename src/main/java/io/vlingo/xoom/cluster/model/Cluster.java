@@ -7,17 +7,15 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import java.util.UUID;
-
-import io.vlingo.xoom.actors.ActorInstantiator;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.Stage;
 import io.vlingo.xoom.actors.World;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.common.Tuple2;
 
-public class Cluster {
+import java.util.UUID;
+
+public final class Cluster {
   static final String INTERNAL_NAME = UUID.randomUUID().toString();
 
   public static synchronized Tuple2<ClusterControl, Logger> controlFor(

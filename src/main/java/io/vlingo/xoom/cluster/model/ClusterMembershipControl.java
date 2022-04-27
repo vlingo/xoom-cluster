@@ -11,12 +11,9 @@ import io.scalecube.cluster.Cluster;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;
-import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 class ClusterMembershipControl {
   private final Logger logger;
@@ -55,7 +52,6 @@ class ClusterMembershipControl {
     boolean isHealthyCluster = registry.isClusterHealthy();
 
     clusterApplication.informNodeJoinedCluster(node.id(), isHealthyCluster);
-    clusterApplication.informNodeIsHealthy(node.id(), isHealthyCluster);
     informAllLiveNodes();
   }
 
@@ -75,12 +71,12 @@ class ClusterMembershipControl {
     this.cluster = cluster;
   }
 
-  private void informAllLiveNodes() {
-    List<Node> liveNodes = cluster.members().stream()
-        .filter(member -> member.alias() != null && !member.alias().startsWith("seed"))
-        .map(member -> configuration.nodeMatching(Id.of(properties.nodeId(member.alias()))))
-        .collect(Collectors.toList());
+  public void informAllLiveNodes() {
+//    List<Node> liveNodes = cluster.members().stream()
+//        .filter(member -> member.alias() != null && !member.alias().startsWith("seed"))
+//        .map(member -> configuration.nodeMatching(Id.of(properties.nodeId(member.alias()))))
+//        .collect(Collectors.toList());
 
-    clusterApplication.informAllLiveNodes(liveNodes, true);
+    clusterApplication.informAllLiveNodes(registry.nodes(), registry.isClusterHealthy());
   }
 }

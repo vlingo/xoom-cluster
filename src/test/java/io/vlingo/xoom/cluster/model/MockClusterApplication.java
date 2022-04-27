@@ -23,16 +23,9 @@ public class MockClusterApplication implements ClusterApplication {
   public AtomicInteger allLiveNodes = new AtomicInteger(0);
   public AtomicInteger handleApplicationMessage = new AtomicInteger(0);
 
-  public AtomicInteger informLeaderElected = new AtomicInteger(0);
-  public AtomicInteger informLeaderLost = new AtomicInteger(0);
-  public AtomicInteger informLocalNodeShutDown = new AtomicInteger(0);
-  public AtomicInteger informLocalNodeStarted = new AtomicInteger(0);
-  public AtomicInteger informNodeIsHealthy = new AtomicInteger(0);
   public AtomicInteger informClusterIsHealthy = new AtomicInteger(0);
   public AtomicInteger informNodeJoinedCluster = new AtomicInteger(0);
   public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
-  public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
-  public AtomicInteger informQuorumLost = new AtomicInteger(0);
   public AtomicInteger informResponder = new AtomicInteger(0);
 
   public AtomicInteger informAttributesClient = new AtomicInteger(0);
@@ -79,10 +72,6 @@ public class MockClusterApplication implements ClusterApplication {
     informClusterIsHealthy.incrementAndGet();
   }
 
-  @Override
-  public void informNodeIsHealthy(Id nodeId, boolean isHealthyCluster) {
-    informNodeIsHealthy.incrementAndGet();
-  }
 
   @Override
   public void informNodeJoinedCluster(Id nodeId, boolean isHealthyCluster) {

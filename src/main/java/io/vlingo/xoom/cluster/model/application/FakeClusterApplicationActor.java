@@ -42,12 +42,6 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void informNodeIsHealthy(final Id nodeId, final boolean isHealthyCluster) {
-    logger().debug("APP: Node reported healthy: " + nodeId);
-    printHealthy(isHealthyCluster);
-  }
-
-  @Override
   public void informNodeJoinedCluster(final Id nodeId, final boolean isHealthyCluster) {
     logger().debug("APP: " + nodeId + " joined cluster");
     printHealthy(isHealthyCluster);
