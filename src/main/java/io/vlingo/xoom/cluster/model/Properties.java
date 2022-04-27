@@ -150,12 +150,12 @@ public final class Properties {
     return getInteger("cluster.quorum.timeout", 60000);
   }
 
-  public int clusterMinimumNodes() {
-    return getInteger("cluster.minimum.nodes", 2);
+  public int clusterQuorum() {
+    return getInteger("cluster.quorum", 1);
   }
 
-  public long clusterStartupGracePeriod() {
-    return getInteger("cluster.startup.grace.period", 5000);
+  public long clusterStartupPeriod() {
+    return getInteger("cluster.startup.period", 5000);
   }
 
   public String host(String nodeName) {

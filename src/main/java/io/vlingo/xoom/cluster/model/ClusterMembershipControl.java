@@ -15,7 +15,6 @@ import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -25,21 +24,18 @@ class ClusterMembershipControl {
   private final ClusterApplication clusterApplication;
   private final Registry registry;
 
-  private final ClusterConfiguration configuration;
   private final Properties properties;
+  private final ClusterConfiguration configuration;
 
-  private final AtomicBoolean startupCompleted = new AtomicBoolean(false); // startup grace period
-  private final AtomicInteger liveNodeCount = new AtomicInteger(0);
-
-  // Number of seeds is in config file. Does it influence isHealthyCluster?
+  // Number of seeds is in config file. Does it influence isHealthyCluster? Move it to Registry?
   private final AtomicInteger liveSeedCount = new AtomicInteger(0);
 
   ClusterMembershipControl(Logger logger, ClusterApplication clusterApplication, ClusterInitializer initializer) {
     this.logger = logger;
     this.clusterApplication = clusterApplication;
     this.registry = initializer.registry();
-    this.configuration = initializer.configuration();
     this.properties = initializer.properties();
+    this.configuration = initializer.configuration();
   }
 
   public void seedAdded(String seedName) {
@@ -55,20 +51,18 @@ class ClusterMembershipControl {
   }
 
   public void nodeAdded(Node node) {
-    int currentNodesCount = liveNodeCount.incrementAndGet();
-    boolean isHealthyCluster = isHealthyCluster(currentNodesCount);
-
     registry.join(node);
+    boolean isHealthyCluster = registry.isClusterHealthy();
+
     clusterApplication.informNodeJoinedCluster(node.id(), isHealthyCluster);
     clusterApplication.informNodeIsHealthy(node.id(), isHealthyCluster);
     informAllLiveNodes();
   }
 
   public void nodeRemoved(Node node) {
-    int currentNodesCount = liveNodeCount.decrementAndGet();
-    boolean isHealthyCluster = isHealthyCluster(currentNodesCount);
-
     registry.leave(node.id());
+    boolean isHealthyCluster = registry.isClusterHealthy();
+
     clusterApplication.informNodeLeftCluster(node.id(), isHealthyCluster);
     informAllLiveNodes();
   }
@@ -77,16 +71,8 @@ class ClusterMembershipControl {
     nodeRemoved(node);
   }
 
-  public void startupIsCompleted() {
-    startupCompleted.set(true);
-  }
-
   public void setCluster(Cluster cluster) {
     this.cluster = cluster;
-  }
-
-  private boolean isHealthyCluster(int currentNodesCount) {
-    return currentNodesCount >= properties.clusterMinimumNodes() && startupCompleted.get();
   }
 
   private void informAllLiveNodes() {

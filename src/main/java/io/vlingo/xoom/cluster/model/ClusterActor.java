@@ -9,31 +9,29 @@ package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterConfig;
 import io.scalecube.cluster.ClusterImpl;
-import io.scalecube.cluster.ClusterMessageHandler;
-import io.scalecube.cluster.membership.MembershipEvent;
 import io.scalecube.net.Address;
 import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import io.vlingo.xoom.actors.Actor;
-import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.AddressType;
-import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest, Scheduled<Object> {
+  private final Registry registry;
   private final ClusterApplication clusterApplication; // only one application for now
   private final ClusterImpl cluster;
   private final ClusterMembershipControl membershipControl;
   private final ClusterCommunicationsHub communicationsHub;
 
   public ClusterActor(final ClusterInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
+    this.registry = initializer.registry();
     this.clusterApplication = clusterApplication;
 
     Node localNode = initializer.localNode();
@@ -67,7 +65,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
     initializer.registry().join(localNode);
 
     stage().scheduler()
-        .scheduleOnce(selfAs(Scheduled.class), null, 1000L, initializer.properties().clusterStartupGracePeriod());
+        .scheduleOnce(selfAs(Scheduled.class), null, 150L, initializer.properties().clusterStartupPeriod());
   }
 
   @Override
@@ -86,7 +84,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
   @Override
   public void intervalSignal(Scheduled<Object> scheduled, Object data) {
-    membershipControl.startupIsCompleted();
+    registry.startupIsCompleted();
   }
 
   @Override

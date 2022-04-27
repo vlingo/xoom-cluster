@@ -27,7 +27,7 @@ public class ClusterInitializer {
     this.properties = properties;
     this.localNode = configuration.nodeMatching(localNodeId);
     this.communicationsHub = new ClusterCommunicationsHub(properties);
-    this.registry = new LocalRegistry(this.localNode, this.configuration, logger);
+    this.registry = new LocalRegistry(logger, this.localNode, properties().clusterQuorum());
   }
 
   ClusterCommunicationsHub communicationsHub() {
