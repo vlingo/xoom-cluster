@@ -48,19 +48,27 @@ class ClusterMembershipControl {
   }
 
   public void nodeAdded(Node node) {
+    boolean before = registry.isClusterHealthy();
     registry.join(node);
-    boolean isHealthyCluster = registry.isClusterHealthy();
+    boolean after = registry.isClusterHealthy();
 
-    clusterApplication.informNodeJoinedCluster(node.id(), isHealthyCluster);
-    informAllLiveNodes();
+    clusterApplication.informNodeJoinedCluster(node.id(), after);
+    informAllLiveNodes(after);
+    if (before != after) {
+      clusterApplication.informClusterIsHealthy(after);
+    }
   }
 
   public void nodeRemoved(Node node) {
+    boolean before = registry.isClusterHealthy();
     registry.leave(node.id());
-    boolean isHealthyCluster = registry.isClusterHealthy();
+    boolean after = registry.isClusterHealthy();
 
-    clusterApplication.informNodeLeftCluster(node.id(), isHealthyCluster);
-    informAllLiveNodes();
+    clusterApplication.informNodeLeftCluster(node.id(), after);
+    informAllLiveNodes(after);
+    if (before != after) {
+      clusterApplication.informClusterIsHealthy(after);
+    }
   }
 
   public void nodeLeaving(Node node) {
@@ -71,12 +79,12 @@ class ClusterMembershipControl {
     this.cluster = cluster;
   }
 
-  public void informAllLiveNodes() {
+  private void informAllLiveNodes(boolean isClusterHealthy) {
 //    List<Node> liveNodes = cluster.members().stream()
 //        .filter(member -> member.alias() != null && !member.alias().startsWith("seed"))
 //        .map(member -> configuration.nodeMatching(Id.of(properties.nodeId(member.alias()))))
 //        .collect(Collectors.toList());
 
-    clusterApplication.informAllLiveNodes(registry.nodes(), registry.isClusterHealthy());
+    clusterApplication.informAllLiveNodes(registry.nodes(), isClusterHealthy);
   }
 }
