@@ -7,11 +7,17 @@
 
 package io.vlingo.xoom.cluster.model;
 
+import io.scalecube.cluster.ClusterConfig;
+import io.scalecube.net.Address;
+import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.node.LocalRegistry;
 import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClusterInitializer {
   private final ClusterCommunicationsHub communicationsHub;
@@ -52,5 +58,30 @@ public class ClusterInitializer {
 
   Registry registry() {
     return registry;
+  }
+
+  ClusterConfig clusterConfig() {
+    String localNodeHostName = localNode.operationalAddress().hostName();
+    int localNodePort = localNode.operationalAddress().port();
+    List<Address> seeds = configuration.allNodes().stream()
+            .filter(node -> node.isSeed())
+            .map(seed -> Address.create(seed.operationalAddress().hostName(), seed.operationalAddress().port()))
+            .collect(Collectors.toList());
+
+    if (seeds.size() == 0) {
+      throw new IllegalStateException("Must declare at least one node as seed in properties file.");
+    }
+
+    ClusterConfig config = new ClusterConfig()
+            .memberAlias(localNode.name().value())
+            .externalHost(localNodeHostName)
+            .externalPort(localNodePort)
+            .transport(transportConfig -> transportConfig.port(localNodePort).transportFactory(new TcpTransportFactory()));
+
+    if (!localNode.isSeed()) {
+      config = config.membership(membershipConfig -> membershipConfig.seedMembers(seeds));
+    }
+
+    return config;
   }
 }

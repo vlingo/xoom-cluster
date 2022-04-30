@@ -29,7 +29,7 @@ public class RawMessageTest extends AbstractClusterTest {
   @Test
   public void testKnownSizeWithAppend() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = nextNodeWith(1);
+    final Node node1 = nextNodeWith(1, false);
     final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
     MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();
@@ -46,7 +46,7 @@ public class RawMessageTest extends AbstractClusterTest {
   @Test
   public void testFromBytesWithLengthAndRequiredMessageLength() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = nextNodeWith(1);
+    final Node node1 = nextNodeWith(1, false);
     final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
     MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();
@@ -65,7 +65,7 @@ public class RawMessageTest extends AbstractClusterTest {
   @Test
   public void testCopyBytesTo() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(1000);
-    final Node node1 = nextNodeWith(1);
+    final Node node1 = nextNodeWith(1, false);
     final ApplicationSays appSays = ApplicationSays.from(node1.id(), node1.name(), "payload");
     MessageConverters.messageToBytes(appSays, buffer);
     buffer.flip();

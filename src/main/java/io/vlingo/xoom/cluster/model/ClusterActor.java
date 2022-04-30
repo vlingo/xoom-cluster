@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest, Scheduled<Object> {
   private final Registry registry;
   private final ClusterApplication clusterApplication; // only one application for now
-  private final ClusterImpl cluster;
-  private final ClusterMembershipControl membershipControl;
+  private final ClusterImpl cluster; // null when single node
+  private final ClusterMembershipControl membershipControl; // null when single node
   private final ClusterCommunicationsHub communicationsHub;
 
   public ClusterActor(final ClusterInitializer initializer, final ClusterApplication clusterApplication) throws Exception {
@@ -35,37 +35,32 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
     this.clusterApplication = clusterApplication;
 
     Node localNode = initializer.localNode();
-    String localNodeHostName = localNode.operationalAddress().hostName();
-    int localNodePort = localNode.operationalAddress().port();
-    List<Address> seeds = initializer.configuration().allSeeds().stream()
-        .map(address -> Address.create(address.hostName(), address.port()))
-        .collect(Collectors.toList());
-
-    ClusterConfig config = new ClusterConfig()
-        .memberAlias(localNode.name().value())
-        .externalHost(localNodeHostName)
-        .externalPort(localNodePort)
-        .membership(membershipConfig -> membershipConfig.seedMembers(seeds))
-        .transport(transportConfig -> transportConfig.port(localNodePort).transportFactory(new TcpTransportFactory()));
-
-    this.membershipControl = new ClusterMembershipControl(logger(), clusterApplication, initializer);
-    this.cluster = new ClusterImpl(config)
-        .handler(c -> {
-          this.membershipControl.setCluster(c);
-          return new ClusterMessagingHandler(logger(), membershipControl, initializer.configuration(), initializer.properties());
-        });
-
     this.communicationsHub = initializer.communicationsHub();
     this.communicationsHub.open(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
 
     this.clusterApplication.start();
     this.clusterApplication.informResponder(communicationsHub.applicationOutboundStream());
 
-    this.cluster.startAwait();
-    initializer.registry().join(localNode);
+    if (initializer.properties().singleNode()) {
+      this.membershipControl = null;
+      this.cluster = null;
+      initializer.registry().join(localNode);
+      intervalSignal(null, null);
+    } else {
+      ClusterConfig config = initializer.clusterConfig();
+      this.membershipControl = new ClusterMembershipControl(logger(), clusterApplication, initializer);
+      this.cluster = new ClusterImpl(config)
+              .handler(c -> {
+                this.membershipControl.setCluster(c);
+                return new ClusterMessagingHandler(logger(), membershipControl, initializer.configuration(), initializer.properties());
+              });
 
-    stage().scheduler()
-        .scheduleOnce(selfAs(Scheduled.class), null, 150L, initializer.properties().clusterStartupPeriod());
+      this.cluster.startAwait();
+      initializer.registry().join(localNode);
+
+      stage().scheduler()
+              .scheduleOnce(selfAs(Scheduled.class), null, 100L, initializer.properties().clusterStartupPeriod());
+    }
   }
 
   @Override
@@ -96,7 +91,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
     clusterApplication.stop();
     communicationsHub.close();
-    cluster.shutdown();
+    if (cluster != null) cluster.shutdown();
 
     stop();
     stage().world().terminate();

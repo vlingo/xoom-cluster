@@ -25,7 +25,7 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
     assertEquals(3, nodes.length);
     assertEquals("node1", nodes[0]);
@@ -54,7 +54,7 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
     assertEquals(5, nodes.length);
     assertEquals("node1", nodes[0]);
@@ -93,7 +93,7 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
     assertEquals(1, nodes.length);
     assertEquals("node1", nodes[0]);

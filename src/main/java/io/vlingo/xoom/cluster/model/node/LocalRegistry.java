@@ -30,7 +30,7 @@ public final class LocalRegistry implements Registry {
     this.quorum = quorum;
 
     this.liveNodes = new ConcurrentHashMap<>();
-    this.startupCompleted = new AtomicBoolean(quorum == 1);
+    this.startupCompleted = new AtomicBoolean(false);
   }
 
   //======================================

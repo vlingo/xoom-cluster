@@ -73,7 +73,7 @@ public class PropertiesTest extends AbstractClusterTest {
 
   @Test
   public void testSeedNodes() throws Exception {
-    final List<String> seedNodes = properties.nodes();
+    final List<String> seedNodes = properties.seedNodes();
     assertEquals(3, seedNodes.size());
     assertTrue(seedNodes.contains("node1"));
     assertTrue(seedNodes.contains("node2"));

@@ -21,12 +21,12 @@ import io.vlingo.xoom.wire.node.Node;
 public class ClusterConfiguration implements Configuration {
   private final Logger logger;
   private final Set<Node> nodes;
-  private final List<Address> seeds;
+  private final Set<Node> seeds;
 
   public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
     this.nodes = new TreeSet<>();
-    this.seeds = new ArrayList<>();
+    this.seeds = new TreeSet<>();
 
     initializeConfiguredNodeEntries(properties);
   }
@@ -153,23 +153,20 @@ public class ClusterConfiguration implements Configuration {
     return "ConfiguredCluster[" + nodes + "]";
   }
 
-  public List<Address> allSeeds() {
-    return Collections.unmodifiableList(seeds);
-  }
-
   private void initializeConfiguredNodeEntries(final Properties properties) {
-    for (String configuredNodeName : properties.nodes()) {
+    for (String configuredNodeName : properties.seedNodes()) {
       final Id nodeId = Id.of(properties.nodeId(configuredNodeName));
       final Name nodeName = new Name(configuredNodeName);
       final Host host = Host.of(properties.host(configuredNodeName));
       final Address opNodeAddress = Address.from(host, properties.operationalPort(configuredNodeName), AddressType.OP);
+      final boolean isSeed = properties.isSeed(configuredNodeName);
       final Address appNodeAddress = Address.from(host, properties.applicationPort(configuredNodeName), AddressType.APP);
 
-      nodes.add(new Node(nodeId, nodeName, opNodeAddress, appNodeAddress));
-    }
-
-    for (String configuredSeed : properties.seeds()) {
-      seeds.add(Address.from(configuredSeed, AddressType.OP));
+      Node node = new Node(nodeId, nodeName, opNodeAddress, appNodeAddress, isSeed);
+      nodes.add(node);
+      if (isSeed) {
+        seeds.add(node);
+      }
     }
   }
 }

@@ -9,6 +9,7 @@ package io.vlingo.xoom.cluster.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vlingo.xoom.actors.Actor;
 
@@ -151,7 +152,7 @@ public final class Properties {
   }
 
   public int clusterQuorum() {
-    return getInteger("cluster.quorum", 1);
+    return getInteger("cluster.nodes.quorum", 1);
   }
 
   public long clusterStartupPeriod() {
@@ -226,10 +227,19 @@ public final class Properties {
     return port;
   }
 
-  public List<String> nodes() {
+  public boolean isSeed(String nodeName) {
+    return getBoolean(nodeName, "seed", false);
+  }
+
+  /**
+   * Get all the nodes.
+   *
+   * @return
+   */
+  public List<String> seedNodes() {
     final List<String> nodes = new ArrayList<>();
 
-    final String commaSeparated = getString("cluster.nodes", "");
+    final String commaSeparated = getString("cluster.seedNodes", "");
 
     if (commaSeparated.length() == 0) {
       throw new IllegalStateException("Must declare nodes in properties file.");
@@ -242,19 +252,13 @@ public final class Properties {
     return nodes;
   }
 
-  public List<String> seeds() {
-    final List<String> nodes = new ArrayList<>();
-    final String commaSeparated = getString("cluster.seeds", "");
-
-    if (commaSeparated.length() == 0) {
-      throw new IllegalStateException("Must declare seeds in properties file.");
-    }
-
-    for (final String seed : commaSeparated.split(",")) {
-      nodes.add(seed.trim());
-    }
-
-    return nodes;
+  /**
+   * Checks whether this is a single node configuration.
+   *
+   * @return
+   */
+  public boolean singleNode() {
+    return seedNodes().size() == 1; // || clusterQuorum() == 1;
   }
 
   public boolean useSSL() {
@@ -309,7 +313,7 @@ public final class Properties {
 
     applicationPort(nodeName);
 
-    nodes();
+    seedNodes();
 
     clusterApplicationClassname();
   }

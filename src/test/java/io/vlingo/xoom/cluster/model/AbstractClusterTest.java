@@ -12,15 +12,12 @@ import static org.junit.Assert.assertNotNull;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.vlingo.xoom.wire.node.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import io.vlingo.xoom.actors.testkit.TestWorld;
-import io.vlingo.xoom.wire.node.Host;
-import io.vlingo.xoom.wire.node.Id;
-import io.vlingo.xoom.wire.node.Name;
-import io.vlingo.xoom.wire.node.Node;
 
 public abstract class AbstractClusterTest extends AbstractMessageTool {
   private static final Random random = new Random();
@@ -60,8 +57,8 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("cluster.heartbeat.interval", "7000");
     properties.setProperty("cluster.quorum.timeout", "60000");
 
-    properties.setProperty("cluster.nodes", "node1,node2,node3");
-    properties.setProperty("cluster.seeds", "localhost:" + nextPortToUseString());
+    properties.setProperty("cluster.nodes.quorum", "2");
+    properties.setProperty("cluster.seedNodes", "node1,node2,node3");
 
     properties.setProperty("node.node1.id", "1");
     properties.setProperty("node.node1.name", "node1");
@@ -74,6 +71,7 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("node.node2.host", "localhost");
     properties.setProperty("node.node2.op.port", nextPortToUseString());
     properties.setProperty("node.node2.app.port", nextPortToUseString());
+    properties.setProperty("node.node2.seed", "true");
 
     properties.setProperty("node.node3.id", "3");
     properties.setProperty("node.node3.name", "node3");
@@ -95,7 +93,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     testWorld.terminate();
   }
 
-
   private int nextPortToUse() {
     return PORT_TO_USE.incrementAndGet();
   }
@@ -104,7 +101,7 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     return "" + nextPortToUse();
   }
 
-  protected Node nextNodeWith(final int nodeNumber) {
-    return Node.with(Id.of(nodeNumber), Name.of("node"+nodeNumber), Host.of("localhost"), nextPortToUse(), nextPortToUse());
+  protected Node nextNodeWith(final int nodeNumber, boolean seed) {
+    return Node.with(Id.of(nodeNumber), Name.of("node" + nodeNumber), Host.of("localhost"), nextPortToUse(), nextPortToUse(), seed);
   }
 }
