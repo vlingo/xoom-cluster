@@ -65,5 +65,6 @@ public interface OperationalOutboundStream extends Stoppable {
   }
 
   void close(final Id id);
+  void application(final ApplicationSays says); // broadcast
   void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes);
 }

@@ -8,7 +8,9 @@
 package io.vlingo.xoom.cluster.model.outbound;
 
 import io.scalecube.cluster.Cluster;
+import io.scalecube.cluster.Member;
 import io.scalecube.cluster.transport.api.Message;
+import io.scalecube.net.Address;
 import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.cluster.model.message.ApplicationSays;
 import io.vlingo.xoom.cluster.model.message.MessageConverters;
@@ -17,12 +19,17 @@ import io.vlingo.xoom.wire.message.ConsumerByteBuffer;
 import io.vlingo.xoom.wire.message.Converters;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
+import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {
@@ -51,6 +58,24 @@ public class OperationalOutboundStreamActor extends Actor
 
   @Override
   public void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes) {
+    logger.debug("Sending ApplicationSays {}", says.saysId);
+    final byte[] messageBytes = bytesFrom(says);
+    for (Node node : unconfirmedNodes) {
+      Address nodeAddress = Address.create(node.operationalAddress().hostName(), node.operationalAddress().port());
+      Optional<Member> maybeMember = cluster.member(nodeAddress);
+      if (maybeMember.isPresent()) {
+        cluster.send(maybeMember.get(), Message.withData(messageBytes).build())
+                .doOnError(throwable -> logger.error("Failed to send message because of " + throwable.getMessage(), throwable))
+                .doOnSuccess(val -> logger.debug("Successfully sent the message: " + says))
+                .subscribe(val -> logger.debug("Message sent with " + val));
+      } else {
+        logger.error("Failed to find node " + node.name() + " in the cluster!");
+      }
+    }
+  }
+
+  @Override
+  public void application(ApplicationSays says) {
     logger.debug("Broadcasting ApplicationSays {}", says.saysId);
     final byte[] messageBytes = bytesFrom(says);
 
@@ -59,8 +84,7 @@ public class OperationalOutboundStreamActor extends Actor
             .doOnSuccess(val -> logger.debug("Successfully spread gossip: " + says))
             .subscribe(val -> logger.debug("Spread gossip with " + val));
   }
-
-  //===================================
+//===================================
   // Stoppable
   //===================================
 
