@@ -7,11 +7,12 @@
 
 package io.vlingo.xoom.cluster.model.outbound;
 
+import io.scalecube.cluster.Cluster;
+import io.scalecube.cluster.transport.api.Message;
 import io.vlingo.xoom.actors.Actor;
-import io.vlingo.xoom.cluster.model.message.*;
+import io.vlingo.xoom.cluster.model.message.ApplicationSays;
+import io.vlingo.xoom.cluster.model.message.MessageConverters;
 import io.vlingo.xoom.common.pool.ResourcePool;
-import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannelProvider;
-import io.vlingo.xoom.wire.fdx.outbound.Outbound;
 import io.vlingo.xoom.wire.message.ConsumerByteBuffer;
 import io.vlingo.xoom.wire.message.Converters;
 import io.vlingo.xoom.wire.message.RawMessage;
@@ -20,9 +21,8 @@ import io.vlingo.xoom.wire.node.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {
@@ -30,45 +30,35 @@ public class OperationalOutboundStreamActor extends Actor
   private static final Logger logger = LoggerFactory.getLogger(
       OperationalOutboundStreamActor.class);
 
+  private final Cluster cluster;
   private final Node node;
-  private final Outbound outbound;
+  private final ResourcePool<ConsumerByteBuffer, String> byteBufferPool;
 
   public OperationalOutboundStreamActor(
+          final Cluster cluster,
           final Node node,
-          final ManagedOutboundChannelProvider provider,
           final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
+    this.cluster = cluster;
     this.node = node;
-    this.outbound = new Outbound(provider, byteBufferPool);
+    this.byteBufferPool = byteBufferPool;
   }
-
-
-  //===================================
-  // OperationalOutbound
-  //===================================
 
   @Override
   public void close(final Id id) {
     logger.debug("Closing Id: {}", id);
-    outbound.close(id);
   }
 
   @Override
   public void application(final ApplicationSays says, final Collection<Node> unconfirmedNodes) {
-    final ConsumerByteBuffer buffer = outbound.lendByteBuffer();
-    MessageConverters.messageToBytes(says, buffer.asByteBuffer());
+    logger.debug("Broadcasting ApplicationSays {}", says.saysId);
+    final byte[] messageBytes = bytesFrom(says);
 
-    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
-
-    logger.debug("Broadcasting ApplicationSays {} to {}", says.saysId, debug(unconfirmedNodes));
-    outbound.broadcast(unconfirmedNodes, outbound.bytesFrom(message, buffer));
+    cluster.spreadGossip(Message.withData(messageBytes).build())
+            .doOnError(throwable -> logger.error("Failed to spread gossip because of " + throwable.getMessage(), throwable))
+            .doOnSuccess(val -> logger.debug("Successfully spread gossip: " + says))
+            .subscribe(val -> logger.debug("Spread gossip with " + val));
   }
-
-  private <E> String debug(Collection<E> collection) {
-    if (logger.isDebugEnabled()) return "";
-    return String.format("[%s]", collection.stream().map(Object::toString).collect(Collectors.joining(", ")));
-  }
-
 
   //===================================
   // Stoppable
@@ -77,8 +67,21 @@ public class OperationalOutboundStreamActor extends Actor
   @Override
   public void stop() {
     logger.debug("Stopping...");
-    outbound.close();
-
     super.stop();
+  }
+
+  public byte[] bytesFrom(final ApplicationSays says) {
+    final ConsumerByteBuffer buffer = byteBufferPool.acquire("Outbound#lendByteBuffer");
+    MessageConverters.messageToBytes(says, buffer.asByteBuffer());
+    final RawMessage message = Converters.toRawMessage(node.id().value(), buffer.asByteBuffer());
+    message.copyBytesTo(buffer.clear().asByteBuffer());
+    final ConsumerByteBuffer flipped = buffer.flip();
+    final ByteBuffer readBuffer = ByteBuffer.wrap(flipped.array(), flipped.position(), flipped.limit())
+            .asReadOnlyBuffer()
+            .order(flipped.order());
+    final byte[] messageBytes = new byte[readBuffer.remaining()];
+    readBuffer.get(messageBytes);
+
+    return messageBytes;
   }
 }

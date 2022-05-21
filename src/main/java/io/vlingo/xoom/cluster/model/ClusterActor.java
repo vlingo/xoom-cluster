@@ -9,10 +9,10 @@ package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterConfig;
 import io.scalecube.cluster.ClusterImpl;
-import io.scalecube.net.Address;
-import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
+import io.vlingo.xoom.cluster.model.attribute.AttributesAgent;
+import io.vlingo.xoom.cluster.model.message.OperationalMessage;
 import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
@@ -20,11 +20,10 @@ import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.AddressType;
 import io.vlingo.xoom.wire.node.Node;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest, Scheduled<Object> {
+
   private final Registry registry;
+  private final AttributesAgent attributesAgent;
   private final ClusterApplication clusterApplication; // only one application for now
   private final ClusterImpl cluster; // null when single node
   private final ClusterMembershipControl membershipControl; // null when single node
@@ -36,7 +35,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
     Node localNode = initializer.localNode();
     this.communicationsHub = initializer.communicationsHub();
-    this.communicationsHub.open(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
+    this.communicationsHub.openAppChannel(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
 
     this.clusterApplication.start();
     this.clusterApplication.informResponder(communicationsHub.applicationOutboundStream());
@@ -44,20 +43,29 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
     if (initializer.properties().singleNode()) {
       this.membershipControl = null;
       this.cluster = null;
+      this.attributesAgent = null;
       initializer.registry().join(localNode);
       intervalSignal(null, null);
     } else {
       ClusterConfig config = initializer.clusterConfig();
       this.membershipControl = new ClusterMembershipControl(logger(), clusterApplication, initializer);
       this.cluster = new ClusterImpl(config)
-              .handler(c -> {
-                this.membershipControl.setCluster(c);
-                return new ClusterMessagingHandler(logger(), membershipControl, initializer.configuration(), initializer.properties());
-              });
+              .handler(c -> new ClusterInboundMessagingHandler(logger(),
+                      membershipControl,
+                      selfAs(InboundStreamInterest.class),
+                      initializer.configuration(),
+                      initializer.properties()));
+
+      initializer.registry().join(localNode);
+      this.communicationsHub.openOpChannel(stage(), localNode, cluster);
+
+      this.attributesAgent = AttributesAgent.instance(stage(),
+              localNode,
+              clusterApplication,
+              communicationsHub.operationalOutboundStream(),
+              initializer.configuration());
 
       this.cluster.startAwait();
-      initializer.registry().join(localNode);
-
       stage().scheduler()
               .scheduleOnce(selfAs(Scheduled.class), null, 100L, initializer.properties().clusterStartupPeriod());
     }
@@ -69,7 +77,15 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
       return;
     }
 
-    if (addressType.isApplication()) {
+    if (addressType.isOperational()) {
+      final String textMessage = message.asTextMessage();
+      final OperationalMessage typedMessage = OperationalMessage.messageFrom(textMessage);
+      if (typedMessage != null) {
+        if (typedMessage.isApp()) {
+          attributesAgent.handleInboundStreamMessage(addressType, message);
+        }
+      }
+    } else if (addressType.isApplication()) {
       clusterApplication.handleApplicationMessage(message);
     } else {
       logger().warn("ClusterActor couldn't dispatch incoming message; unknown address type: " +

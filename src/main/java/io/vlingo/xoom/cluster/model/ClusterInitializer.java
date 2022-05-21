@@ -64,7 +64,7 @@ public class ClusterInitializer {
     String localNodeHostName = localNode.operationalAddress().hostName();
     int localNodePort = localNode.operationalAddress().port();
     List<Address> seeds = configuration.allNodes().stream()
-            .filter(node -> node.isSeed())
+            .filter(Node::isSeed)
             .map(seed -> Address.create(seed.operationalAddress().hostName(), seed.operationalAddress().port()))
             .collect(Collectors.toList());
 

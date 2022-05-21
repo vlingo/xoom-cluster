@@ -8,8 +8,8 @@
 package io.vlingo.xoom.cluster.model.outbound;
 
 import java.util.Collection;
-import java.util.Set;
 
+import io.scalecube.cluster.Cluster;
 import io.vlingo.xoom.actors.ActorInstantiator;
 import io.vlingo.xoom.actors.Definition;
 import io.vlingo.xoom.actors.Stage;
@@ -24,14 +24,14 @@ import io.vlingo.xoom.wire.node.Node;
 public interface OperationalOutboundStream extends Stoppable {
   static OperationalOutboundStream instance(
       final Stage stage,
+      final Cluster cluster,
       final Node node,
-      final ManagedOutboundChannelProvider provider,
       final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
     final Definition definition =
             Definition.has(
                     OperationalOutboundStreamActor.class,
-                    new OperationalOutboundStreamInstantiator(node, provider, byteBufferPool),
+                    new OperationalOutboundStreamInstantiator(cluster, node, byteBufferPool),
                     "cluster-operational-outbound-stream");
 
     return stage.actorFor(OperationalOutboundStream.class, definition);
@@ -40,22 +40,22 @@ public interface OperationalOutboundStream extends Stoppable {
   class OperationalOutboundStreamInstantiator implements ActorInstantiator<OperationalOutboundStreamActor> {
     private static final long serialVersionUID = 8429839979141981981L;
 
+    private final Cluster cluster;
     private final Node node;
-    private final ManagedOutboundChannelProvider provider;
     private final ResourcePool<ConsumerByteBuffer, String> byteBufferPool;
 
     public OperationalOutboundStreamInstantiator(
+            final Cluster cluster,
             final Node node,
-            final ManagedOutboundChannelProvider provider,
             final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
+      this.cluster = cluster;
       this.node = node;
-      this.provider = provider;
       this.byteBufferPool = byteBufferPool;
     }
 
     @Override
     public OperationalOutboundStreamActor instantiate() {
-      return new OperationalOutboundStreamActor(node, provider, byteBufferPool);
+      return new OperationalOutboundStreamActor(cluster, node, byteBufferPool);
     }
 
     @Override

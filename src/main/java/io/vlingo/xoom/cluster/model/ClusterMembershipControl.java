@@ -17,7 +17,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 class ClusterMembershipControl {
   private final Logger logger;
-  private Cluster cluster;
   private final ClusterApplication clusterApplication;
   private final Registry registry;
 
@@ -75,16 +74,7 @@ class ClusterMembershipControl {
     nodeRemoved(node);
   }
 
-  public void setCluster(Cluster cluster) {
-    this.cluster = cluster;
-  }
-
   private void informAllLiveNodes(boolean isClusterHealthy) {
-//    List<Node> liveNodes = cluster.members().stream()
-//        .filter(member -> member.alias() != null && !member.alias().startsWith("seed"))
-//        .map(member -> configuration.nodeMatching(Id.of(properties.nodeId(member.alias()))))
-//        .collect(Collectors.toList());
-
     clusterApplication.informAllLiveNodes(registry.nodes(), isClusterHealthy);
   }
 }

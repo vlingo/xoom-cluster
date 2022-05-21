@@ -9,19 +9,28 @@ package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.membership.MembershipEvent;
+import io.scalecube.cluster.transport.api.Message;
 import io.vlingo.xoom.actors.Logger;
+import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
+import io.vlingo.xoom.wire.message.RawMessage;
+import io.vlingo.xoom.wire.message.RawMessageBuilder;
+import io.vlingo.xoom.wire.node.AddressType;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
-public class ClusterMessagingHandler implements ClusterMessageHandler {
+import java.nio.ByteBuffer;
+
+public class ClusterInboundMessagingHandler implements ClusterMessageHandler {
   private final Logger logger;
   private final ClusterMembershipControl membershipControl;
+  private final InboundStreamInterest inboundInterest;
   private final ClusterConfiguration configuration;
   private final Properties properties;
 
-  public ClusterMessagingHandler(Logger logger, ClusterMembershipControl membershipControl, ClusterConfiguration configuration, Properties properties) {
+  public ClusterInboundMessagingHandler(Logger logger, ClusterMembershipControl membershipControl, InboundStreamInterest inboundInterest, ClusterConfiguration configuration, Properties properties) {
     this.logger = logger;
     this.membershipControl = membershipControl;
+    this.inboundInterest = inboundInterest;
     this.configuration = configuration;
     this.properties = properties;
   }
@@ -52,6 +61,35 @@ public class ClusterMessagingHandler implements ClusterMessageHandler {
       } else {
         logger.warn("Event type: " + event.type() + " is not handled for now. Received from cluster member: " + event.member());
       }
+    }
+  }
+
+  @Override
+  public void onGossip(Message gossip) {
+    logger.debug("Received cluster gossip: " + gossip);
+    dispatch(gossip);
+  }
+
+  @Override
+  public void onMessage(Message message) {
+    logger.debug("Received cluster message: " + message);
+    dispatch(message);
+  }
+
+  private void dispatch(Message message) {
+    final RawMessageBuilder builder = new RawMessageBuilder(properties.applicationBufferSize());
+
+    builder.workBuffer().put(ByteBuffer.wrap(message.data()));
+    if (!builder.hasContent()) {
+      return;
+    }
+
+    builder.prepareContent().sync();
+    try {
+      final RawMessage rawMessage = builder.currentRawMessage();
+      inboundInterest.handleInboundStreamMessage(AddressType.OP, rawMessage);
+    } catch (Exception e) {
+      logger.error("Failed to dispatch message!", e);
     }
   }
 }

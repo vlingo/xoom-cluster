@@ -7,8 +7,10 @@
 
 package io.vlingo.xoom.cluster.model;
 
+import io.scalecube.cluster.Cluster;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.Stage;
+import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.common.pool.ElasticResourcePool;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStream;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
@@ -25,6 +27,7 @@ public class ClusterCommunicationsHub {
 
   private InboundStream applicationInboundStream;
   private ApplicationOutboundStream applicationOutboundStream;
+  private OperationalOutboundStream operationalOutboundStream = null; // null when single node
 
   private final Properties properties;
 
@@ -35,9 +38,12 @@ public class ClusterCommunicationsHub {
   public void close() {
     applicationInboundStream.stop();
     applicationOutboundStream.stop();
+    if (operationalOutboundStream != null) {
+      operationalOutboundStream.stop();
+    }
   }
 
-  public void open(
+  public void openAppChannel(
       final Stage stage,
       final Node node,
       final InboundStreamInterest interest,
@@ -63,11 +69,28 @@ public class ClusterCommunicationsHub {
                 properties.applicationBufferSize()));
   }
 
+  public void openOpChannel(
+          final Stage stage,
+          final Node node,
+          final Cluster cluster) {
+    this.operationalOutboundStream = OperationalOutboundStream.instance(
+            stage,
+            cluster,
+            node,
+            new ConsumerByteBufferPool(
+                    ElasticResourcePool.Config.of(properties.applicationOutgoingPooledBuffers()),
+                    properties.applicationBufferSize()));
+  }
+
   public InboundStream applicationInboundStream() {
     return applicationInboundStream;
   }
 
   public ApplicationOutboundStream applicationOutboundStream() {
     return applicationOutboundStream;
+  }
+
+  public OperationalOutboundStream operationalOutboundStream() {
+    return operationalOutboundStream;
   }
 }
