@@ -15,6 +15,7 @@ import io.vlingo.xoom.actors.Definition;
 import io.vlingo.xoom.actors.Stage;
 import io.vlingo.xoom.actors.Stoppable;
 import io.vlingo.xoom.cluster.model.message.ApplicationSays;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.common.pool.ResourcePool;
 import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannelProvider;
 import io.vlingo.xoom.wire.message.ConsumerByteBuffer;
@@ -25,13 +26,13 @@ public interface OperationalOutboundStream extends Stoppable {
   static OperationalOutboundStream instance(
       final Stage stage,
       final Cluster cluster,
-      final Node node,
+      final Registry registry,
       final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
 
     final Definition definition =
             Definition.has(
                     OperationalOutboundStreamActor.class,
-                    new OperationalOutboundStreamInstantiator(cluster, node, byteBufferPool),
+                    new OperationalOutboundStreamInstantiator(cluster, registry, byteBufferPool),
                     "cluster-operational-outbound-stream");
 
     return stage.actorFor(OperationalOutboundStream.class, definition);
@@ -41,21 +42,21 @@ public interface OperationalOutboundStream extends Stoppable {
     private static final long serialVersionUID = 8429839979141981981L;
 
     private final Cluster cluster;
-    private final Node node;
+    private final Registry registry;
     private final ResourcePool<ConsumerByteBuffer, String> byteBufferPool;
 
     public OperationalOutboundStreamInstantiator(
             final Cluster cluster,
-            final Node node,
+            final Registry registry,
             final ResourcePool<ConsumerByteBuffer, String> byteBufferPool) {
       this.cluster = cluster;
-      this.node = node;
+      this.registry = registry;
       this.byteBufferPool = byteBufferPool;
     }
 
     @Override
     public OperationalOutboundStreamActor instantiate() {
-      return new OperationalOutboundStreamActor(cluster, node, byteBufferPool);
+      return new OperationalOutboundStreamActor(cluster, registry, byteBufferPool);
     }
 
     @Override

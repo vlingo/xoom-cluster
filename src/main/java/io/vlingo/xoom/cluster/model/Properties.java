@@ -156,7 +156,7 @@ public final class Properties {
   }
 
   public long clusterStartupPeriod() {
-    return getInteger("cluster.startup.period", 3000);
+    return getInteger("cluster.startup.period", 5000);
   }
 
   public String host(String nodeName) {

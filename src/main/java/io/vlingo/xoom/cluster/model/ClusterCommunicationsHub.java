@@ -10,6 +10,7 @@ package io.vlingo.xoom.cluster.model;
 import io.scalecube.cluster.Cluster;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.Stage;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.common.pool.ElasticResourcePool;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStream;
@@ -71,12 +72,12 @@ public class ClusterCommunicationsHub {
 
   public void openOpChannel(
           final Stage stage,
-          final Node node,
+          final Registry registry,
           final Cluster cluster) {
     this.operationalOutboundStream = OperationalOutboundStream.instance(
             stage,
             cluster,
-            node,
+            registry,
             new ConsumerByteBufferPool(
                     ElasticResourcePool.Config.of(properties.applicationOutgoingPooledBuffers()),
                     properties.applicationBufferSize()));
