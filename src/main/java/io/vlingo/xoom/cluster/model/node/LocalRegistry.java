@@ -55,6 +55,11 @@ public final class LocalRegistry implements Registry {
   }
 
   @Override
+  public Node localNode() {
+    return localNode;
+  }
+
+  @Override
   public boolean isClusterHealthy() {
     return startupCompleted.get() && liveNodes.size() >= this.quorum;
   }

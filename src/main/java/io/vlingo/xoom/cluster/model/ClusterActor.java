@@ -7,6 +7,7 @@
 
 package io.vlingo.xoom.cluster.model;
 
+import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterConfig;
 import io.scalecube.cluster.ClusterImpl;
 import io.vlingo.xoom.actors.Actor;
@@ -23,7 +24,7 @@ import io.vlingo.xoom.wire.node.Node;
 public class ClusterActor extends Actor implements ClusterControl, InboundStreamInterest, Scheduled<Object> {
 
   private final Registry registry;
-  private final AttributesAgent attributesAgent;
+  private final AttributesAgent attributesAgent; // null when single node
   private final ClusterApplication clusterApplication; // only one application for now
   private final ClusterImpl cluster; // null when single node
   private final ClusterMembershipControl membershipControl; // null when single node
@@ -33,7 +34,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
     this.registry = initializer.registry();
     this.clusterApplication = clusterApplication;
 
-    Node localNode = initializer.localNode();
+    final Node localNode = initializer.localNode();
     this.communicationsHub = initializer.communicationsHub();
     this.communicationsHub.openAppChannel(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
 
@@ -57,7 +58,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
                       initializer.properties()));
 
       initializer.registry().join(localNode);
-      this.communicationsHub.openOpChannel(stage(), localNode, cluster);
+      this.communicationsHub.openOpChannel(stage(), registry, cluster);
 
       this.attributesAgent = AttributesAgent.instance(stage(),
               localNode,
@@ -66,6 +67,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
               initializer.configuration());
 
       this.cluster.startAwait();
+
       stage().scheduler()
               .scheduleOnce(selfAs(Scheduled.class), null, 100L, initializer.properties().clusterStartupPeriod());
     }

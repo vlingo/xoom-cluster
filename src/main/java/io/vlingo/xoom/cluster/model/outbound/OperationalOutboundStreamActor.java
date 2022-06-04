@@ -19,17 +19,13 @@ import io.vlingo.xoom.wire.message.ConsumerByteBuffer;
 import io.vlingo.xoom.wire.message.Converters;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
-import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class OperationalOutboundStreamActor extends Actor
   implements OperationalOutboundStream {

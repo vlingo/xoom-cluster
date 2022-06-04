@@ -21,7 +21,7 @@ import io.vlingo.xoom.actors.testkit.TestWorld;
 
 public abstract class AbstractClusterTest extends AbstractMessageTool {
   private static final Random random = new Random();
-  private static AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
+  private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
 
   protected MockClusterApplication application;
   protected ClusterConfiguration config;
@@ -29,7 +29,7 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
   protected TestWorld testWorld;
 
   @Test
-  public void testValues() throws Exception {
+  public void testValues() {
     assertNotNull(application);
     assertNotNull(config);
     assertNotNull(properties);

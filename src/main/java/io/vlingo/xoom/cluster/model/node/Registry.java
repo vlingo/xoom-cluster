@@ -19,6 +19,7 @@ public interface Registry {
   Set<Node> allOtherNodes();
   boolean containsNode(final Id id);
   Node getNode(final Id id);
+  Node localNode();
   boolean isClusterHealthy();
   void join(Node node);
   void leave(final Id id);
