@@ -7,29 +7,13 @@
 
 package io.vlingo.xoom.cluster.model.attribute;
 
-import static org.junit.Assert.assertEquals;
-
-import java.nio.ByteBuffer;
-import java.util.Iterator;
-
-import org.junit.Before;
-import org.junit.Test;
-
 import io.vlingo.xoom.actors.Definition;
 import io.vlingo.xoom.actors.testkit.TestActor;
 import io.vlingo.xoom.cluster.model.AbstractClusterTest;
-import io.vlingo.xoom.cluster.model.attribute.message.AddAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessage;
-import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmCreateAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.ConfirmRemoveAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.CreateAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.RemoveAttribute;
-import io.vlingo.xoom.cluster.model.attribute.message.RemoveAttributeSet;
-import io.vlingo.xoom.cluster.model.attribute.message.ReplaceAttribute;
+import io.vlingo.xoom.cluster.model.attribute.message.*;
 import io.vlingo.xoom.cluster.model.message.ApplicationSays;
 import io.vlingo.xoom.cluster.model.message.MessageConverters;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannel;
 import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannelProvider;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
@@ -45,13 +29,21 @@ import io.vlingo.xoom.wire.node.AddressType;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.nio.ByteBuffer;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 public class AttributesAgentActorTest extends AbstractClusterTest {
-  private MockManagedOutboundChannelProvider channelProvider;
   private Id localNodeId;
   private Node localNode;
   private MockConfirmationInterest interest;
   private ConsumerByteBufferPool pool;
+  private MockCluster mockCluster;
   private TestActor<OperationalOutboundStream> outboundStream;
   private AttributeSet set;
   private TrackedAttribute tracked;
@@ -67,11 +59,9 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
 
     agent.actor().add("test-set", "test-attr", "test-value");
 
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    assertEquals(2, mock(channel2).writes.size());
-    assertEquals(2, mock(channel3).writes.size());
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(2, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals("test-value", application.attributesClient.attribute("test-set", "test-attr").value);
   }
@@ -88,11 +78,9 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().replace("test-set", "test-attr", "test-value2");
 
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    assertEquals(3, mock(channel2).writes.size());
-    assertEquals(3, mock(channel3).writes.size());
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(3, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals("test-value2", application.attributesClient.attribute("test-set", "test-attr").value);
   }
@@ -109,11 +97,9 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().remove("test-set", "test-attr");
 
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    assertEquals(3, mock(channel2).writes.size());
-    assertEquals(3, mock(channel3).writes.size());
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(3, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr"));
   }
@@ -132,13 +118,10 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     agent.actor().add("test-set", "test-attr3", "test-value3");
     agent.actor().removeAll("test-set");
 
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-
     // 1. create set, 2. add attr, 3. add attr, 4. add attr, 5. remove attr, 6. remove attr, 7. remove attr, 8. remove set
-    assertEquals(8, mock(channel2).writes.size());
-    assertEquals(8, mock(channel3).writes.size());
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(8, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr1"));
     assertEquals(Attribute.Undefined, application.attributesClient.attribute("test-set", "test-attr2"));
@@ -157,8 +140,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final ApplicationMessage message = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
 
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    assertEquals(1, mock(channel1).writes.size());
+    assertEquals(1, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeSetCreated.get());
   }
 
@@ -172,8 +154,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final ApplicationMessage message = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
 
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    assertEquals(1, mock(channel1).writes.size());
+    assertEquals(1, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeAdded.get());
   }
 
@@ -189,8 +170,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final ApplicationMessage replaceMessage = ReplaceAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), replaceMessage));
 
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    assertEquals(2, mock(channel1).writes.size());
+    assertEquals(2, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeAdded.get());
     assertEquals(1, application.informAttributeReplaced.get());
   }
@@ -207,8 +187,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final ApplicationMessage removeMessage = RemoveAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), removeMessage));
 
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    assertEquals(2, mock(channel1).writes.size());
+    assertEquals(2, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeAdded.get());
     assertEquals(1, application.informAttributeRemoved.get());
   }
@@ -225,8 +204,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final ApplicationMessage removeMessage = RemoveAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), removeMessage));
 
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    assertEquals(2, mock(channel1).writes.size());
+    assertEquals(2, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeSetCreated.get());
     assertEquals(1, application.informAttributeSetRemoved.get());
   }
@@ -317,19 +295,20 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    channelProvider = new MockManagedOutboundChannelProvider(localNodeId, config);
-
     pool = new ConsumerByteBufferPool(
             ElasticResourcePool.Config.of(10), properties.operationalBufferSize());
 
     interest = new MockConfirmationInterest();
+
+    mockCluster = new MockCluster(localNode, config);
+    Registry mockRegistry = mockCluster.mockHealthyRegistry(localNode);
 
     outboundStream =
             testWorld.actorFor(
                     OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
-                            Definition.parameters(localNode, channelProvider, pool)));
+                            Definition.parameters(mockCluster.cluster, mockRegistry, pool)));
   }
 
   private RawMessage rawMessageFor(final Id id, final Name name, final ApplicationMessage message) {
@@ -342,4 +321,35 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   private MockManagedOutboundChannel mock(final ManagedOutboundChannel channel) {
     return (MockManagedOutboundChannel) channel;
   }
+
+//  private static class MockCluster {
+//    public final Cluster cluster;
+//    public final Map<Address, Integer> sentMessages;
+//
+//    public MockCluster(Node localNode, ClusterConfiguration configuration) {
+//      this.cluster = Mockito.mock(Cluster.class);
+//      this.sentMessages = new HashMap<>();
+//      for (Node otherNode : configuration.allNodes()) {
+//        Address address = Address.create(otherNode.operationalAddress().hostName(), otherNode.operationalAddress().port());
+//        Member member = new Member(otherNode.id().valueString(), otherNode.name().value(), address, "namespace");
+//
+//        sentMessages.put(address, 0);
+//
+//        when(cluster.member(address))
+//                .thenReturn(Optional.of(member));
+//
+//        when(cluster.send(eq(member), any(Message.class)))
+//                .then(val -> {
+//                  Integer counter = this.sentMessages.get(address);
+//                  this.sentMessages.put(address, counter + 1);
+//                  return Mono.empty();
+//                });
+//      }
+//    }
+//
+//    public int messagesTo(Node node) {
+//      Address address = Address.create(node.operationalAddress().hostName(), node.operationalAddress().port());
+//      return sentMessages.get(address);
+//    }
+//  }
 }

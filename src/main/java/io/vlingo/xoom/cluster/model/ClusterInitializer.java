@@ -27,8 +27,8 @@ public class ClusterInitializer {
   private final Id localNodeId;
   private final Registry registry;
 
-  ClusterInitializer(final String nodeNameText, final Properties properties, final Logger logger) {
-    this.localNodeId = Id.of(properties.nodeId(nodeNameText));
+  ClusterInitializer(final String nodeName, final Properties properties, final Logger logger) {
+    this.localNodeId = Id.of(properties.nodeId(nodeName));
     this.configuration = new ClusterConfiguration(properties, logger);
     this.properties = properties;
     this.localNode = configuration.nodeMatching(localNodeId);
@@ -61,6 +61,10 @@ public class ClusterInitializer {
   }
 
   ClusterConfig clusterConfig() {
+    return clusterConfig(localNode, configuration);
+  }
+
+  public static ClusterConfig clusterConfig(Node localNode, ClusterConfiguration configuration) {
     String localNodeHostName = localNode.operationalAddress().hostName();
     int localNodePort = localNode.operationalAddress().port();
     List<Address> seeds = configuration.allNodes().stream()
