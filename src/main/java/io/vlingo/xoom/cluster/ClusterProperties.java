@@ -7,6 +7,7 @@
 
 package io.vlingo.xoom.cluster;
 
+import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -63,7 +64,6 @@ public class ClusterProperties {
   }
 
   private static java.util.Properties oneOnly(final java.util.Properties properties, final AtomicInteger portSeed) {
-
     return allOf(properties, 1, portSeed);
   }
 

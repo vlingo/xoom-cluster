@@ -22,15 +22,15 @@ import io.vlingo.xoom.wire.node.Node;
 
 public class ClusterConfigurationTest extends AbstractClusterTest {
   @Test
-  public void testAllConfiguredNodes() throws Exception {
+  public void testAllConfiguredNodes() {
     final Collection<Node> all = config.allNodes();
 
     assertEquals(3, all.size());
 
     final Set<Node> nodes = new HashSet<>();
-    nodes.add(nextNodeWith(1));
-    nodes.add(nextNodeWith(2));
-    nodes.add(nextNodeWith(3));
+    nodes.add(nextNodeWith(1, false));
+    nodes.add(nextNodeWith(2, true));
+    nodes.add(nextNodeWith(3, false));
 
     for (final Node node : all) {
       nodes.remove(node);

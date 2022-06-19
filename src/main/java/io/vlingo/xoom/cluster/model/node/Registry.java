@@ -7,29 +7,22 @@
 
 package io.vlingo.xoom.cluster.model.node;
 
-import java.util.Collection;
 import java.util.Set;
 
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
+/**
+ * Registry with all live nodes from the cluster.
+ */
 public interface Registry {
-  void cleanTimedOutNodes();
-  void confirmAllLiveNodesByLeader();
-  boolean isConfirmedByLeader(final Id id);
-  Node currentLeader();
-  void declareLeaderAs(final Id id);
-  void demoteLeaderOf(final Id id);
-  boolean isLeader(final Id id);
-  boolean hasLeader();
-  Set<Node> liveNodes();
-  boolean hasMember(final Id id);
-  boolean hasQuorum();
+  Set<Node> allOtherNodes();
+  boolean containsNode(final Id id);
+  Node getNode(final Id id);
+  Node localNode();
+  boolean isClusterHealthy();
   void join(Node node);
   void leave(final Id id);
-  void mergeAllDirectoryEntries(final Collection<Node> nodes);
-  void promoteElectedLeader(final Id leaderNodeId);
-  void registerRegistryInterest(final RegistryInterest interest);
-  boolean isSingleNodeCluster();
-  void updateLastHealthIndication(final Id id);
+  Set<Node> nodes();
+  void startupIsCompleted();
 }

@@ -9,6 +9,7 @@ package io.vlingo.xoom.cluster.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import io.vlingo.xoom.actors.Actor;
 
@@ -106,7 +107,7 @@ public final class Properties {
     }
   }
 
-  public final String clusterApplicationClassname() {
+  public String clusterApplicationClassname() {
     final String classname = getString("cluster.app.class", "");
 
     if (classname.length() == 0) {
@@ -116,7 +117,7 @@ public final class Properties {
     return classname;
   }
 
-  public final String clusterApplicationStageName() {
+  public String clusterApplicationStageName() {
     final String name = getString("cluster.app.stage", "");
 
     if (name.length() == 0) {
@@ -150,7 +151,15 @@ public final class Properties {
     return getInteger("cluster.quorum.timeout", 60000);
   }
 
-  public final String host(String nodeName) {
+  public int clusterQuorum() {
+    return getInteger("cluster.nodes.quorum", 1);
+  }
+
+  public long clusterStartupPeriod() {
+    return getInteger("cluster.startup.period", 5000);
+  }
+
+  public String host(String nodeName) {
     final String host = getString(nodeName, "host", "");
 
     if (host.length() == 0) {
@@ -172,7 +181,7 @@ public final class Properties {
     return (short) nodeId;
   }
 
-  public final String nodeName(String nodeName) {
+  public String nodeName(String nodeName) {
     final String name = getString(nodeName, "name", "");
 
     if (name.length() == 0) {
@@ -218,32 +227,50 @@ public final class Properties {
     return port;
   }
 
-  public final List<String> seedNodes() {
-    final List<String> seedNodes = new ArrayList<>();
+  public boolean isSeed(String nodeName) {
+    return getBoolean(nodeName, "seed", false);
+  }
+
+  /**
+   * Get all the nodes.
+   *
+   * @return
+   */
+  public List<String> seedNodes() {
+    final List<String> nodes = new ArrayList<>();
 
     final String commaSeparated = getString("cluster.seedNodes", "");
 
     if (commaSeparated.length() == 0) {
-      throw new IllegalStateException("Must declare seed nodes in properties file.");
+      throw new IllegalStateException("Must declare nodes in properties file.");
     }
 
-    for (final String seedNode : commaSeparated.split(",")) {
-      seedNodes.add(seedNode.trim());
+    for (final String node : commaSeparated.split(",")) {
+      nodes.add(node.trim());
     }
 
-    return seedNodes;
+    return nodes;
+  }
+
+  /**
+   * Checks whether this is a single node configuration.
+   *
+   * @return
+   */
+  public boolean singleNode() {
+    return seedNodes().size() == 1; // || clusterQuorum() == 1;
   }
 
   public boolean useSSL() {
     return getBoolean("cluster.ssl", false);
   }
 
-  public final Boolean getBoolean(final String nodeName, final String key, final Boolean defaultValue) {
+  public Boolean getBoolean(final String nodeName, final String key, final Boolean defaultValue) {
     final String value = getString(nodeName, key, defaultValue.toString());
     return Boolean.parseBoolean(value);
   }
 
-  public final Boolean getBoolean(final String key, final Boolean defaultValue) {
+  public Boolean getBoolean(final String key, final Boolean defaultValue) {
     return getBoolean("", key, defaultValue);
   }
 
@@ -252,24 +279,24 @@ public final class Properties {
     return Float.parseFloat(value);
   }
 
-  public final Float getFloat(final String key, final Float defaultValue) {
+  public Float getFloat(final String key, final Float defaultValue) {
     return getFloat("", key, defaultValue);
   }
 
-  public final Integer getInteger(final String nodeName, final String key, final Integer defaultValue) {
+  public Integer getInteger(final String nodeName, final String key, final Integer defaultValue) {
     final String value = getString(nodeName, key, defaultValue.toString());
     return Integer.parseInt(value);
   }
 
-  public final Integer getInteger(final String key, final Integer defaultValue) {
+  public Integer getInteger(final String key, final Integer defaultValue) {
     return getInteger("", key, defaultValue);
   }
 
-  public final String getString(final String nodeName, final String key, final String defaultValue) {
+  public String getString(final String nodeName, final String key, final String defaultValue) {
     return properties.getProperty(key(nodeName, key), defaultValue);
   }
 
-  public final String getString(final String key, final String defaultValue) {
+  public String getString(final String key, final String defaultValue) {
     return properties.getProperty(key, defaultValue);
   }
 

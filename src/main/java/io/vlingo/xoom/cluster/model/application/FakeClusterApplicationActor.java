@@ -11,7 +11,6 @@ import java.util.Collection;
 
 import io.vlingo.xoom.cluster.model.attribute.Attribute;
 import io.vlingo.xoom.cluster.model.attribute.AttributesProtocol;
-import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
@@ -43,37 +42,6 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void informLeaderElected(final Id leaderId, final boolean isHealthyCluster, final boolean isLocalNodeLeading) {
-    logger().debug("APP: Leader elected: " + leaderId);
-    printHealthy(isHealthyCluster);
-    if (isLocalNodeLeading) {
-       logger().debug("APP: Local node is leading.");
-    }
-  }
-
-  @Override
-  public void informLeaderLost(final Id lostLeaderId, final boolean isHealthyCluster) {
-    logger().debug("APP: Leader lost: " + lostLeaderId);
-    printHealthy(isHealthyCluster);
-  }
-
-  @Override
-  public void informLocalNodeShutDown(final Id nodeId) {
-     logger().debug("APP: Local node shut down: " + nodeId);
-  }
-
-  @Override
-  public void informLocalNodeStarted(final Id nodeId) {
-     logger().debug("APP: Local node started: " + nodeId);
-  }
-
-  @Override
-  public void informNodeIsHealthy(final Id nodeId, final boolean isHealthyCluster) {
-    logger().debug("APP: Node reported healthy: " + nodeId);
-    printHealthy(isHealthyCluster);
-  }
-
-  @Override
   public void informNodeJoinedCluster(final Id nodeId, final boolean isHealthyCluster) {
     logger().debug("APP: " + nodeId + " joined cluster");
     printHealthy(isHealthyCluster);
@@ -86,20 +54,9 @@ public class FakeClusterApplicationActor extends ClusterApplicationAdapter {
   }
 
   @Override
-  public void informQuorumAchieved() {
-    logger().debug("APP: Quorum achieved");
-    printHealthy(true);
-  }
-
-  @Override
-  public void informQuorumLost() {
-    logger().debug("APP: Quorum lost");
-    printHealthy(false);
-  }
-
-  @Override
-  public void informResponder(final ApplicationOutboundStream responder) {
-    logger().debug("APP: Informed of responder: " + responder);
+  public void informClusterIsHealthy(boolean isHealthyCluster) {
+    logger().debug("APP: Cluster is healthy");
+    printHealthy(isHealthyCluster);
   }
 
   @Override

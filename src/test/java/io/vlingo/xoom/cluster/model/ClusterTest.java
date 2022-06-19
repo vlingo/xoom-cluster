@@ -18,8 +18,9 @@ import io.vlingo.xoom.common.Tuple2;
 
 public class ClusterTest extends AbstractClusterTest {
   @Test
-  public void testClusterSnapshotControl() throws Exception {
-    final Tuple2<ClusterSnapshotControl, Logger> control = Cluster.controlFor(World.startWithDefaults("test"), new DefaultClusterApplicationInstantiator(), properties, "node1");
+  public void testClusterSnapshotControl() {
+    final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(World.startWithDefaults("test"),
+            new DefaultClusterApplicationInstantiator(), properties, "node1");
 
     assertNotNull(control);
   }

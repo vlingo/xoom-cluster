@@ -7,37 +7,33 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import java.util.UUID;
-
-import io.vlingo.xoom.actors.ActorInstantiator;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.actors.Stage;
 import io.vlingo.xoom.actors.World;
-import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication.ClusterApplicationInstantiator;
 import io.vlingo.xoom.common.Tuple2;
 
-public class Cluster {
+import java.util.UUID;
+
+public final class Cluster {
   static final String INTERNAL_NAME = UUID.randomUUID().toString();
 
-  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterControl, Logger> controlFor(
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
+          final String nodeName) {
     return controlFor(World.start("xoom-cluster"), instantiator, properties, nodeName);
   }
 
-  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterControl, Logger> controlFor(
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName)
-  throws Exception {
+          final String nodeName) {
     return controlFor(world, world.stage(), instantiator, properties, nodeName);
   }
 
-  public static synchronized Tuple2<ClusterSnapshotControl, Logger> controlFor(
+  public static synchronized Tuple2<ClusterControl, Logger> controlFor(
           final World world,
           final Stage stage,
           final ClusterApplicationInstantiator<?> instantiator,
@@ -48,7 +44,7 @@ public class Cluster {
       throw new IllegalArgumentException("Cluster is already running inside World: " + world.name());
     }
 
-    final Tuple2<ClusterSnapshotControl, Logger> control = ClusterSnapshotControl.instance(world, instantiator, properties, nodeName);
+    final Tuple2<ClusterControl, Logger> control = ClusterControl.instance(world, instantiator, properties, nodeName);
 
     world.registerDynamic(INTERNAL_NAME, control._1);
 
@@ -56,32 +52,6 @@ public class Cluster {
   }
 
   public static boolean isRunningInside(final World world) {
-    return world.resolveDynamic(INTERNAL_NAME, ClusterSnapshotControl.class) != null;
-  }
-
-  static class ClusterSnapshotActorInstantiator implements ActorInstantiator<ClusterSnapshotActor> {
-    private static final long serialVersionUID = 6105119774787607965L;
-
-    private final ClusterApplication clusterApplication;
-    private final ClusterSnapshotInitializer initializer;
-
-    public ClusterSnapshotActorInstantiator(final ClusterSnapshotInitializer initializer, final ClusterApplication clusterApplication) {
-      this.initializer = initializer;
-      this.clusterApplication = clusterApplication;
-    }
-
-    @Override
-    public ClusterSnapshotActor instantiate() {
-      try {
-        return new ClusterSnapshotActor(initializer, clusterApplication);
-      } catch (Exception e) {
-        throw new IllegalArgumentException("Failed to instantiate " + type() + " because: " + e.getMessage(), e);
-      }
-    }
-
-    @Override
-    public Class<ClusterSnapshotActor> type() {
-      return ClusterSnapshotActor.class;
-    }
+    return world.resolveDynamic(INTERNAL_NAME, ClusterControl.class) != null;
   }
 }

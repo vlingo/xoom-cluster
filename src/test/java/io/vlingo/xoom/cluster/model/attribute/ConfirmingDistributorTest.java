@@ -13,8 +13,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.Collection;
 import java.util.Iterator;
 
+import io.vlingo.xoom.cluster.model.node.Registry;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import io.vlingo.xoom.actors.Definition;
@@ -34,10 +36,10 @@ import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
 public class ConfirmingDistributorTest extends AbstractClusterTest {
-  private MockManagedOutboundChannelProvider channelProvider;
   private ConfirmingDistributor confirmingDistributor;
   private Id localNodeId;
   private Node localNode;
+  private MockCluster mockCluster;
   private ConsumerByteBufferPool pool;
   private TestActor<OperationalOutboundStream> outboundStream;
   private AttributeSet set;
@@ -64,8 +66,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testConfirmCreateAttributeSet() {
     confirmingDistributor.confirmCreate("123", set, localNode);
 
-    singleChannelMessageAssertions();
-
+    assertEquals(1, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeSetCreated.get());
   }
 
@@ -73,29 +74,28 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testConfirmAddAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.AddAttribute, localNode);
 
-    singleChannelMessageAssertions();
+    assertEquals(1, mockCluster.messagesTo(localNode));
   }
 
   @Test
   public void testConfirmReplaceAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.ReplaceAttribute, localNode);
 
-    singleChannelMessageAssertions();
+    assertEquals(1, mockCluster.messagesTo(localNode));
   }
 
   @Test
   public void testConfirmRemoveAttribute() {
     confirmingDistributor.confirm("123", set, tracked, ApplicationMessageType.RemoveAttribute, localNode);
 
-    singleChannelMessageAssertions();
+    assertEquals(1, mockCluster.messagesTo(localNode));
   }
 
   @Test
   public void testConfirmRemoveAttributeSet() {
     confirmingDistributor.confirmRemove("123", set, localNode);
 
-    singleChannelMessageAssertions();
-
+    assertEquals(1, mockCluster.messagesTo(localNode));
     assertEquals(1, application.informAttributeSetRemoved.get());
   }
 
@@ -103,7 +103,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeCreateAttributeSet() {
     confirmingDistributor.distributeCreate(set);
 
-    multiChannelMessageAssertions(2);
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(2, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(1, application.informAttributeSetCreated.get());
     assertEquals(1, application.informAttributeAdded.get());
@@ -113,7 +115,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeAddAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
 
-    multiChannelMessageAssertions(1);
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(1, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(1, application.informAttributeAdded.get());
   }
@@ -122,7 +126,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeReplaceAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.ReplaceAttribute);
 
-    multiChannelMessageAssertions(1);
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(1, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(1, application.informAttributeReplaced.get());
   }
@@ -131,7 +137,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeRemoveAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.RemoveAttribute);
 
-    multiChannelMessageAssertions(1);
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(1, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(1, application.informAttributeRemoved.get());
   }
@@ -140,7 +148,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeRemoveAttributeSet() {
     confirmingDistributor.distributeRemove(set);
 
-    multiChannelMessageAssertions(2);
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(2, mockCluster.messagesTo(otherNode));
+    }
 
     assertEquals(1, application.informAttributeSetRemoved.get());
     assertEquals(1, application.informAttributeRemoved.get());
@@ -148,14 +158,6 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
   @Test
   public void testRedistributeUnconfirmed() {
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    mock(channel2).until = TestUntil.happenings(1);
-
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    mock(channel3).until = TestUntil.happenings(1);
-
     final AttributeSet set = AttributeSet.named("test-set");
     final TrackedAttribute tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
@@ -163,11 +165,9 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
     confirmingDistributor.redistributeUnconfirmed();
 
-    mock(channel2).until.completes();
-    assertEquals(1, mock(channel2).writes.size());
-
-    mock(channel3).until.completes();
-    assertEquals(1, mock(channel3).writes.size());
+    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+      assertEquals(1, mockCluster.messagesTo(otherNode));
+    }
   }
 
   @Override
@@ -183,7 +183,8 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    channelProvider = new MockManagedOutboundChannelProvider(localNodeId, config);
+    mockCluster = new MockCluster(localNode, config);
+    Registry mockRegistry = mockCluster.mockHealthyRegistry(localNode);
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.operationalBufferSize());
 
@@ -192,7 +193,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
                     OperationalOutboundStream.class,
                     Definition.has(
                             OperationalOutboundStreamActor.class,
-                            Definition.parameters(localNode, channelProvider, pool)));
+                            Definition.parameters(mockCluster.cluster, mockRegistry, pool)));
 
     confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), config);
   }
@@ -205,28 +206,5 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
   private MockManagedOutboundChannel mock(final ManagedOutboundChannel channel) {
     return (MockManagedOutboundChannel) channel;
-  }
-
-  private void multiChannelMessageAssertions(final int messageCount) {
-    final Iterator<Node> iter = config.allOtherNodes(localNodeId).iterator();
-    final ManagedOutboundChannel channel2 = channelProvider.channelFor(iter.next().id());
-    final ManagedOutboundChannel channel3 = channelProvider.channelFor(iter.next().id());
-    assertEquals(messageCount, mock(channel2).writes.size());
-    assertEquals(messageCount, mock(channel3).writes.size());
-    final OperationalMessage message2 = OperationalMessage.messageFrom(mock(channel2).writes.get(0));
-    final OperationalMessage message3 = OperationalMessage.messageFrom(mock(channel3).writes.get(0));
-    assertTrue(message2.isApp());
-    assertTrue(message3.isApp());
-    assertEquals(localNodeId, message2.id());
-    assertEquals(localNodeId, message3.id());
-    assertEquals(message2, message3);
-  }
-
-  private void singleChannelMessageAssertions() {
-    final ManagedOutboundChannel channel1 = channelProvider.channelFor(localNodeId);
-    final OperationalMessage message1 = OperationalMessage.messageFrom(mock(channel1).writes.get(0));
-
-    assertEquals(1, mock(channel1).writes.size());
-    assertEquals(localNodeId, message1.id());
   }
 }

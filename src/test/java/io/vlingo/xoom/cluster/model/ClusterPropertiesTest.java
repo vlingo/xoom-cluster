@@ -25,12 +25,12 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] seedNodes = properties.getString("cluster.seedNodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
-    assertEquals(3, seedNodes.length);
-    assertEquals("node1", seedNodes[0]);
-    assertEquals("node2", seedNodes[1]);
-    assertEquals("node3", seedNodes[2]);
+    assertEquals(3, nodes.length);
+    assertEquals("node1", nodes[0]);
+    assertEquals("node2", nodes[1]);
+    assertEquals("node3", nodes[2]);
 
     // node specific
     assertEquals("1", properties.getString("node.node1.id", ""));
@@ -54,14 +54,14 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] seedNodes = properties.getString("cluster.seedNodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
-    assertEquals(5, seedNodes.length);
-    assertEquals("node1", seedNodes[0]);
-    assertEquals("node2", seedNodes[1]);
-    assertEquals("node3", seedNodes[2]);
-    assertEquals("node4", seedNodes[3]);
-    assertEquals("node5", seedNodes[4]);
+    assertEquals(5, nodes.length);
+    assertEquals("node1", nodes[0]);
+    assertEquals("node2", nodes[1]);
+    assertEquals("node3", nodes[2]);
+    assertEquals("node4", nodes[3]);
+    assertEquals("node5", nodes[4]);
 
     // node specific
     assertEquals("1", properties.getString("node.node1.id", ""));
@@ -93,10 +93,10 @@ public class ClusterPropertiesTest {
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
     assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] seedNodes = properties.getString("cluster.seedNodes", "").split(",");
+    final String[] nodes = properties.getString("cluster.seedNodes", "").split(",");
 
-    assertEquals(1, seedNodes.length);
-    assertEquals("node1", seedNodes[0]);
+    assertEquals(1, nodes.length);
+    assertEquals("node1", nodes[0]);
 
     // node specific
     assertEquals("1", properties.getString("node.node1.id", ""));

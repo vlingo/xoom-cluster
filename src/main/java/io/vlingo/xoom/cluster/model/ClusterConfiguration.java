@@ -7,10 +7,7 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.wire.node.Address;
@@ -24,10 +21,12 @@ import io.vlingo.xoom.wire.node.Node;
 public class ClusterConfiguration implements Configuration {
   private final Logger logger;
   private final Set<Node> nodes;
+  private final Set<Node> seeds;
 
   public ClusterConfiguration(Properties properties, final Logger logger) {
     this.logger = logger;
     this.nodes = new TreeSet<>();
+    this.seeds = new TreeSet<>();
 
     initializeConfiguredNodeEntries(properties);
   }
@@ -37,7 +36,6 @@ public class ClusterConfiguration implements Configuration {
     return Collections.unmodifiableSet(nodes);
   }
 
-  // Currently not used
   @Override
   public Set<Node> allNodesOf(final Collection<Id> ids) {
     // Currently not used
@@ -161,9 +159,14 @@ public class ClusterConfiguration implements Configuration {
       final Name nodeName = new Name(configuredNodeName);
       final Host host = Host.of(properties.host(configuredNodeName));
       final Address opNodeAddress = Address.from(host, properties.operationalPort(configuredNodeName), AddressType.OP);
+      final boolean isSeed = properties.isSeed(configuredNodeName);
       final Address appNodeAddress = Address.from(host, properties.applicationPort(configuredNodeName), AddressType.APP);
 
-      nodes.add(new Node(nodeId, nodeName, opNodeAddress, appNodeAddress));
+      Node node = new Node(nodeId, nodeName, opNodeAddress, appNodeAddress, isSeed);
+      nodes.add(node);
+      if (isSeed) {
+        seeds.add(node);
+      }
     }
   }
 }

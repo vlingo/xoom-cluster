@@ -23,15 +23,9 @@ public class MockClusterApplication implements ClusterApplication {
   public AtomicInteger allLiveNodes = new AtomicInteger(0);
   public AtomicInteger handleApplicationMessage = new AtomicInteger(0);
 
-  public AtomicInteger informLeaderElected = new AtomicInteger(0);
-  public AtomicInteger informLeaderLost = new AtomicInteger(0);
-  public AtomicInteger informLocalNodeShutDown = new AtomicInteger(0);
-  public AtomicInteger informLocalNodeStarted = new AtomicInteger(0);
-  public AtomicInteger informNodeIsHealthy = new AtomicInteger(0);
+  public AtomicInteger informClusterIsHealthy = new AtomicInteger(0);
   public AtomicInteger informNodeJoinedCluster = new AtomicInteger(0);
   public AtomicInteger informNodeLeftCluster = new AtomicInteger(0);
-  public AtomicInteger informQuorumAchieved = new AtomicInteger(0);
-  public AtomicInteger informQuorumLost = new AtomicInteger(0);
   public AtomicInteger informResponder = new AtomicInteger(0);
 
   public AtomicInteger informAttributesClient = new AtomicInteger(0);
@@ -74,29 +68,10 @@ public class MockClusterApplication implements ClusterApplication {
   }
 
   @Override
-  public void informLeaderElected(Id leaderId, boolean isHealthyCluster, boolean isLocalNodeLeading) {
-    informLeaderElected.incrementAndGet();
+  public void informClusterIsHealthy(boolean isHealthyCluster) {
+    informClusterIsHealthy.incrementAndGet();
   }
 
-  @Override
-  public void informLeaderLost(Id lostLeaderId, boolean isHealthyCluster) {
-    informLeaderLost.incrementAndGet();
-  }
-
-  @Override
-  public void informLocalNodeShutDown(Id nodeId) {
-    informLocalNodeShutDown.incrementAndGet();
-  }
-
-  @Override
-  public void informLocalNodeStarted(Id nodeId) {
-    informLocalNodeStarted.incrementAndGet();
-  }
-
-  @Override
-  public void informNodeIsHealthy(Id nodeId, boolean isHealthyCluster) {
-    informNodeIsHealthy.incrementAndGet();
-  }
 
   @Override
   public void informNodeJoinedCluster(Id nodeId, boolean isHealthyCluster) {
@@ -106,16 +81,6 @@ public class MockClusterApplication implements ClusterApplication {
   @Override
   public void informNodeLeftCluster(Id nodeId, boolean isHealthyCluster) {
     informNodeLeftCluster.incrementAndGet();
-  }
-
-  @Override
-  public void informQuorumAchieved() {
-    informQuorumAchieved.incrementAndGet();
-  }
-
-  @Override
-  public void informQuorumLost() {
-    informQuorumLost.incrementAndGet();
   }
 
   @Override

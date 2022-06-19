@@ -39,56 +39,56 @@ public final class ReceivedAttributeMessage {
     this.payloadMap = parsePayload(message);
   }
 
-  public final Id sourceNodeId() {
+  public Id sourceNodeId() {
     return Id.of(Integer.parseInt(payloadMap.get(SourceNodeIdKey)));
   }
 
-  public final Name sourceNodeName() {
+  public Name sourceNodeName() {
     return Name.of(payloadMap.get(SourceNodeNameKey));
   }
 
-  public final Id sourceNodeOpPort() {
+  public Id sourceNodeOpPort() {
     return Id.of(Integer.parseInt(payloadMap.get(SourceNodeOpPortKey)));
   }
 
-  public final Id sourceNodeAppPort() {
+  public Id sourceNodeAppPort() {
     return Id.of(Integer.parseInt(payloadMap.get(SourceNodeAppPortKey)));
   }
 
-  public final String classOfMessage() {
+  public String classOfMessage() {
     return payloadMap.get(ClassOfMessageKey);
   }
 
-  public final String correlatingMessageId() {
+  public String correlatingMessageId() {
     return payloadMap.get(CorrelatingMessageIdKey);
   }
 
-  public final String trackingId() {
+  public String trackingId() {
     return payloadMap.get(TrackingIdKey);
   }
   
-  public final ApplicationMessageType type() {
+  public ApplicationMessageType type() {
     return ApplicationMessageType.valueOf(payloadMap.get(MessageTypeKey));
   }
   
-  public final Attribute<?> attribute() {
+  public Attribute<?> attribute() {
     final Attribute.Type type = Attribute.Type.valueOf(Attribute.Type.class, attributeType());
     return Attribute.from(attributeName(), type, attributeValue());
   }
   
-  public final String attributeSetName() {
+  public String attributeSetName() {
     return payloadMap.get(AttributeSetNameKey);
   }
   
-  public final String attributeName() {
+  public String attributeName() {
     return payloadMap.get(AttributeNameKey);
   }
   
-  public final String attributeType() {
+  public String attributeType() {
     return payloadMap.get(AttributeTypeKey);
   }
   
-  public final String attributeValue() {
+  public String attributeValue() {
     return payloadMap.get(AttributeValueKey);
   }
 
