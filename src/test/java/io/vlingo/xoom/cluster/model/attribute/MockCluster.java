@@ -6,6 +6,7 @@ import io.scalecube.cluster.transport.api.Message;
 import io.scalecube.net.Address;
 import io.vlingo.xoom.cluster.model.ClusterConfiguration;
 import io.vlingo.xoom.cluster.model.node.Registry;
+import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
@@ -16,16 +17,21 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 
 class MockCluster {
+  private final Node localNode;
+  private final ClusterConfiguration config;
   final Cluster cluster;
   public final Map<Address, Integer> sentMessages;
 
-  MockCluster(Node localNode, ClusterConfiguration configuration) {
+  MockCluster(Node localNode, ClusterConfiguration config) {
+    this.localNode = localNode;
+    this.config = config;
     this.cluster = Mockito.mock(Cluster.class);
     this.sentMessages = new HashMap<>();
-    for (Node otherNode : configuration.allNodes()) {
+    for (Node otherNode : config.allNodes()) {
       Address address = Address.create(otherNode.operationalAddress().hostName(), otherNode.operationalAddress().port());
       Member member = new Member(otherNode.id().valueString(), otherNode.name().value(), address, "namespace");
 
@@ -43,7 +49,7 @@ class MockCluster {
     }
   }
 
-  Registry mockHealthyRegistry(Node localNode) {
+  Registry mockHealthyRegistry() {
     Registry mockRegistry = Mockito.mock(Registry.class);
 
     when(mockRegistry.isClusterHealthy())
@@ -51,6 +57,14 @@ class MockCluster {
 
     when(mockRegistry.localNode())
             .thenReturn(localNode);
+
+    // configure live nodes to be all config nodes
+    when(mockRegistry.allOtherNodes())
+            .thenReturn(config.allOtherNodes(localNode.id()));
+
+    doAnswer(invocation -> config.nodeMatching(invocation.getArgument(0)))
+            .when(mockRegistry)
+            .getNode(any(Id.class));
 
     return mockRegistry;
   }

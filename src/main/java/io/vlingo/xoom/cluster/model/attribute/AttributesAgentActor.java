@@ -8,32 +8,34 @@
 package io.vlingo.xoom.cluster.model.attribute;
 
 import io.vlingo.xoom.actors.Actor;
+import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.Properties;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
 import io.vlingo.xoom.cluster.model.attribute.message.ReceivedAttributeMessage;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.AddressType;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Node;
 
 public class AttributesAgentActor extends Actor implements AttributesAgent {
   private final AttributesClient client;
-  private final Configuration configuration;
   private final ConfirmationInterest confirmationInterest;
   private final ConfirmingDistributor confirmingDistributor;
   private final Node node;
   private final RemoteAttributeRequestHandler remoteRequestHandler;
+  private final Registry registry;
   private final AttributeSetRepository repository;
 
   public AttributesAgentActor(
           final Node node,
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
-          final Configuration configuration) {
-    this(node, application, outbound, configuration, new NoOpConfirmationInterest(configuration));
+          final Registry registry,
+          final Logger logger) {
+    this(node, application, outbound, new NoOpConfirmationInterest(logger), registry, logger);
   }
 
   @SuppressWarnings("unchecked")
@@ -41,16 +43,17 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
           final Node node,
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
-          final Configuration configuration,
-          final ConfirmationInterest confirmationInterest) {
+          final ConfirmationInterest confirmationInterest,
+          final Registry registry,
+          final Logger logger) {
 
     this.node = node;
-    this.configuration = configuration;
     this.confirmationInterest = confirmationInterest;
     this.client = AttributesClient.with(selfAs(AttributesAgent.class));
-    this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, configuration);
+    this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, registry::allOtherNodes, logger);
     this.repository = new AttributeSetRepository();
-    this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, configuration, repository);
+    this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, repository, registry::getNode, logger);
+    this.registry = registry;
 
     application.informAttributesClient(this.client);
 
@@ -174,11 +177,16 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
       case ConfirmReplaceAttribute:
       case ConfirmRemoveAttribute:
       case ConfirmRemoveAttributeSet:
-        confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), configuration.nodeMatching(request.sourceNodeId()));
-        confirmationInterest.confirm(request.sourceNodeId(), request.attributeSetName(), request.attributeName(), type);
+        final Node sourceNode = registry.getNode(request.sourceNodeId());
+        if (sourceNode == null) {
+          logger().warn("Failed to perform " + type.name() + " because source node " + request.sourceNodeId() + " is not part of the cluster anymore!");
+        } else {
+          confirmingDistributor.acknowledgeConfirmation(request.correlatingMessageId(), sourceNode);
+          confirmationInterest.confirm(request.sourceNodeId(), request.attributeSetName(), request.attributeName(), type);
+        }
         break;
       default:
-        configuration.logger().warn("Received unknown message: " + type.name());
+        logger().warn("Received unknown message: " + type.name());
         break;
       }
     }

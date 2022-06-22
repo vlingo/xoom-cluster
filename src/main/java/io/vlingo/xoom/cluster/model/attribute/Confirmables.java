@@ -12,19 +12,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import io.vlingo.xoom.cluster.model.Properties;
 import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessage;
 import io.vlingo.xoom.wire.node.Node;
 
 final class Confirmables {
-  private final Collection<Node> allOtherNodes;
+  private final Supplier<Collection<Node>> allOtherNodesSupplier;
   private final List<Confirmable> expectedConfirmables;
   private final Node node;
 
-  Confirmables(final Node node, final Collection<Node> allOtherNodes) {
+  Confirmables(final Node node, final Supplier<Collection<Node>> allOtherNodesSupplier) {
     this.node = node;
-    this.allOtherNodes = allOtherNodes;
+    this.allOtherNodesSupplier = allOtherNodesSupplier;
     this.expectedConfirmables = new ArrayList<>();
   }
 
@@ -66,7 +67,7 @@ final class Confirmables {
   }
 
   Confirmable unconfirmed(final ApplicationMessage message) {
-    return unconfirmedFor(message, allOtherNodes);
+    return unconfirmedFor(message, allOtherNodesSupplier.get());
   }
 
   Confirmable unconfirmedFor(final ApplicationMessage message, final Collection<Node> nodes) {

@@ -7,15 +7,12 @@
 
 package io.vlingo.xoom.cluster.model.attribute;
 
-import io.vlingo.xoom.actors.ActorInstantiator;
-import io.vlingo.xoom.actors.Definition;
-import io.vlingo.xoom.actors.Stage;
-import io.vlingo.xoom.actors.Stoppable;
+import io.vlingo.xoom.actors.*;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.common.Scheduled;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Node;
 import io.vlingo.xoom.wire.node.NodeSynchronizer;
 
@@ -25,12 +22,13 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
       final Node node,
       final ClusterApplication application,
       final OperationalOutboundStream outbound,
-      final Configuration configuration) {
+      final Registry registry,
+      final Logger logger) {
 
     final Definition definition =
             new Definition(
                     AttributesAgentActor.class,
-                    new AttributesAgentInstantiator(node, application, outbound, configuration),
+                    new AttributesAgentInstantiator(node, application, outbound, registry, logger),
                     "attributes-agent");
 
     return stage.actorFor(AttributesAgent.class, definition);
@@ -42,22 +40,25 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
     private final Node node;
     private final ClusterApplication application;
     private final OperationalOutboundStream outbound;
-    private final Configuration configuration;
+    private final Registry registry;
+    private final Logger logger;
 
     public AttributesAgentInstantiator(
             final Node node,
             final ClusterApplication application,
             final OperationalOutboundStream outbound,
-            final Configuration configuration) {
+            final Registry registry,
+            final Logger logger) {
       this.node = node;
       this.application = application;
       this.outbound = outbound;
-      this.configuration = configuration;
+      this.registry = registry;
+      this.logger = logger;
     }
 
     @Override
     public AttributesAgentActor instantiate() {
-      return new AttributesAgentActor(node, application, outbound, configuration);
+      return new AttributesAgentActor(node, application, outbound, registry, logger);
     }
 
     @Override
