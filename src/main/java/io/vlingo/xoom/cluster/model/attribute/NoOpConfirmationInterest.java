@@ -15,8 +15,8 @@ import io.vlingo.xoom.wire.node.Id;
 public class NoOpConfirmationInterest implements ConfirmationInterest {
   private final Logger logger;
   
-  public NoOpConfirmationInterest(final Configuration configuration) {
-    this.logger = configuration.logger();
+  public NoOpConfirmationInterest(final Logger logger) {
+    this.logger = logger;
   }
 
   @Override

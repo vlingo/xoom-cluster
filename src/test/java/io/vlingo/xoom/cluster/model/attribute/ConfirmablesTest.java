@@ -98,6 +98,6 @@ public class ConfirmablesTest extends AbstractClusterTest {
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    consumables = new Confirmables(localNode, config.allOtherNodes(localNodeId));
+    consumables = new Confirmables(localNode, () -> config.allOtherNodes(localNodeId));
   }
 }

@@ -15,7 +15,6 @@ import io.vlingo.xoom.cluster.model.message.ApplicationSays;
 import io.vlingo.xoom.cluster.model.message.MessageConverters;
 import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannel;
-import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannelProvider;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStreamActor;
 import io.vlingo.xoom.common.pool.ElasticResourcePool;
@@ -31,12 +30,10 @@ import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.nio.ByteBuffer;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 public class AttributesAgentActorTest extends AbstractClusterTest {
   private Id localNodeId;
@@ -55,7 +52,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     agent.actor().add("test-set", "test-attr", "test-value");
 
@@ -73,7 +70,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().replace("test-set", "test-attr", "test-value2");
@@ -92,7 +89,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().remove("test-set", "test-attr");
@@ -111,7 +108,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     agent.actor().add("test-set", "test-attr1", "test-value1");
     agent.actor().add("test-set", "test-attr2", "test-value2");
@@ -135,7 +132,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage message = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
@@ -149,7 +146,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage message = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), message));
@@ -163,7 +160,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
@@ -180,7 +177,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), addMessage));
@@ -197,7 +194,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage createMessage = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), createMessage));
@@ -214,7 +211,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage confirm = new ConfirmCreateAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -228,7 +225,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmAddAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -243,7 +240,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmReplaceAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -258,7 +255,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmRemoveAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -273,7 +270,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), config, interest)));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
 
     final ApplicationMessage confirm = new ConfirmRemoveAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(localNodeId, localNode.name(), confirm));
@@ -301,7 +298,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     interest = new MockConfirmationInterest();
 
     mockCluster = new MockCluster(localNode, config);
-    Registry mockRegistry = mockCluster.mockHealthyRegistry(localNode);
+    Registry mockRegistry = mockCluster.mockHealthyRegistry();
 
     outboundStream =
             testWorld.actorFor(
@@ -321,35 +318,4 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   private MockManagedOutboundChannel mock(final ManagedOutboundChannel channel) {
     return (MockManagedOutboundChannel) channel;
   }
-
-//  private static class MockCluster {
-//    public final Cluster cluster;
-//    public final Map<Address, Integer> sentMessages;
-//
-//    public MockCluster(Node localNode, ClusterConfiguration configuration) {
-//      this.cluster = Mockito.mock(Cluster.class);
-//      this.sentMessages = new HashMap<>();
-//      for (Node otherNode : configuration.allNodes()) {
-//        Address address = Address.create(otherNode.operationalAddress().hostName(), otherNode.operationalAddress().port());
-//        Member member = new Member(otherNode.id().valueString(), otherNode.name().value(), address, "namespace");
-//
-//        sentMessages.put(address, 0);
-//
-//        when(cluster.member(address))
-//                .thenReturn(Optional.of(member));
-//
-//        when(cluster.send(eq(member), any(Message.class)))
-//                .then(val -> {
-//                  Integer counter = this.sentMessages.get(address);
-//                  this.sentMessages.put(address, counter + 1);
-//                  return Mono.empty();
-//                });
-//      }
-//    }
-//
-//    public int messagesTo(Node node) {
-//      Address address = Address.create(node.operationalAddress().hostName(), node.operationalAddress().port());
-//      return sentMessages.get(address);
-//    }
-//  }
 }

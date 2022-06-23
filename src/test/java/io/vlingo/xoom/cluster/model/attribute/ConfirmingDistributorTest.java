@@ -7,26 +7,12 @@
 
 package io.vlingo.xoom.cluster.model.attribute;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Collection;
-import java.util.Iterator;
-
-import io.vlingo.xoom.cluster.model.node.Registry;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import io.vlingo.xoom.actors.Definition;
 import io.vlingo.xoom.actors.testkit.TestActor;
-import io.vlingo.xoom.actors.testkit.TestUntil;
 import io.vlingo.xoom.cluster.model.AbstractClusterTest;
 import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
-import io.vlingo.xoom.cluster.model.message.OperationalMessage;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannel;
-import io.vlingo.xoom.cluster.model.outbound.MockManagedOutboundChannelProvider;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStreamActor;
 import io.vlingo.xoom.common.pool.ElasticResourcePool;
@@ -34,6 +20,13 @@ import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.xoom.wire.message.ConsumerByteBufferPool;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
 
 public class ConfirmingDistributorTest extends AbstractClusterTest {
   private ConfirmingDistributor confirmingDistributor;
@@ -41,7 +34,6 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   private Node localNode;
   private MockCluster mockCluster;
   private ConsumerByteBufferPool pool;
-  private TestActor<OperationalOutboundStream> outboundStream;
   private AttributeSet set;
   private TrackedAttribute tracked;
 
@@ -184,18 +176,17 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
     mockCluster = new MockCluster(localNode, config);
-    Registry mockRegistry = mockCluster.mockHealthyRegistry(localNode);
+    Registry mockRegistry = mockCluster.mockHealthyRegistry();
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.operationalBufferSize());
 
-    outboundStream =
-            testWorld.actorFor(
-                    OperationalOutboundStream.class,
-                    Definition.has(
-                            OperationalOutboundStreamActor.class,
-                            Definition.parameters(mockCluster.cluster, mockRegistry, pool)));
+    TestActor<OperationalOutboundStream> outboundStream = testWorld.actorFor(
+            OperationalOutboundStream.class,
+            Definition.has(
+                    OperationalOutboundStreamActor.class,
+                    Definition.parameters(mockCluster.cluster, mockRegistry, pool)));
 
-    confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), config);
+    confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), mockRegistry::allOtherNodes, config.logger());
   }
 
   @Override

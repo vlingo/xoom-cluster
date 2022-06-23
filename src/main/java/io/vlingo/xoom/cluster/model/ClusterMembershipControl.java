@@ -7,7 +7,6 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import io.scalecube.cluster.Cluster;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;

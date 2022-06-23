@@ -13,27 +13,28 @@ import io.vlingo.xoom.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.xoom.cluster.model.attribute.message.*;
 import io.vlingo.xoom.cluster.model.message.ApplicationSays;
 import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStream;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Node;
 
 import java.util.Collection;
+import java.util.function.Supplier;
 
 public final class ConfirmingDistributor {
   private final ClusterApplication application;
   private final Confirmables confirmables;
-  
-  private final Collection<Node> allOtherNodes;
+
+  private final Supplier<Collection<Node>> allOtherNodesSupplier;
   private final Logger logger;
   private final Node node;
   private final OperationalOutboundStream outbound;
 
-  ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound, final Configuration configuration) {
+  ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound,
+                        final Supplier<Collection<Node>> allOtherNodesSupplier, final Logger logger) {
     this.application = application;
-    this.logger = configuration.logger();
+    this.logger = logger;
     this.node = node;
     this.outbound = outbound;
-    this.allOtherNodes = configuration.allOtherNodes(node.id());
-    this.confirmables = new Confirmables(node, allOtherNodes);
+    this.allOtherNodesSupplier = allOtherNodesSupplier;
+    this.confirmables = new Confirmables(node, allOtherNodesSupplier);
   }
 
   void acknowledgeConfirmation(final String trackingId, final Node node) {
@@ -45,11 +46,11 @@ public final class ConfirmingDistributor {
   }
 
   void distributeCreate(final AttributeSet set) {
-    distributeTo(set, allOtherNodes);
+    distributeTo(set, allOtherNodesSupplier.get());
   }
 
   public void distributeRemove(final AttributeSet set) {
-    distributeRemoveTo(set, allOtherNodes);
+    distributeRemoveTo(set, allOtherNodesSupplier.get());
   }
 
   void distributeTo(final AttributeSet set, final Collection<Node> nodes) {
@@ -75,7 +76,7 @@ public final class ConfirmingDistributor {
   }
 
   void distribute(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type) {
-    distributeTo(set, tracked, type, allOtherNodes);
+    distributeTo(set, tracked, type, allOtherNodesSupplier.get());
   }
 
   void distributeTo(final AttributeSet set, final TrackedAttribute tracked, final ApplicationMessageType type, final Collection<Node> nodes) {
