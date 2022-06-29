@@ -49,7 +49,9 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
       intervalSignal(null, null);
     } else {
       ClusterConfig config = initializer.clusterConfig();
-      this.membershipControl = new ClusterMembershipControl(logger(), clusterApplication, initializer);
+      this.membershipControl = new ClusterMembershipControl(clusterApplication,
+              new OutboundChannelInterest(communicationsHub.outboundChannelProvider()),
+              initializer);
       this.cluster = new ClusterImpl(config)
               .handler(c -> new ClusterInboundMessagingHandler(logger(),
                       membershipControl,
@@ -57,7 +59,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
                       initializer.configuration(),
                       initializer.properties()));
 
-      initializer.registry().join(localNode);
+      registry.join(localNode);
       this.communicationsHub.openOpChannel(stage(), registry, cluster);
 
       this.attributesAgent = AttributesAgent.instance(stage(),

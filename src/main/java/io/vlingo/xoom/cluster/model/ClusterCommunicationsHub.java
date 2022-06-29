@@ -27,6 +27,7 @@ public class ClusterCommunicationsHub {
   static final String APP_NAME = "APP";
 
   private InboundStream applicationInboundStream;
+  private ManagedOutboundRSocketChannelProvider outboundChannelProvider;
   private ApplicationOutboundStream applicationOutboundStream;
   private OperationalOutboundStream operationalOutboundStream = null; // null when single node
 
@@ -62,9 +63,11 @@ public class ClusterCommunicationsHub {
             APP_NAME,
             properties.applicationInboundProbeInterval());
 
+    this.outboundChannelProvider = new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration);
+
     this.applicationOutboundStream = ApplicationOutboundStream.instance(
             stage,
-            new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration),
+            this.outboundChannelProvider,
             new ConsumerByteBufferPool(
                 ElasticResourcePool.Config.of(properties.applicationOutgoingPooledBuffers()),
                 properties.applicationBufferSize()));
@@ -85,6 +88,10 @@ public class ClusterCommunicationsHub {
 
   public InboundStream applicationInboundStream() {
     return applicationInboundStream;
+  }
+
+  public ManagedOutboundRSocketChannelProvider outboundChannelProvider() {
+    return outboundChannelProvider;
   }
 
   public ApplicationOutboundStream applicationOutboundStream() {
