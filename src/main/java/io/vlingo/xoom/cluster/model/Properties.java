@@ -9,7 +9,6 @@ package io.vlingo.xoom.cluster.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import io.vlingo.xoom.actors.Actor;
 
@@ -236,10 +235,10 @@ public final class Properties {
    *
    * @return
    */
-  public List<String> seedNodes() {
+  public List<String> nodes() {
     final List<String> nodes = new ArrayList<>();
 
-    final String commaSeparated = getString("cluster.seedNodes", "");
+    final String commaSeparated = getString("cluster.nodes", "");
 
     if (commaSeparated.length() == 0) {
       throw new IllegalStateException("Must declare nodes in properties file.");
@@ -258,7 +257,7 @@ public final class Properties {
    * @return
    */
   public boolean singleNode() {
-    return seedNodes().size() == 1; // || clusterQuorum() == 1;
+    return nodes().size() == 1; // || clusterQuorum() == 1;
   }
 
   public boolean useSSL() {
@@ -313,7 +312,7 @@ public final class Properties {
 
     applicationPort(nodeName);
 
-    seedNodes();
+    nodes();
 
     clusterApplicationClassname();
   }
