@@ -114,7 +114,10 @@ public class ClusterProperties {
     properties.setProperty("cluster.heartbeat.interval", "7000");
     properties.setProperty("cluster.quorum.timeout", "60000");
 
-    properties.setProperty("cluster.nodes.quorum", "2");
+    if (totalNodes > 1) {
+      int quorum = totalNodes / 2 + 1;
+      properties.setProperty("cluster.nodes.quorum", Integer.toString(quorum));
+    }
 
     return properties;
   }
