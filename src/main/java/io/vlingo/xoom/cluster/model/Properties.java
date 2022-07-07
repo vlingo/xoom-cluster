@@ -9,7 +9,6 @@ package io.vlingo.xoom.cluster.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import io.vlingo.xoom.actors.Actor;
 
