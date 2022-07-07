@@ -58,7 +58,7 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("cluster.quorum.timeout", "60000");
 
     properties.setProperty("cluster.nodes.quorum", "2");
-    properties.setProperty("cluster.seedNodes", "node1,node2,node3");
+    properties.setProperty("cluster.nodes", "node1,node2,node3");
 
     properties.setProperty("node.node1.id", "1");
     properties.setProperty("node.node1.name", "node1");

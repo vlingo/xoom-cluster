@@ -7,7 +7,6 @@
 
 package io.vlingo.xoom.cluster;
 
-import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -88,7 +87,11 @@ public class ClusterProperties {
       properties.setProperty(nodePropertyName + ".app.port", nextPortToUseString(portSeed));
     }
 
-    properties.setProperty("cluster.seedNodes", build.toString());
+    if (totalNodes > 1) {
+      properties.setProperty("node.node2.seed", "true");
+    }
+
+    properties.setProperty("cluster.nodes", build.toString());
 
     return properties;
   }
@@ -110,6 +113,11 @@ public class ClusterProperties {
     properties.setProperty("cluster.live.node.timeout", "20000");
     properties.setProperty("cluster.heartbeat.interval", "7000");
     properties.setProperty("cluster.quorum.timeout", "60000");
+
+    if (totalNodes > 1) {
+      int quorum = totalNodes / 2 + 1;
+      properties.setProperty("cluster.nodes.quorum", Integer.toString(quorum));
+    }
 
     return properties;
   }

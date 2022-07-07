@@ -19,12 +19,12 @@ import org.junit.Test;
 public class PropertiesTest extends AbstractClusterTest {
 
   @Test
-  public void testApplicationBufferSize() throws Exception {
+  public void testApplicationBufferSize() {
     assertEquals(10240, properties.applicationBufferSize());
   }
   
   @Test
-  public void testApplicationOutgoingPooledBuffers() throws Exception {
+  public void testApplicationOutgoingPooledBuffers() {
     assertEquals(50, properties.applicationOutgoingPooledBuffers());
   }
 
@@ -36,78 +36,81 @@ public class PropertiesTest extends AbstractClusterTest {
 //  }
 
   @Test
-  public void testClusterApplicationClass() throws Exception {
+  public void testClusterApplicationClass() {
     assertNotNull(properties.clusterApplicationClassname());
     assertNotNull(properties.clusterApplicationClass());
   }
 
   @Test
-  public void testClusterHealthCheckInterval() throws Exception {
+  public void testClusterHealthCheckInterval() {
     assertEquals(2000, properties.clusterHealthCheckInterval());
   }
 
   @Test
-  public void testClusterHeartbeatInterval() throws Exception {
+  public void testClusterHeartbeatInterval() {
     assertEquals(7000, properties.clusterHeartbeatInterval());
   }
 
   @Test
-  public void testClusterLiveNodeTimeout() throws Exception {
+  public void testClusterLiveNodeTimeout() {
     assertEquals(20000, properties.clusterLiveNodeTimeout());
   }
 
   @Test
-  public void testClusterQuorumTimeout() throws Exception {
+  public void testClusterQuorumTimeout() {
     assertEquals(60000, properties.clusterQuorumTimeout());
   }
 
   @Test
-  public void testOperationalBufferSize() throws Exception {
+  public void testOperationalBufferSize() {
     assertEquals(4096, properties.operationalBufferSize());
   }
 
   @Test
-  public void testOperationalOutgoingPooledBuffers() throws Exception {
+  public void testOperationalOutgoingPooledBuffers() {
     assertEquals(20, properties.operationalOutgoingPooledBuffers());
   }
 
   @Test
-  public void testSeedNodes() throws Exception {
-    final List<String> seedNodes = properties.seedNodes();
-    assertEquals(3, seedNodes.size());
-    assertTrue(seedNodes.contains("node1"));
-    assertTrue(seedNodes.contains("node2"));
-    assertTrue(seedNodes.contains("node3"));
+  public void testNodes() {
+    final List<String> nodes = properties.nodes();
+    assertEquals(3, nodes.size());
+    assertTrue(nodes.contains("node1"));
+    assertTrue(nodes.contains("node2"));
+    assertTrue(nodes.contains("node3"));
   }
 
   @Test
-  public void testUseSSL() throws Exception {
+  public void testUseSSL() {
     assertFalse(properties.useSSL());
   }
 
   @Test
-  public void testNodes1() throws Exception {
+  public void testNodes1() {
     assertEquals(1, properties.nodeId("node1"));
     assertEquals("node1", properties.nodeName("node1"));
     assertEquals("localhost", properties.host("node1"));
+    assertEquals(false, properties.isSeed("node1"));
 //    assertEquals(37371, properties.operationalPort("node1"));
 //    assertEquals(37372, properties.applicationPort("node1"));
   }
 
   @Test
-  public void testNodes2() throws Exception {
+  public void testNodes2() {
     assertEquals(2, properties.nodeId("node2"));
     assertEquals("node2", properties.nodeName("node2"));
     assertEquals("localhost", properties.host("node2"));
+    assertEquals(true, properties.isSeed("node2"));
 //    assertEquals(37373, properties.operationalPort("node2"));
 //    assertEquals(37374, properties.applicationPort("node2"));
   }
 
   @Test
-  public void testNodes3() throws Exception {
+  public void testNodes3() {
     assertEquals(3, properties.nodeId("node3"));
     assertEquals("node3", properties.nodeName("node3"));
     assertEquals("localhost", properties.host("node3"));
+    assertEquals(false, properties.isSeed("node3"));
 //    assertEquals(37375, properties.operationalPort("node3"));
 //    assertEquals(37376, properties.applicationPort("node3"));
   }
