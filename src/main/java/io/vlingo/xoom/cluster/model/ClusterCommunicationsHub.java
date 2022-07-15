@@ -82,8 +82,8 @@ public class ClusterCommunicationsHub {
             cluster,
             registry,
             new ConsumerByteBufferPool(
-                    ElasticResourcePool.Config.of(properties.applicationOutgoingPooledBuffers()),
-                    properties.applicationBufferSize()));
+                    ElasticResourcePool.Config.of(properties.operationalOutgoingPooledBuffers()),
+                    properties.operationalBufferSize()));
   }
 
   public InboundStream applicationInboundStream() {
