@@ -183,16 +183,6 @@ public final class Properties {
     return getInteger("cluster.op.buffer.size", 4096);
   }
 
-  public long operationalInboundProbeInterval() {
-    final int probeInterval = getInteger("cluster.op.incoming.probe.interval", 100);
-
-    if (probeInterval == 0) {
-      throw new IllegalStateException("Must assign an operational (op) incoming probe interval in properties file.");
-    }
-
-    return probeInterval;
-  }
-
   public int operationalOutgoingPooledBuffers() {
     final int pooledBuffers = getInteger("cluster.op.outgoing.pooled.buffers", 20);
 
