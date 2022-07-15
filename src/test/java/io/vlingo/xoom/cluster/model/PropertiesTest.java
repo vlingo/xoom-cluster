@@ -47,11 +47,6 @@ public class PropertiesTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testClusterHeartbeatInterval() {
-    assertEquals(7000, properties.clusterHeartbeatInterval());
-  }
-
-  @Test
   public void testClusterQuorumTimeout() {
     assertEquals(60000, properties.clusterQuorumTimeout());
   }
