@@ -52,11 +52,6 @@ public class PropertiesTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testClusterLiveNodeTimeout() {
-    assertEquals(20000, properties.clusterLiveNodeTimeout());
-  }
-
-  @Test
   public void testClusterQuorumTimeout() {
     assertEquals(60000, properties.clusterQuorumTimeout());
   }

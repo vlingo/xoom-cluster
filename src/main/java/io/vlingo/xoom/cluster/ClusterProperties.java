@@ -110,7 +110,6 @@ public class ClusterProperties {
     properties.setProperty("cluster.app.stage", "fake.app.stage");
 
     properties.setProperty("cluster.health.check.interval", "2000");
-    properties.setProperty("cluster.live.node.timeout", "20000");
     properties.setProperty("cluster.heartbeat.interval", "7000");
     properties.setProperty("cluster.quorum.timeout", "60000");
 

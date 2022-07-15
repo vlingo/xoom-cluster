@@ -142,10 +142,6 @@ public final class Properties {
     return getInteger("cluster.heartbeat.interval", 7000);
   }
 
-  public long clusterLiveNodeTimeout() {
-    return getInteger("cluster.live.node.timeout", 20000);
-  }
-
   public long clusterQuorumTimeout() {
     return getInteger("cluster.quorum.timeout", 60000);
   }
