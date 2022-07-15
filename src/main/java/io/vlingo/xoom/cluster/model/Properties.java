@@ -138,10 +138,6 @@ public final class Properties {
     return getInteger("cluster.health.check.interval", 3000);
   }
 
-  public long clusterQuorumTimeout() {
-    return getInteger("cluster.quorum.timeout", 60000);
-  }
-
   public int clusterQuorum() {
     return getInteger("cluster.nodes.quorum", 1);
   }

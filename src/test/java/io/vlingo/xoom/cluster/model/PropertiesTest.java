@@ -47,11 +47,6 @@ public class PropertiesTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testClusterQuorumTimeout() {
-    assertEquals(60000, properties.clusterQuorumTimeout());
-  }
-
-  @Test
   public void testOperationalBufferSize() {
     assertEquals(4096, properties.operationalBufferSize());
   }

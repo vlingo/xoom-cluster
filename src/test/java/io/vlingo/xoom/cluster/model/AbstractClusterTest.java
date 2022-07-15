@@ -53,7 +53,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("cluster.app.stage", "fake.app.stage");
 
     properties.setProperty("cluster.health.check.interval", "2000");
-    properties.setProperty("cluster.quorum.timeout", "60000");
 
     properties.setProperty("cluster.nodes.quorum", "2");
     properties.setProperty("cluster.nodes", "node1,node2,node3");
