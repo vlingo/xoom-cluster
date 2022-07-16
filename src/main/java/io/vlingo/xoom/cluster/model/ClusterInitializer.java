@@ -8,6 +8,7 @@
 package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterConfig;
+import io.scalecube.cluster.metadata.MetadataCodec;
 import io.scalecube.net.Address;
 import io.scalecube.transport.netty.tcp.TcpTransportFactory;
 import io.vlingo.xoom.actors.Logger;
@@ -60,11 +61,11 @@ public class ClusterInitializer {
     return registry;
   }
 
-  ClusterConfig clusterConfig() {
-    return clusterConfig(localNode, configuration);
+  ClusterConfig clusterConfig(MetadataCodec metadataCodec) {
+    return clusterConfig(metadataCodec, localNode, configuration);
   }
 
-  public static ClusterConfig clusterConfig(Node localNode, ClusterConfiguration configuration) {
+  public static ClusterConfig clusterConfig(MetadataCodec metadataCodec, Node localNode, ClusterConfiguration configuration) {
     String localNodeHostName = localNode.operationalAddress().hostName();
     int localNodePort = localNode.operationalAddress().port();
     List<Address> seeds = configuration.allNodes().stream()
@@ -77,9 +78,11 @@ public class ClusterInitializer {
     }
 
     ClusterConfig config = new ClusterConfig()
-            .memberAlias(localNode.name().value())
+            .memberAlias(localNode.id().valueString())
             .externalHost(localNodeHostName)
             .externalPort(localNodePort)
+            .metadata(NodeMetadata.from(localNode))
+            .metadataCodec(metadataCodec)
             .transport(transportConfig -> transportConfig.port(localNodePort).transportFactory(new TcpTransportFactory()));
 
     if (!localNode.isSeed()) {

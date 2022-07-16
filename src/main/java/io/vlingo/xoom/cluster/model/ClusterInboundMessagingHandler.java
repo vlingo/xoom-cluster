@@ -9,6 +9,7 @@ package io.vlingo.xoom.cluster.model;
 
 import io.scalecube.cluster.ClusterMessageHandler;
 import io.scalecube.cluster.membership.MembershipEvent;
+import io.scalecube.cluster.metadata.MetadataCodec;
 import io.scalecube.cluster.transport.api.Message;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.wire.fdx.inbound.InboundStreamInterest;
@@ -22,45 +23,34 @@ import java.nio.ByteBuffer;
 
 public class ClusterInboundMessagingHandler implements ClusterMessageHandler {
   private final Logger logger;
+  private final MetadataCodec metadataCodec;
   private final ClusterMembershipControl membershipControl;
   private final InboundStreamInterest inboundInterest;
-  private final ClusterConfiguration configuration;
   private final Properties properties;
 
-  public ClusterInboundMessagingHandler(Logger logger, ClusterMembershipControl membershipControl, InboundStreamInterest inboundInterest, ClusterConfiguration configuration, Properties properties) {
+  public ClusterInboundMessagingHandler(Logger logger, MetadataCodec metadataCodec, ClusterMembershipControl membershipControl, InboundStreamInterest inboundInterest, Properties properties) {
     this.logger = logger;
+    this.metadataCodec = metadataCodec;
     this.membershipControl = membershipControl;
     this.inboundInterest = inboundInterest;
-    this.configuration = configuration;
     this.properties = properties;
   }
 
   @Override
   public void onMembershipEvent(MembershipEvent event) {
     logger.debug("Received cluster membership event: " + event);
-    String nodeName = event.member().alias();
+    Id nodeId = Id.of(event.member().alias());
 
-    if (nodeName != null && nodeName.startsWith("seed")) {
-      if (event.isAdded()) {
-        membershipControl.seedAdded(nodeName);
-      } else if (event.isRemoved()) {
-        membershipControl.seedRemoved(nodeName);
-      } else if (event.isLeaving()) {
-        membershipControl.seedLeaving(nodeName);
-      } else {
-        logger.warn("Event type: " + event.type() + " is not handled for now. Received from cluster member: " + event.member());
-      }
+    if (event.isAdded()) {
+      NodeMetadata nodeMetadata = (NodeMetadata) metadataCodec.deserialize(event.newMetadata());
+      Node sender = nodeMetadata.asNode();
+      membershipControl.nodeAdded(sender);
+    } else if (event.isRemoved()) {
+      membershipControl.nodeRemoved(nodeId);
+    } else if (event.isLeaving()) {
+      membershipControl.nodeLeaving(nodeId);
     } else {
-      Node sender = configuration.nodeMatching(Id.of(properties.nodeId(nodeName)));
-      if (event.isAdded()) {
-        membershipControl.nodeAdded(sender);
-      } else if (event.isRemoved()) {
-        membershipControl.nodeRemoved(sender);
-      } else if (event.isLeaving()) {
-        membershipControl.nodeLeaving(sender);
-      } else {
-        logger.warn("Event type: " + event.type() + " is not handled for now. Received from cluster member: " + event.member());
-      }
+      logger.warn("Event type: " + event.type() + " is not handled for now. Received from cluster member: " + event.member());
     }
   }
 

@@ -7,9 +7,9 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import io.scalecube.cluster.Cluster;
 import io.scalecube.cluster.ClusterConfig;
 import io.scalecube.cluster.ClusterImpl;
+import io.scalecube.cluster.codec.jackson.smile.JacksonSmileMetadataCodec;
 import io.vlingo.xoom.actors.Actor;
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.attribute.AttributesAgent;
@@ -48,15 +48,16 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
       initializer.registry().join(localNode);
       intervalSignal(null, null);
     } else {
-      ClusterConfig config = initializer.clusterConfig();
+      final JacksonSmileMetadataCodec metadataCodec = new JacksonSmileMetadataCodec();
+      final ClusterConfig config = initializer.clusterConfig(metadataCodec);
       this.membershipControl = new ClusterMembershipControl(clusterApplication,
               new OutboundChannelInterest(communicationsHub.outboundChannelProvider()),
               initializer);
       this.cluster = new ClusterImpl(config)
               .handler(c -> new ClusterInboundMessagingHandler(logger(),
+                      metadataCodec,
                       membershipControl,
                       selfAs(InboundStreamInterest.class),
-                      initializer.configuration(),
                       initializer.properties()));
 
       registry.join(localNode);

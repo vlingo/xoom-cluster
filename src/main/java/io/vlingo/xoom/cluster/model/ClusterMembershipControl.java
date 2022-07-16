@@ -9,34 +9,18 @@ package io.vlingo.xoom.cluster.model;
 
 import io.vlingo.xoom.cluster.model.application.ClusterApplication;
 import io.vlingo.xoom.cluster.model.node.Registry;
+import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
-
-import java.util.concurrent.atomic.AtomicInteger;
 
 class ClusterMembershipControl {
   private final ClusterApplication clusterApplication;
   private final ClusterMembershipInterest interest; // single instance for now; List?
   private final Registry registry;
 
-  // Number of seeds is in config file. Does it influence isHealthyCluster? Move it to Registry?
-  private final AtomicInteger liveSeedCount = new AtomicInteger(0);
-
   ClusterMembershipControl(ClusterApplication clusterApplication, ClusterMembershipInterest interest, ClusterInitializer initializer) {
     this.clusterApplication = clusterApplication;
     this.interest = interest;
     this.registry = initializer.registry();
-  }
-
-  public void seedAdded(String seedName) {
-    liveSeedCount.incrementAndGet();
-  }
-
-  public void seedRemoved(String seedName) {
-    liveSeedCount.decrementAndGet();
-  }
-
-  public void seedLeaving(String seedName) {
-    liveSeedCount.decrementAndGet();
   }
 
   public void nodeAdded(Node node) {
@@ -54,9 +38,10 @@ class ClusterMembershipControl {
     }
   }
 
-  public void nodeRemoved(Node node) {
+  public void nodeRemoved(Id nodeId) {
+    Node node = registry.getNode(nodeId);
     boolean before = registry.isClusterHealthy();
-    registry.leave(node.id());
+    registry.leave(nodeId);
 
     boolean after = registry.isClusterHealthy();
     interest.nodeLeft(node, after);
@@ -69,8 +54,8 @@ class ClusterMembershipControl {
     }
   }
 
-  public void nodeLeaving(Node node) {
-    nodeRemoved(node);
+  public void nodeLeaving(Id nodeId) {
+    nodeRemoved(nodeId);
   }
 
   private void informAllLiveNodes(boolean isClusterHealthy) {
