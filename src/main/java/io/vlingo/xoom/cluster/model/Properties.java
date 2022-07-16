@@ -138,18 +138,6 @@ public final class Properties {
     return getInteger("cluster.health.check.interval", 3000);
   }
 
-  public long clusterHeartbeatInterval() {
-    return getInteger("cluster.heartbeat.interval", 7000);
-  }
-
-  public long clusterLiveNodeTimeout() {
-    return getInteger("cluster.live.node.timeout", 20000);
-  }
-
-  public long clusterQuorumTimeout() {
-    return getInteger("cluster.quorum.timeout", 60000);
-  }
-
   public int clusterQuorum() {
     return getInteger("cluster.nodes.quorum", 1);
   }
@@ -193,16 +181,6 @@ public final class Properties {
 
   public int operationalBufferSize() {
     return getInteger("cluster.op.buffer.size", 4096);
-  }
-
-  public long operationalInboundProbeInterval() {
-    final int probeInterval = getInteger("cluster.op.incoming.probe.interval", 100);
-
-    if (probeInterval == 0) {
-      throw new IllegalStateException("Must assign an operational (op) incoming probe interval in properties file.");
-    }
-
-    return probeInterval;
   }
 
   public int operationalOutgoingPooledBuffers() {
