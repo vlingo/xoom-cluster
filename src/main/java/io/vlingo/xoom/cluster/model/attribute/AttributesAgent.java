@@ -19,7 +19,7 @@ import io.vlingo.xoom.wire.node.NodeSynchronizer;
 public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, InboundStreamInterest, Scheduled<Object>, Stoppable {
   static AttributesAgent instance(
       final Stage stage,
-      final Node node,
+      final Node localNode,
       final ClusterApplication application,
       final OperationalOutboundStream outbound,
       final Registry registry,
@@ -28,7 +28,7 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
     final Definition definition =
             new Definition(
                     AttributesAgentActor.class,
-                    new AttributesAgentInstantiator(node, application, outbound, registry, logger),
+                    new AttributesAgentInstantiator(localNode, application, outbound, registry, logger),
                     "attributes-agent");
 
     return stage.actorFor(AttributesAgent.class, definition);
@@ -37,19 +37,19 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
   class AttributesAgentInstantiator implements ActorInstantiator<AttributesAgentActor> {
     private static final long serialVersionUID = 3269867041246996465L;
 
-    private final Node node;
+    private final Node localNode;
     private final ClusterApplication application;
     private final OperationalOutboundStream outbound;
     private final Registry registry;
     private final Logger logger;
 
     public AttributesAgentInstantiator(
-            final Node node,
+            final Node localNode,
             final ClusterApplication application,
             final OperationalOutboundStream outbound,
             final Registry registry,
             final Logger logger) {
-      this.node = node;
+      this.localNode = localNode;
       this.application = application;
       this.outbound = outbound;
       this.registry = registry;
@@ -58,7 +58,7 @@ public interface AttributesAgent extends AttributesCommands, NodeSynchronizer, I
 
     @Override
     public AttributesAgentActor instantiate() {
-      return new AttributesAgentActor(node, application, outbound, registry, logger);
+      return new AttributesAgentActor(localNode, application, outbound, registry, logger);
     }
 
     @Override

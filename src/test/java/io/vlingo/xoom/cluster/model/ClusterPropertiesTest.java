@@ -19,7 +19,7 @@ public class ClusterPropertiesTest {
 
   @Test
   public void shouldConfigureMultiNodeCluster() {
-    final Properties properties = ClusterProperties.allNodes();
+    final Properties properties = ClusterProperties.allNodes("node1");
 
     // common
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
@@ -48,7 +48,7 @@ public class ClusterPropertiesTest {
 
   @Test
   public void shouldConfigureFiveNodeCluster() {
-    final Properties properties = ClusterProperties.allNodes(new AtomicInteger(37370), 5);
+    final Properties properties = ClusterProperties.allNodes("node1", new AtomicInteger(37370), 5);
 
     // common
     assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));

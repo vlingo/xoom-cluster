@@ -30,27 +30,27 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
   private final AttributeSetRepository repository;
 
   public AttributesAgentActor(
-          final Node node,
+          final Node localNode,
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
           final Registry registry,
           final Logger logger) {
-    this(node, application, outbound, new NoOpConfirmationInterest(logger), registry, logger);
+    this(localNode, application, outbound, new NoOpConfirmationInterest(logger), registry, logger);
   }
 
   @SuppressWarnings("unchecked")
   public AttributesAgentActor(
-          final Node node,
+          final Node localNode,
           final ClusterApplication application,
           final OperationalOutboundStream outbound,
           final ConfirmationInterest confirmationInterest,
           final Registry registry,
           final Logger logger) {
 
-    this.node = node;
+    this.node = localNode;
     this.confirmationInterest = confirmationInterest;
     this.client = AttributesClient.with(selfAs(AttributesAgent.class));
-    this.confirmingDistributor = new ConfirmingDistributor(application, node, outbound, registry::allOtherNodes, logger);
+    this.confirmingDistributor = new ConfirmingDistributor(application, localNode, outbound, registry::allOtherNodes, logger);
     this.repository = new AttributeSetRepository();
     this.remoteRequestHandler = new RemoteAttributeRequestHandler(confirmingDistributor, repository, registry::getNode, logger);
     this.registry = registry;
@@ -58,7 +58,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     application.informAttributesClient(this.client);
 
     stage().scheduler()
-      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance().clusterAttributesRedistributionInterval());
+      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance(localNode.name().value()).clusterAttributesRedistributionInterval());
   }
 
   //=========================================

@@ -9,8 +9,11 @@ package io.vlingo.xoom.cluster.model;
 
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import io.vlingo.xoom.wire.node.*;
 import org.junit.After;
@@ -25,6 +28,8 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
 
   protected MockClusterApplication application;
   protected ClusterConfiguration config;
+  protected Node localNode;
+  protected List<Node> allNodes;
   protected Properties properties;
   protected TestWorld testWorld;
 
@@ -76,11 +81,15 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("node.node3.op.port", nextPortToUseString());
     properties.setProperty("node.node3.app.port", nextPortToUseString());
 
-    this.properties = Properties.openForTest(properties);
+    this.properties = Properties.openForTest(properties, "node1");
 
     this.testWorld = TestWorld.startWithDefaults("cluster-test-world");
 
-    this.config = new ClusterConfiguration(this.properties, testWorld.defaultLogger());
+    this.config = new ClusterConfiguration("node1", this.properties, testWorld.defaultLogger());
+
+    this.allNodes = Arrays.asList(nodeFrom("node1", this.properties),
+            nodeFrom("node2", this.properties),
+            nodeFrom("node3", this.properties));
 
     this.application = new MockClusterApplication();
   }
@@ -96,6 +105,21 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
 
   private String nextPortToUseString() {
     return "" + nextPortToUse();
+  }
+
+  private Node nodeFrom(String nodeName, Properties properties) {
+    Host host = Host.of(properties.getStringForNode(nodeName, "host", ""));
+    return new Node(Id.of(properties.getIntegerForNode(nodeName, "id", -1)),
+            Name.of(nodeName),
+            Address.from(host, properties.getIntegerForNode(nodeName, "op.port", -1), AddressType.OP),
+            Address.from(host, properties.getIntegerForNode(nodeName, "app.port", -1), AddressType.APP),
+            properties.isSeed(nodeName));
+  }
+
+  protected List<Node> allOtherNodes() {
+    return allNodes.stream()
+            .filter(n -> !n.id().equals(config.localNode().id()))
+            .collect(Collectors.toList());
   }
 
   protected Node nextNodeWith(final int nodeNumber, boolean seed) {

@@ -9,7 +9,6 @@ package io.vlingo.xoom.cluster.model.attribute;
 
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.cluster.model.attribute.message.ApplicationMessageType;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Id;
 
 public class NoOpConfirmationInterest implements ConfirmationInterest {

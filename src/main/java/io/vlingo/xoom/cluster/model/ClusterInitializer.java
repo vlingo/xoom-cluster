@@ -30,9 +30,9 @@ public class ClusterInitializer {
 
   ClusterInitializer(final String nodeName, final Properties properties, final Logger logger) {
     this.localNodeId = Id.of(properties.nodeId(nodeName));
-    this.configuration = new ClusterConfiguration(properties, logger);
+    this.configuration = new ClusterConfiguration(nodeName, properties, logger);
     this.properties = properties;
-    this.localNode = configuration.nodeMatching(localNodeId);
+    this.localNode = configuration.localNode();
     this.communicationsHub = new ClusterCommunicationsHub(properties);
     this.registry = new LocalRegistry(logger, this.localNode, properties().clusterQuorum());
   }
@@ -68,9 +68,8 @@ public class ClusterInitializer {
   public static ClusterConfig clusterConfig(MetadataCodec metadataCodec, Node localNode, ClusterConfiguration configuration) {
     String localNodeHostName = localNode.operationalAddress().hostName();
     int localNodePort = localNode.operationalAddress().port();
-    List<Address> seeds = configuration.allNodes().stream()
-            .filter(Node::isSeed)
-            .map(seed -> Address.create(seed.operationalAddress().hostName(), seed.operationalAddress().port()))
+    List<Address> seeds = configuration.seeds().stream()
+            .map(seed -> Address.create(seed.operationalHost, seed.operationalPort))
             .collect(Collectors.toList());
 
     if (seeds.size() == 0) {

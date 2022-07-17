@@ -13,6 +13,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vlingo.xoom.wire.node.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,21 +55,21 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
 
   @Test
   public void testSendTo() {
-    final Id targetId = Id.of(3);
+    final Node node3 = allNodes.get(2);
 
     final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
 
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
 
-    outboundStream.actor().sendTo(rawMessage1, targetId);
+    outboundStream.actor().sendTo(rawMessage1, node3);
 
-    assertEquals(Message1, mock(channelProvider.channelFor(targetId)).writes.get(0));
+    assertEquals(Message1, mock(channelProvider.channelFor(node3)).writes.get(0));
 
-    final Id anotherTargetId = Id.of(2);
+    final Node node2 = allNodes.get(1);
 
-    outboundStream.actor().sendTo(rawMessage1, anotherTargetId);
+    outboundStream.actor().sendTo(rawMessage1, node2);
 
-    assertEquals(Message1, mock(channelProvider.channelFor(anotherTargetId)).writes.get(0));
+    assertEquals(Message1, mock(channelProvider.channelFor(node2)).writes.get(0));
   }
 
   @Override
@@ -80,7 +81,7 @@ public class ApplicationOutboundStreamTest extends AbstractClusterTest {
 
     localNodeId = Id.of(1);
 
-    channelProvider = new MockManagedOutboundChannelProvider(localNodeId, config);
+    channelProvider = new MockManagedOutboundChannelProvider(localNodeId, allNodes);
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.applicationBufferSize());
 

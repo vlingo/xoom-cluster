@@ -40,13 +40,13 @@ public final class NodeBootstrap {
   }
 
   public static NodeBootstrap boot(final World world, final String nodeName, final boolean embedded) throws Exception {
-    return boot(World.start("xoom-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance(), nodeName, embedded);
+    return boot(World.start("xoom-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance(nodeName), nodeName, embedded);
   }
 
   public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
     NodeBootstrap instance;
 
-    Properties.instance().validateRequired(nodeName);
+    Properties.instance(nodeName).validateRequired();
 
     final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
 

@@ -36,7 +36,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
 
     final Node localNode = initializer.localNode();
     this.communicationsHub = initializer.communicationsHub();
-    this.communicationsHub.openAppChannel(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class), initializer.configuration());
+    this.communicationsHub.openAppChannel(stage(), initializer.localNode(), selfAs(InboundStreamInterest.class));
 
     this.clusterApplication.start();
     this.clusterApplication.informResponder(communicationsHub.applicationOutboundStream());

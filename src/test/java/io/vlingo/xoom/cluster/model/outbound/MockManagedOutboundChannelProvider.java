@@ -9,24 +9,24 @@ package io.vlingo.xoom.cluster.model.outbound;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannelProvider;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
 public class MockManagedOutboundChannelProvider implements ManagedOutboundChannelProvider {
   private final Map<Id, ManagedOutboundChannel> allChannels = new HashMap<>();
-  private final Configuration configuration;
-  private Id localNodeId;
+  private final Id localNodeId;
+  private final List<Node> allNodes;
   
-  public MockManagedOutboundChannelProvider(final Id localNodeId, final Configuration configuration) {
+  public MockManagedOutboundChannelProvider(final Id localNodeId, List<Node> allNodes) {
     this.localNodeId = localNodeId;
-    this.configuration = configuration;
-    
-    for (final Node node : configuration.allNodes()) {
+    this.allNodes = allNodes;
+
+    for (final Node node : allNodes) {
       allChannels.put(node.id(), new MockManagedOutboundChannel(node.id()));
     }
   }
@@ -35,7 +35,7 @@ public class MockManagedOutboundChannelProvider implements ManagedOutboundChanne
   public Map<Id, ManagedOutboundChannel> allOtherNodeChannels() {
     final Map<Id, ManagedOutboundChannel> others = new HashMap<>();
     
-    for (final Node node : configuration.allNodes()) {
+    for (final Node node : allNodes) {
       if (!node.id().equals(localNodeId)) {
         others.put(node.id(), allChannels.get(node.id()));
       }
@@ -45,8 +45,8 @@ public class MockManagedOutboundChannelProvider implements ManagedOutboundChanne
   }
 
   @Override
-  public ManagedOutboundChannel channelFor(final Id id) {
-    return allChannels.get(id);
+  public ManagedOutboundChannel channelFor(final Node node) {
+    return allChannels.get(node.id());
   }
 
   @Override

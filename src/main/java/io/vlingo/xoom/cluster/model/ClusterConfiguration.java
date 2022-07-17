@@ -12,161 +12,39 @@ import java.util.*;
 import io.vlingo.xoom.actors.Logger;
 import io.vlingo.xoom.wire.node.Address;
 import io.vlingo.xoom.wire.node.AddressType;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Host;
 import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
 
-public class ClusterConfiguration implements Configuration {
+public class ClusterConfiguration {
   private final Logger logger;
-  private final Set<Node> nodes;
-  private final Set<Node> seeds;
+  private final List<SeedNode> seeds;
+  private final Node localNode;
 
-  public ClusterConfiguration(Properties properties, final Logger logger) {
+  public ClusterConfiguration(String localNodeName, Properties properties, final Logger logger) {
     this.logger = logger;
-    this.nodes = new TreeSet<>();
-    this.seeds = new TreeSet<>();
+    this.seeds = properties.seeds();
 
-    initializeConfiguredNodeEntries(properties);
+    final Id nodeId = Id.of(properties.nodeId(localNodeName));
+    final Name nodeName = Name.of(localNodeName);
+    final Host host = Host.of(properties.host(localNodeName));
+    final Address opNodeAddress = Address.from(host, properties.operationalPort(localNodeName), AddressType.OP);
+    final boolean isSeed = properties.isSeed(localNodeName);
+    final Address appNodeAddress = Address.from(host, properties.applicationPort(localNodeName), AddressType.APP);
+
+    this.localNode = new Node(nodeId, nodeName, opNodeAddress, appNodeAddress, isSeed);
   }
 
-  @Override
-  public Set<Node> allNodes() {
-    return Collections.unmodifiableSet(nodes);
+  public Node localNode() {
+    return localNode;
   }
 
-  @Override
-  public Set<Node> allNodesOf(final Collection<Id> ids) {
-    // Currently not used
-
-    return new TreeSet<>();
+  public List<SeedNode> seeds() {
+    return seeds;
   }
 
-  @Override
-  public final Set<Node> allOtherNodes(Id nodeId) {
-    final Set<Node> except = new TreeSet<>();
-
-    for (final Node node : nodes) {
-      if (!node.id().equals(nodeId)) {
-        except.add(node);
-      }
-    }
-
-    return except;
-  }
-
-  @Override
-  public Set<Id> allOtherNodesId(final Id nodeId) {
-    final Set<Id> ids = new TreeSet<>();
-
-    for (final Node node : allOtherNodes(nodeId)) {
-      ids.add(node.id());
-    }
-
-    return ids;
-  }
-
-  @Override
-  public final Set<Node> allGreaterNodes(Id nodeId) {
-    final Set<Node> greater = new TreeSet<>();
-
-    for (final Node node : nodes) {
-      if (node.id().greaterThan(nodeId)) {
-        greater.add(node);
-      }
-    }
-
-    return greater;
-  }
-
-  @Override
-  public Set<String> allNodeNames() {
-    final Set<String> names = new TreeSet<>();
-
-    for (final Node node : nodes) {
-      names.add(node.name().value());
-    }
-
-    return names;
-  }
-
-  @Override
-  public final Node nodeMatching(Id nodeId) {
-    for (final Node node : nodes) {
-      if (node.id().equals(nodeId)) {
-        return node;
-      }
-    }
-    return Node.NO_NODE;
-  }
-
-  @Override
-  public final Id greatestNodeId() {
-    Id greatest = Id.NO_ID;
-
-    for (final Node node : nodes) {
-      if (node.id().greaterThan(greatest)) {
-        greatest = node.id();
-      }
-    }
-
-    return greatest;
-  }
-
-  @Override
-  public boolean hasNode(Id nodeId) {
-    for (final Node node : nodes) {
-      if (node.id().equals(nodeId)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  @Override
-  public int totalNodes() {
-    return nodes.size();
-  }
-
-  @Override
   public Logger logger() {
     return logger;
-  }
-
-  @Override
-  public boolean equals(Object other) {
-    if (other == null || other.getClass() != ClusterConfiguration.class) {
-      return false;
-    }
-
-    return this.nodes.equals(((ClusterConfiguration) other).nodes);
-  }
-
-  @Override
-  public int hashCode() {
-    return 31 * nodes.hashCode();
-  }
-
-  @Override
-  public String toString() {
-    return "ConfiguredCluster[" + nodes + "]";
-  }
-
-  private void initializeConfiguredNodeEntries(final Properties properties) {
-    for (String configuredNodeName : properties.nodes()) {
-      final Id nodeId = Id.of(properties.nodeId(configuredNodeName));
-      final Name nodeName = new Name(configuredNodeName);
-      final Host host = Host.of(properties.host(configuredNodeName));
-      final Address opNodeAddress = Address.from(host, properties.operationalPort(configuredNodeName), AddressType.OP);
-      final boolean isSeed = properties.isSeed(configuredNodeName);
-      final Address appNodeAddress = Address.from(host, properties.applicationPort(configuredNodeName), AddressType.APP);
-
-      Node node = new Node(nodeId, nodeName, opNodeAddress, appNodeAddress, isSeed);
-      nodes.add(node);
-      if (isSeed) {
-        seeds.add(node);
-      }
-    }
   }
 }

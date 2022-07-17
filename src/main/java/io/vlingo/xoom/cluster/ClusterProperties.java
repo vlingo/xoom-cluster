@@ -20,25 +20,25 @@ public class ClusterProperties {
   private static final Random random = new Random();
   private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes() {
-    return allNodes(PORT_TO_USE);
+  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName) {
+    return allNodes(localNodeName, PORT_TO_USE);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final AtomicInteger portSeed) {
-    return allNodes(PORT_TO_USE, 3);
+  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed) {
+    return allNodes(localNodeName, PORT_TO_USE, 3);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final AtomicInteger portSeed, final int totalNodes) {
-    return allNodes(PORT_TO_USE, totalNodes, DefaultApplicationClassname);
+  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed, final int totalNodes) {
+    return allNodes(localNodeName, PORT_TO_USE, totalNodes, DefaultApplicationClassname);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
+  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
     java.util.Properties properties = new java.util.Properties();
 
     properties = common(allOf(properties, totalNodes, portSeed), totalNodes, applicationClassname);
 
     final io.vlingo.xoom.cluster.model.Properties clusterProperties =
-            io.vlingo.xoom.cluster.model.Properties.openWith(properties);
+            io.vlingo.xoom.cluster.model.Properties.openWith(properties, localNodeName);
 
     return clusterProperties;
   }
@@ -57,7 +57,7 @@ public class ClusterProperties {
     properties = common(oneOnly(properties, portSeed), 1, applicationClassname);
 
     final io.vlingo.xoom.cluster.model.Properties clusterProperties =
-            io.vlingo.xoom.cluster.model.Properties.openWith(properties);
+            io.vlingo.xoom.cluster.model.Properties.openWith(properties, "node1");
 
     return clusterProperties;
   }

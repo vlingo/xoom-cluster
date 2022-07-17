@@ -27,14 +27,14 @@ public final class ConfirmingDistributor {
   private final Node node;
   private final OperationalOutboundStream outbound;
 
-  ConfirmingDistributor(final ClusterApplication application, final Node node, final OperationalOutboundStream outbound,
+  ConfirmingDistributor(final ClusterApplication application, final Node localNode, final OperationalOutboundStream outbound,
                         final Supplier<Collection<Node>> allOtherNodesSupplier, final Logger logger) {
     this.application = application;
     this.logger = logger;
-    this.node = node;
+    this.node = localNode;
     this.outbound = outbound;
     this.allOtherNodesSupplier = allOtherNodesSupplier;
-    this.confirmables = new Confirmables(node, allOtherNodesSupplier);
+    this.confirmables = new Confirmables(localNode, allOtherNodesSupplier);
   }
 
   void acknowledgeConfirmation(final String trackingId, final Node node) {

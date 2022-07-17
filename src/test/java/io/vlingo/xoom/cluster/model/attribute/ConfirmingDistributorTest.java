@@ -18,7 +18,6 @@ import io.vlingo.xoom.cluster.model.outbound.OperationalOutboundStreamActor;
 import io.vlingo.xoom.common.pool.ElasticResourcePool;
 import io.vlingo.xoom.wire.fdx.outbound.ManagedOutboundChannel;
 import io.vlingo.xoom.wire.message.ConsumerByteBufferPool;
-import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 import org.junit.After;
 import org.junit.Before;
@@ -30,7 +29,6 @@ import static org.junit.Assert.assertEquals;
 
 public class ConfirmingDistributorTest extends AbstractClusterTest {
   private ConfirmingDistributor confirmingDistributor;
-  private Id localNodeId;
   private Node localNode;
   private MockCluster mockCluster;
   private ConsumerByteBufferPool pool;
@@ -95,7 +93,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeCreateAttributeSet() {
     confirmingDistributor.distributeCreate(set);
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(2, mockCluster.messagesTo(otherNode));
     }
 
@@ -107,7 +105,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeAddAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.AddAttribute);
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(1, mockCluster.messagesTo(otherNode));
     }
 
@@ -118,7 +116,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeReplaceAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.ReplaceAttribute);
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(1, mockCluster.messagesTo(otherNode));
     }
 
@@ -129,7 +127,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeRemoveAttribute() {
     confirmingDistributor.distribute(set, tracked, ApplicationMessageType.RemoveAttribute);
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(1, mockCluster.messagesTo(otherNode));
     }
 
@@ -140,7 +138,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void testDistributeRemoveAttributeSet() {
     confirmingDistributor.distributeRemove(set);
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(2, mockCluster.messagesTo(otherNode));
     }
 
@@ -157,7 +155,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
     confirmingDistributor.redistributeUnconfirmed();
 
-    for (Node otherNode : config.allOtherNodes(localNodeId)) {
+    for (Node otherNode : allOtherNodes()) {
       assertEquals(1, mockCluster.messagesTo(otherNode));
     }
   }
@@ -167,15 +165,13 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
   public void setUp() throws Exception {
     super.setUp();
 
-    localNodeId = Id.of(1);
-
-    localNode = config.nodeMatching(localNodeId);
+    localNode = config.localNode();
 
     set = AttributeSet.named("test-set");
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    mockCluster = new MockCluster(localNode, config);
+    mockCluster = new MockCluster(localNode, allNodes, allOtherNodes(), config);
     Registry mockRegistry = mockCluster.mockHealthyRegistry();
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.operationalBufferSize());

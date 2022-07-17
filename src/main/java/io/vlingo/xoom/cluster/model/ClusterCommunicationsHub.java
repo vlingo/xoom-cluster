@@ -20,7 +20,6 @@ import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.fdx.outbound.rsocket.ManagedOutboundRSocketChannelProvider;
 import io.vlingo.xoom.wire.message.ConsumerByteBufferPool;
 import io.vlingo.xoom.wire.node.AddressType;
-import io.vlingo.xoom.wire.node.Configuration;
 import io.vlingo.xoom.wire.node.Node;
 
 public class ClusterCommunicationsHub {
@@ -48,8 +47,7 @@ public class ClusterCommunicationsHub {
   public void openAppChannel(
       final Stage stage,
       final Node node,
-      final InboundStreamInterest interest,
-      final Configuration configuration)
+      final InboundStreamInterest interest)
       throws Exception {
 
     final Logger logger = stage.world().defaultLogger();
@@ -63,7 +61,7 @@ public class ClusterCommunicationsHub {
             APP_NAME,
             properties.applicationInboundProbeInterval());
 
-    this.outboundChannelProvider = new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, configuration);
+    this.outboundChannelProvider = new ManagedOutboundRSocketChannelProvider(node, AddressType.APP, logger);
 
     this.applicationOutboundStream = ApplicationOutboundStream.instance(
             stage,

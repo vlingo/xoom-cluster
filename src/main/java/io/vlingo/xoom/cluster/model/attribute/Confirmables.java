@@ -21,12 +21,14 @@ import io.vlingo.xoom.wire.node.Node;
 final class Confirmables {
   private final Supplier<Collection<Node>> allOtherNodesSupplier;
   private final List<Confirmable> expectedConfirmables;
-  private final Node node;
+  private final Node localNode;
+  private final Properties properties;
 
-  Confirmables(final Node node, final Supplier<Collection<Node>> allOtherNodesSupplier) {
-    this.node = node;
+  Confirmables(final Node localNode, final Supplier<Collection<Node>> allOtherNodesSupplier) {
+    this.localNode = localNode;
     this.allOtherNodesSupplier = allOtherNodesSupplier;
     this.expectedConfirmables = new ArrayList<>();
+    this.properties = Properties.instance(localNode.name().value());
   }
 
   Collection<Confirmable> allRedistributable() {
@@ -71,28 +73,29 @@ final class Confirmables {
   }
 
   Confirmable unconfirmedFor(final ApplicationMessage message, final Collection<Node> nodes) {
-    if (nodes.contains(node)) {
+    if (nodes.contains(localNode)) {
       new Exception().printStackTrace();
     }
-    final Confirmable confirmable = new Confirmable(message, nodes);
+    final Confirmable confirmable = new Confirmable(message, nodes, properties);
     expectedConfirmables.add(confirmable);
     return confirmable;
   }
 
   static final class Confirmable {
-    static final int TotalRetries = Properties.instance().clusterAttributesRedistributionRetries();
     static final Confirmable NoConfirmable = new Confirmable();
 
     private final long createdOn;
     private final ApplicationMessage message;
     private final String trackingId;
     private Map<Node, Integer> unconfirmedNodes;
+    private final Properties properties;
 
-    Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes) {
+    Confirmable(final ApplicationMessage message, final Collection<Node> allOtherNodes, final Properties properties) {
       this.message = message;
       this.unconfirmedNodes = allUnconfirmedFor(allOtherNodes);
       this.createdOn = System.currentTimeMillis();
       this.trackingId = message.trackingId;
+      this.properties = properties;
     }
 
     private Confirmable() {
@@ -100,6 +103,7 @@ final class Confirmables {
       this.unconfirmedNodes = new HashMap<>(0);
       this.createdOn = 0L;
       this.trackingId = "";
+      this.properties = null;
     }
 
     private Map<Node, Integer> allUnconfirmedFor(final Collection<Node> allOtherNodes) {
@@ -123,13 +127,15 @@ final class Confirmables {
     }
 
     boolean isRedistributableAsOf() {
-      final long targetTime = createdOn + Properties.instance().clusterAttributesRedistributionInterval();
+      final long targetTime = createdOn + properties.clusterAttributesRedistributionInterval();
+      final long totalRetries = properties.clusterAttributesRedistributionRetries();
+
       if (targetTime < System.currentTimeMillis()) {
         final Map<Node, Integer> allUnconfirmed = new HashMap<>(unconfirmedNodes.size());
 
         for (final Node node : unconfirmedNodes.keySet()) {
           final int tries = unconfirmedNodes.get(node) + 1;
-          if (tries <= TotalRetries) {
+          if (tries <= totalRetries) {
             allUnconfirmed.put(node, tries);
           }
         }
