@@ -29,6 +29,7 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
   protected MockClusterApplication application;
   protected ClusterConfiguration config;
   protected Node localNode;
+  protected String localNodeProperties;
   protected List<Node> allNodes;
   protected Properties properties;
   protected TestWorld testWorld;
@@ -60,36 +61,24 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
     properties.setProperty("cluster.health.check.interval", "2000");
 
     properties.setProperty("cluster.nodes.quorum", "2");
-    properties.setProperty("cluster.nodes", "node1,node2,node3");
 
-    properties.setProperty("node.node1.id", "1");
-    properties.setProperty("node.node1.name", "node1");
-    properties.setProperty("node.node1.host", "localhost");
-    properties.setProperty("node.node1.op.port", nextPortToUseString());
-    properties.setProperty("node.node1.app.port", nextPortToUseString());
+    String node1SeedPort = nextPortToUseString();
 
-    properties.setProperty("node.node2.id", "2");
-    properties.setProperty("node.node2.name", "node2");
-    properties.setProperty("node.node2.host", "localhost");
-    properties.setProperty("node.node2.op.port", nextPortToUseString());
-    properties.setProperty("node.node2.app.port", nextPortToUseString());
-    properties.setProperty("node.node2.seed", "true");
+    properties.setProperty("cluster.seeds", "localhost:" + node1SeedPort);
 
-    properties.setProperty("node.node3.id", "3");
-    properties.setProperty("node.node3.name", "node3");
-    properties.setProperty("node.node3.host", "localhost");
-    properties.setProperty("node.node3.op.port", nextPortToUseString());
-    properties.setProperty("node.node3.app.port", nextPortToUseString());
+    this.localNodeProperties = "1:node1:localhost:" + node1SeedPort + ":" + nextPortToUseString() + ":true";
+    String node2Properties = "2:node2:localhost:" + nextPortToUseString() + ":" + nextPortToUseString() + ":false";
+    String node3Properties = "3:node3:localhost:" + nextPortToUseString() + ":" + nextPortToUseString() + ":false";
 
-    this.properties = Properties.openForTest(properties, "node1");
+    this.properties = Properties.openForTest(properties);
 
     this.testWorld = TestWorld.startWithDefaults("cluster-test-world");
 
-    this.config = new ClusterConfiguration("node1", this.properties, testWorld.defaultLogger());
+    this.config = new ClusterConfiguration(localNodeProperties, this.properties);
 
-    this.allNodes = Arrays.asList(nodeFrom("node1", this.properties),
-            nodeFrom("node2", this.properties),
-            nodeFrom("node3", this.properties));
+    this.allNodes = Arrays.asList(NodeProperties.from(localNodeProperties).asNode(),
+            NodeProperties.from(node2Properties).asNode(),
+            NodeProperties.from(node3Properties).asNode());
 
     this.application = new MockClusterApplication();
   }
@@ -105,15 +94,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
 
   private String nextPortToUseString() {
     return "" + nextPortToUse();
-  }
-
-  private Node nodeFrom(String nodeName, Properties properties) {
-    Host host = Host.of(properties.getStringForNode(nodeName, "host", ""));
-    return new Node(Id.of(properties.getIntegerForNode(nodeName, "id", -1)),
-            Name.of(nodeName),
-            Address.from(host, properties.getIntegerForNode(nodeName, "op.port", -1), AddressType.OP),
-            Address.from(host, properties.getIntegerForNode(nodeName, "app.port", -1), AddressType.APP),
-            properties.isSeed(nodeName));
   }
 
   protected List<Node> allOtherNodes() {

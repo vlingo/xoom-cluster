@@ -58,7 +58,7 @@ public class AttributesAgentActor extends Actor implements AttributesAgent {
     application.informAttributesClient(this.client);
 
     stage().scheduler()
-      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance(localNode.name().value()).clusterAttributesRedistributionInterval());
+      .schedule(selfAs(Scheduled.class), null, 1000L, Properties.instance().clusterAttributesRedistributionInterval());
   }
 
   //=========================================

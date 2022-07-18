@@ -21,16 +21,16 @@ public final class Cluster {
   public static synchronized Tuple2<ClusterControl, Logger> controlFor(
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName) {
-    return controlFor(World.start("xoom-cluster"), instantiator, properties, nodeName);
+          final String localNodeProperties) {
+    return controlFor(World.start("xoom-cluster"), instantiator, properties, localNodeProperties);
   }
 
   public static synchronized Tuple2<ClusterControl, Logger> controlFor(
           final World world,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName) {
-    return controlFor(world, world.stage(), instantiator, properties, nodeName);
+          final String localNodeProperties) {
+    return controlFor(world, world.stage(), instantiator, properties, localNodeProperties);
   }
 
   public static synchronized Tuple2<ClusterControl, Logger> controlFor(
@@ -38,13 +38,13 @@ public final class Cluster {
           final Stage stage,
           final ClusterApplicationInstantiator<?> instantiator,
           final Properties properties,
-          final String nodeName) {
+          final String localNodeProperties) {
 
     if (isRunningInside(world)) {
       throw new IllegalArgumentException("Cluster is already running inside World: " + world.name());
     }
 
-    final Tuple2<ClusterControl, Logger> control = ClusterControl.instance(world, instantiator, properties, nodeName);
+    final Tuple2<ClusterControl, Logger> control = ClusterControl.instance(world, instantiator, properties, localNodeProperties);
 
     world.registerDynamic(INTERNAL_NAME, control._1);
 

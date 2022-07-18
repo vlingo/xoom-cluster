@@ -7,18 +7,25 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import io.vlingo.xoom.wire.node.Id;
-
 /**
  * This class models a node which is at the same time a scalecube-cluster seed.
  */
 public class SeedNode {
-  public final Id id;
+
+  public static SeedNode from(String seedNodeString) {
+    String[] seedNodeValues = seedNodeString.split(":");
+    if (seedNodeValues.length != 2) {
+      throw new IllegalArgumentException("Invalid seed node properties " + seedNodeString + ". Expected format 'host:port'");
+    }
+
+    int operationalPort = Integer.parseInt(seedNodeValues[1]);
+    return new SeedNode(seedNodeValues[0], operationalPort);
+  }
+
   public final String operationalHost;
   public final int operationalPort;
 
-  public SeedNode(Id id, String operationalHost, int operationalPort) {
-    this.id = id;
+  public SeedNode(String operationalHost, int operationalPort) {
     this.operationalHost = operationalHost;
     this.operationalPort = operationalPort;
   }

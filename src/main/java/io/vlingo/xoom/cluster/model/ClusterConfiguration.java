@@ -9,31 +9,17 @@ package io.vlingo.xoom.cluster.model;
 
 import java.util.*;
 
-import io.vlingo.xoom.actors.Logger;
-import io.vlingo.xoom.wire.node.Address;
-import io.vlingo.xoom.wire.node.AddressType;
-import io.vlingo.xoom.wire.node.Host;
-import io.vlingo.xoom.wire.node.Id;
-import io.vlingo.xoom.wire.node.Name;
 import io.vlingo.xoom.wire.node.Node;
 
 public class ClusterConfiguration {
-  private final Logger logger;
   private final List<SeedNode> seeds;
   private final Node localNode;
 
-  public ClusterConfiguration(String localNodeName, Properties properties, final Logger logger) {
-    this.logger = logger;
+  public ClusterConfiguration(String localNodeProperties, Properties properties) {
     this.seeds = properties.seeds();
 
-    final Id nodeId = Id.of(properties.nodeId(localNodeName));
-    final Name nodeName = Name.of(localNodeName);
-    final Host host = Host.of(properties.host(localNodeName));
-    final Address opNodeAddress = Address.from(host, properties.operationalPort(localNodeName), AddressType.OP);
-    final boolean isSeed = properties.isSeed(localNodeName);
-    final Address appNodeAddress = Address.from(host, properties.applicationPort(localNodeName), AddressType.APP);
-
-    this.localNode = new Node(nodeId, nodeName, opNodeAddress, appNodeAddress, isSeed);
+    this.localNode = NodeProperties.from(localNodeProperties)
+            .asNode();
   }
 
   public Node localNode() {
@@ -42,9 +28,5 @@ public class ClusterConfiguration {
 
   public List<SeedNode> seeds() {
     return seeds;
-  }
-
-  public Logger logger() {
-    return logger;
   }
 }

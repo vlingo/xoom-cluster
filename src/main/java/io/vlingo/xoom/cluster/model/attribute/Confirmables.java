@@ -28,7 +28,7 @@ final class Confirmables {
     this.localNode = localNode;
     this.allOtherNodesSupplier = allOtherNodesSupplier;
     this.expectedConfirmables = new ArrayList<>();
-    this.properties = Properties.instance(localNode.name().value());
+    this.properties = Properties.instance();
   }
 
   Collection<Confirmable> allRedistributable() {

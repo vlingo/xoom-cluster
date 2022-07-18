@@ -171,7 +171,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    mockCluster = new MockCluster(localNode, allNodes, allOtherNodes(), config);
+    mockCluster = new MockCluster(localNode, allNodes, allOtherNodes());
     Registry mockRegistry = mockCluster.mockHealthyRegistry();
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.operationalBufferSize());
@@ -182,7 +182,7 @@ public class ConfirmingDistributorTest extends AbstractClusterTest {
                     OperationalOutboundStreamActor.class,
                     Definition.parameters(mockCluster.cluster, mockRegistry, pool)));
 
-    confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), mockRegistry::allOtherNodes, config.logger());
+    confirmingDistributor = new ConfirmingDistributor(application, localNode, outboundStream.actor(), mockRegistry::allOtherNodes, testWorld.defaultLogger());
   }
 
   @Override

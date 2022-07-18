@@ -68,7 +68,7 @@ public class ClusterActor extends Actor implements ClusterControl, InboundStream
               clusterApplication,
               communicationsHub.operationalOutboundStream(),
               registry,
-              initializer.configuration().logger());
+              logger());
 
       this.cluster.startAwait();
 

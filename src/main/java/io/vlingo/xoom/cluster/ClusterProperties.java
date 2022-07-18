@@ -7,6 +7,11 @@
 
 package io.vlingo.xoom.cluster;
 
+import io.vlingo.xoom.cluster.model.Properties;
+import io.vlingo.xoom.wire.node.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,83 +25,68 @@ public class ClusterProperties {
   private static final Random random = new Random();
   private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName) {
-    return allNodes(localNodeName, PORT_TO_USE);
+  public final Properties properties;
+  public final List<Node> allNodes;
+
+  private ClusterProperties(Properties properties, List<Node> allNodes) {
+    this.properties = properties;
+    this.allNodes = allNodes;
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed) {
-    return allNodes(localNodeName, PORT_TO_USE, 3);
+  public static ClusterProperties allNodes() {
+    return allNodes(PORT_TO_USE);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed, final int totalNodes) {
-    return allNodes(localNodeName, PORT_TO_USE, totalNodes, DefaultApplicationClassname);
+  public static ClusterProperties allNodes(final AtomicInteger portSeed) {
+    return allNodes(PORT_TO_USE, 3);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties allNodes(final String localNodeName, final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
-    java.util.Properties properties = new java.util.Properties();
-
-    properties = common(allOf(properties, totalNodes, portSeed), totalNodes, applicationClassname);
-
-    final io.vlingo.xoom.cluster.model.Properties clusterProperties =
-            io.vlingo.xoom.cluster.model.Properties.openWith(properties, localNodeName);
-
-    return clusterProperties;
+  public static ClusterProperties allNodes(final AtomicInteger portSeed, final int totalNodes) {
+    return allNodes(PORT_TO_USE, totalNodes, DefaultApplicationClassname);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties oneNode() {
+  public static ClusterProperties allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
+    java.util.Properties common = common(totalNodes, applicationClassname);
+    List<Node> allNodes = allNodes(totalNodes, portSeed);
+    if (totalNodes > 1) {
+      Address operationalAddress = allNodes.get(0).operationalAddress();
+      common.setProperty("cluster.seeds", operationalAddress.full());
+    }
+
+    return new ClusterProperties(Properties.openWith(common), allNodes);
+  }
+
+  public static ClusterProperties oneNode() {
     return oneNode(PORT_TO_USE);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties oneNode(final AtomicInteger portSeed) {
+  public static ClusterProperties oneNode(final AtomicInteger portSeed) {
     return oneNode(portSeed, DefaultApplicationClassname);
   }
 
-  public static io.vlingo.xoom.cluster.model.Properties oneNode(final AtomicInteger portSeed, final String applicationClassname) {
-    java.util.Properties properties = new java.util.Properties();
+  public static ClusterProperties oneNode(final AtomicInteger portSeed, final String applicationClassname) {
+    final Properties properties = Properties.openWith(common(1, applicationClassname));
+    final List<Node> allNodes = allNodes(1, portSeed);
 
-    properties = common(oneOnly(properties, portSeed), 1, applicationClassname);
-
-    final io.vlingo.xoom.cluster.model.Properties clusterProperties =
-            io.vlingo.xoom.cluster.model.Properties.openWith(properties, "node1");
-
-    return clusterProperties;
+    return new ClusterProperties(properties, allNodes);
   }
 
-  private static java.util.Properties oneOnly(final java.util.Properties properties, final AtomicInteger portSeed) {
-    return allOf(properties, 1, portSeed);
-  }
+  private static List<Node> allNodes(final int totalNodes, final AtomicInteger portSeed) {
+    List<Node> nodes = new ArrayList<>();
+    for (int i = 1; i <= totalNodes; i++) {
+      final Name nodeName = Name.of("node" + i);
+      final boolean isSeed = totalNodes > 1 && i == 1; // only node1 when multi node configuration
+      final Host localhost = Host.of("localhost");
 
-  private static java.util.Properties allOf(final java.util.Properties properties, final int totalNodes, final AtomicInteger portSeed) {
-    final StringBuilder build = new StringBuilder();
-
-    for (int idx = 1; idx <= totalNodes; ++idx) {
-      final String node = "node" + idx;
-
-      if (idx > 1) {
-        build.append(",");
-      }
-
-      build.append(node);
-
-      final String nodePropertyName = "node." + node;
-
-      properties.setProperty(nodePropertyName + ".id", "" + idx);
-      properties.setProperty(nodePropertyName + ".name", node);
-      properties.setProperty(nodePropertyName + ".host", "localhost");
-      properties.setProperty(nodePropertyName + ".op.port", nextPortToUseString(portSeed));
-      properties.setProperty(nodePropertyName + ".app.port", nextPortToUseString(portSeed));
+      nodes.add(new Node(Id.of(i), nodeName, Address.from(localhost, nextPortToUse(portSeed), AddressType.OP),
+              Address.from(localhost, nextPortToUse(portSeed), AddressType.APP), isSeed));
     }
 
-    if (totalNodes > 1) {
-      properties.setProperty("node.node2.seed", "true");
-    }
-
-    properties.setProperty("cluster.nodes", build.toString());
-
-    return properties;
+    return nodes;
   }
 
-  private static java.util.Properties common(final java.util.Properties properties, final int totalNodes, final String applicationClassname) {
+  private static java.util.Properties common(final int totalNodes, final String applicationClassname) {
+    final java.util.Properties properties = new java.util.Properties();
     properties.setProperty("cluster.ssl", "false");
 
     properties.setProperty("cluster.op.buffer.size", "4096");
@@ -121,9 +111,5 @@ public class ClusterProperties {
 
   private static int nextPortToUse(final AtomicInteger portSeed) {
     return portSeed.incrementAndGet();
-  }
-
-  private static String nextPortToUseString(final AtomicInteger portSeed) {
-    return "" + nextPortToUse(portSeed);
   }
 }

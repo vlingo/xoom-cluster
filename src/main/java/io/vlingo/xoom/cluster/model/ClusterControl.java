@@ -18,12 +18,12 @@ public interface ClusterControl {
       final World world,
       final ClusterApplication.ClusterApplicationInstantiator<?> instantiator,
       final Properties properties,
-      final String nodeName) {
+      final String localNodeProperties) {
 
     final String stageName = properties.clusterApplicationStageName();
     final Stage stage = world.stageNamed(stageName);
 
-    return instance(world, stage, instantiator, properties, nodeName);
+    return instance(world, stage, instantiator, properties, localNodeProperties);
   }
 
   static Tuple2<ClusterControl, Logger> instance(
@@ -31,9 +31,9 @@ public interface ClusterControl {
       final Stage stage,
       final ClusterApplication.ClusterApplicationInstantiator<?> instantiator,
       final Properties properties,
-      final String nodeName) {
+      final String localNodeProperties) {
 
-    final ClusterInitializer initializer = new ClusterInitializer(nodeName, properties, world.defaultLogger());
+    final ClusterInitializer initializer = new ClusterInitializer(localNodeProperties, properties, world.defaultLogger());
     instantiator.node(initializer.localNode());
 
     final ClusterApplication application = ClusterApplication.instance(stage, instantiator);
@@ -42,7 +42,7 @@ public interface ClusterControl {
         new Definition(
             ClusterActor.class,
             new ClusterControl.ClusterInstantiator(initializer, application),
-            "cluster-actor-" + nodeName);
+            "cluster-actor-" + initializer.localNode().name().value());
 
     ClusterControl control = world.actorFor(ClusterControl.class, definition);
 

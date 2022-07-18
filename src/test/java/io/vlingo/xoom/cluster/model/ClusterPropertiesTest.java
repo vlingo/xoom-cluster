@@ -7,101 +7,82 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.vlingo.xoom.wire.node.Node;
 import org.junit.Test;
 
 import io.vlingo.xoom.cluster.ClusterProperties;
 
+import static org.junit.Assert.*;
+
 public class ClusterPropertiesTest {
+
+  static final String localhost = "localhost";
 
   @Test
   public void shouldConfigureMultiNodeCluster() {
-    final Properties properties = ClusterProperties.allNodes("node1");
+    final ClusterProperties properties = ClusterProperties.allNodes();
 
     // common
-    assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
-    assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
+    assertEquals(Integer.valueOf(4096), properties.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), properties.properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    assertEquals(3, properties.allNodes.size());
+    for (int i = 0; i < properties.allNodes.size(); i++) {
+      Node node = properties.allNodes.get(i);
 
-    assertEquals(3, nodes.length);
-    assertEquals("node1", nodes[0]);
-    assertEquals("node2", nodes[1]);
-    assertEquals("node3", nodes[2]);
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals( i == 0, node.isSeed());
+    }
 
-    // node specific
-    assertEquals("1", properties.getString("node.node1.id", ""));
-    assertEquals("node1", properties.getString("node.node1.name", ""));
-    assertEquals("localhost", properties.getString("node.node1.host", ""));
-
-    assertEquals("2", properties.getString("node.node2.id", ""));
-    assertEquals("node2", properties.getString("node.node2.name", ""));
-    assertEquals("localhost", properties.getString("node.node2.host", ""));
-
-    assertEquals("3", properties.getString("node.node3.id", ""));
-    assertEquals("node3", properties.getString("node.node3.name", ""));
-    assertEquals("localhost", properties.getString("node.node3.host", ""));
+    assertFalse(properties.properties.getString("cluster.seeds", "").isEmpty());
   }
 
   @Test
   public void shouldConfigureFiveNodeCluster() {
-    final Properties properties = ClusterProperties.allNodes("node1", new AtomicInteger(37370), 5);
+    final ClusterProperties properties = ClusterProperties.allNodes(new AtomicInteger(37370), 5);
 
     // common
-    assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
-    assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
+    assertEquals(Integer.valueOf(4096), properties.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), properties.properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    assertEquals(5, properties.allNodes.size());
+    for (int i = 0; i < properties.allNodes.size(); i++) {
+      Node node = properties.allNodes.get(i);
 
-    assertEquals(5, nodes.length);
-    assertEquals("node1", nodes[0]);
-    assertEquals("node2", nodes[1]);
-    assertEquals("node3", nodes[2]);
-    assertEquals("node4", nodes[3]);
-    assertEquals("node5", nodes[4]);
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals( i == 0, node.isSeed());
+    }
 
-    // node specific
-    assertEquals("1", properties.getString("node.node1.id", ""));
-    assertEquals("node1", properties.getString("node.node1.name", ""));
-    assertEquals("localhost", properties.getString("node.node1.host", ""));
-
-    assertEquals("2", properties.getString("node.node2.id", ""));
-    assertEquals("node2", properties.getString("node.node2.name", ""));
-    assertEquals("localhost", properties.getString("node.node2.host", ""));
-    assertEquals("true", properties.getString("node.node2.seed", ""));
-
-    assertEquals("3", properties.getString("node.node3.id", ""));
-    assertEquals("node3", properties.getString("node.node3.name", ""));
-    assertEquals("localhost", properties.getString("node.node3.host", ""));
-
-    assertEquals("4", properties.getString("node.node4.id", ""));
-    assertEquals("node4", properties.getString("node.node4.name", ""));
-    assertEquals("localhost", properties.getString("node.node3.host", ""));
-
-    assertEquals("5", properties.getString("node.node5.id", ""));
-    assertEquals("node5", properties.getString("node.node5.name", ""));
-    assertEquals("localhost", properties.getString("node.node5.host", ""));
+    assertFalse(properties.properties.getString("cluster.seeds", "").isEmpty());
   }
 
   @Test
   public void shouldConfigureSingleNodeCluster() {
-    final Properties properties = ClusterProperties.oneNode();
+    final ClusterProperties properties = ClusterProperties.oneNode();
 
     // common
-    assertEquals(Integer.valueOf(4096), properties.getInteger("cluster.op.buffer.size", 0));
-    assertEquals(Integer.valueOf(10240), properties.getInteger("cluster.app.buffer.size", 0));
+    assertEquals(Integer.valueOf(4096), properties.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), properties.properties.getInteger("cluster.app.buffer.size", 0));
 
-    final String[] nodes = properties.getString("cluster.nodes", "").split(",");
+    assertEquals(1, properties.allNodes.size());
+    for (int i = 0; i < properties.allNodes.size(); i++) {
+      Node node = properties.allNodes.get(i);
 
-    assertEquals(1, nodes.length);
-    assertEquals("node1", nodes[0]);
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals( false, node.isSeed()); // on single node cluster, isSeed is not used
+    }
 
-    // node specific
-    assertEquals("1", properties.getString("node.node1.id", ""));
-    assertEquals("node1", properties.getString("node.node1.name", ""));
-    assertEquals("localhost", properties.getString("node.node1.host", ""));
+    assertTrue(properties.properties.getString("cluster.seeds", "").isEmpty());
   }
 }

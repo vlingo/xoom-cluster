@@ -42,8 +42,8 @@ public class ClusterInboundMessagingHandler implements ClusterMessageHandler {
     Id nodeId = Id.of(event.member().alias());
 
     if (event.isAdded()) {
-      NodeMetadata nodeMetadata = (NodeMetadata) metadataCodec.deserialize(event.newMetadata());
-      Node sender = nodeMetadata.asNode();
+      NodeProperties nodeProperties = (NodeProperties) metadataCodec.deserialize(event.newMetadata());
+      Node sender = nodeProperties.asNode();
       membershipControl.nodeAdded(sender);
     } else if (event.isRemoved()) {
       membershipControl.nodeRemoved(nodeId);

@@ -22,15 +22,13 @@ class MockCluster {
   private final Node localNode;
   private final List<Node> allNodes;
   private final List<Node> allOtherNodes;
-  private final ClusterConfiguration config;
   final Cluster cluster;
   public final Map<Address, Integer> sentMessages;
 
-  MockCluster(Node localNode, List<Node> allNodes, List<Node> allOtherNodes, ClusterConfiguration config) {
+  MockCluster(Node localNode, List<Node> allNodes, List<Node> allOtherNodes) {
     this.localNode = localNode;
     this.allNodes = allNodes;
     this.allOtherNodes = allOtherNodes;
-    this.config = config;
     this.cluster = Mockito.mock(Cluster.class);
     this.sentMessages = new HashMap<>();
     for (Node otherNode : allNodes) {

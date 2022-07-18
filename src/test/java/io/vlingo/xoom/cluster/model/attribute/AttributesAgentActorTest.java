@@ -50,7 +50,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     agent.actor().add("test-set", "test-attr", "test-value");
 
@@ -68,7 +68,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().replace("test-set", "test-attr", "test-value2");
@@ -87,7 +87,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     agent.actor().add("test-set", "test-attr", "test-value1");
     agent.actor().remove("test-set", "test-attr");
@@ -106,7 +106,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
                     AttributesAgent.class,
                     Definition.has(
                             AttributesAgentActor.class,
-                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                            Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     agent.actor().add("test-set", "test-attr1", "test-value1");
     agent.actor().add("test-set", "test-attr2", "test-value2");
@@ -126,11 +126,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testInboundStreamInterestCreateAttributeSet() throws Exception {
+  public void testInboundStreamInterestCreateAttributeSet() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage message = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), message));
@@ -140,11 +140,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testInboundStreamInterestAddAttribute() throws Exception {
+  public void testInboundStreamInterestAddAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage message = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), message));
@@ -154,11 +154,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testInboundStreamInterestReplaceAttribute() throws Exception {
+  public void testInboundStreamInterestReplaceAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), addMessage));
@@ -171,11 +171,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testInboundStreamInterestRemoveAttribute() throws Exception {
+  public void testInboundStreamInterestRemoveAttribute() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage addMessage = AddAttribute.from(localNode, set, tracked);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), addMessage));
@@ -188,11 +188,11 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testInboundStreamInterestRemoveAttributeSet() throws Exception {
+  public void testInboundStreamInterestRemoveAttributeSet() {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage createMessage = CreateAttributeSet.from(localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), createMessage));
@@ -209,7 +209,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage confirm = new ConfirmCreateAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), confirm));
@@ -223,7 +223,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmAddAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), confirm));
@@ -238,7 +238,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmReplaceAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), confirm));
@@ -253,7 +253,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage confirm = new ConfirmAttribute("123", localNode, set, tracked, ApplicationMessageType.ConfirmRemoveAttribute);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), confirm));
@@ -268,7 +268,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
     final TestActor<InboundStreamInterest> inboundStreamInterest =
             testWorld.actorFor(
                     InboundStreamInterest.class,
-                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), config.logger())));
+                    Definition.has(AttributesAgentActor.class, Definition.parameters(localNode, application, outboundStream.actor(), interest, mockCluster.mockHealthyRegistry(), testWorld.defaultLogger())));
 
     final ApplicationMessage confirm = new ConfirmRemoveAttributeSet("123", localNode, set);
     inboundStreamInterest.actor().handleInboundStreamMessage(AddressType.OP, rawMessageFor(config.localNode().id(), localNode.name(), confirm));
@@ -293,7 +293,7 @@ public class AttributesAgentActorTest extends AbstractClusterTest {
 
     interest = new MockConfirmationInterest();
 
-    mockCluster = new MockCluster(localNode, allNodes, allOtherNodes(), config);
+    mockCluster = new MockCluster(localNode, allNodes, allOtherNodes());
     Registry mockRegistry = mockCluster.mockHealthyRegistry();
 
     outboundStream =

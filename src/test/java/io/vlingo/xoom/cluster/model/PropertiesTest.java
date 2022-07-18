@@ -10,9 +10,6 @@ package io.vlingo.xoom.cluster.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
 
 import org.junit.Test;
 
@@ -27,13 +24,6 @@ public class PropertiesTest extends AbstractClusterTest {
   public void testApplicationOutgoingPooledBuffers() {
     assertEquals(50, properties.applicationOutgoingPooledBuffers());
   }
-
-//  @Test
-//  public void testApplicationPort() throws Exception {
-//    assertEquals(37372, properties.applicationPort("node1"));
-//    assertEquals(37374, properties.applicationPort("node2"));
-//    assertEquals(37376, properties.applicationPort("node3"));
-//  }
 
   @Test
   public void testClusterApplicationClass() {
@@ -57,46 +47,7 @@ public class PropertiesTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testNodes() {
-    final List<String> nodes = properties.nodes();
-    assertEquals(3, nodes.size());
-    assertTrue(nodes.contains("node1"));
-    assertTrue(nodes.contains("node2"));
-    assertTrue(nodes.contains("node3"));
-  }
-
-  @Test
   public void testUseSSL() {
     assertFalse(properties.useSSL());
-  }
-
-  @Test
-  public void testNodes1() {
-    assertEquals(1, properties.nodeId("node1"));
-    assertEquals("node1", properties.nodeName("node1"));
-    assertEquals("localhost", properties.host("node1"));
-    assertEquals(false, properties.isSeed("node1"));
-//    assertEquals(37371, properties.operationalPort("node1"));
-//    assertEquals(37372, properties.applicationPort("node1"));
-  }
-
-  @Test
-  public void testNodes2() {
-    assertEquals(2, properties.nodeId("node2"));
-    assertEquals("node2", properties.nodeName("node2"));
-    assertEquals("localhost", properties.host("node2"));
-    assertEquals(true, properties.isSeed("node2"));
-//    assertEquals(37373, properties.operationalPort("node2"));
-//    assertEquals(37374, properties.applicationPort("node2"));
-  }
-
-  @Test
-  public void testNodes3() {
-    assertEquals(3, properties.nodeId("node3"));
-    assertEquals("node3", properties.nodeName("node3"));
-    assertEquals("localhost", properties.host("node3"));
-    assertEquals(false, properties.isSeed("node3"));
-//    assertEquals(37375, properties.operationalPort("node3"));
-//    assertEquals(37376, properties.applicationPort("node3"));
   }
 }

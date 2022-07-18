@@ -25,12 +25,10 @@ public class ClusterInitializer {
   private final ClusterConfiguration configuration;
   private final Properties properties;
   private final Node localNode;
-  private final Id localNodeId;
   private final Registry registry;
 
-  ClusterInitializer(final String nodeName, final Properties properties, final Logger logger) {
-    this.localNodeId = Id.of(properties.nodeId(nodeName));
-    this.configuration = new ClusterConfiguration(nodeName, properties, logger);
+  ClusterInitializer(final String localNodeProperties, final Properties properties, final Logger logger) {
+    this.configuration = new ClusterConfiguration(localNodeProperties, properties);
     this.properties = properties;
     this.localNode = configuration.localNode();
     this.communicationsHub = new ClusterCommunicationsHub(properties);
@@ -54,7 +52,7 @@ public class ClusterInitializer {
   }
 
   Id localNodeId() {
-    return localNodeId;
+    return localNode.id();
   }
 
   Registry registry() {
@@ -80,7 +78,7 @@ public class ClusterInitializer {
             .memberAlias(localNode.id().valueString())
             .externalHost(localNodeHostName)
             .externalPort(localNodePort)
-            .metadata(NodeMetadata.from(localNode))
+            .metadata(NodeProperties.from(localNode))
             .metadataCodec(metadataCodec)
             .transport(transportConfig -> transportConfig.port(localNodePort).transportFactory(new TcpTransportFactory()));
 

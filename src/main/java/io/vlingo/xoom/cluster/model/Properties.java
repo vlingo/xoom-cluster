@@ -20,28 +20,27 @@ public final class Properties {
   private static final String propertiesFileLocation = "src/main/resources" + propertiesFile;
 
   private final java.util.Properties properties;
-  private final String localNodeName;
 
-  public static Properties instance(String localNodeName) {
+  public static Properties instance() {
     if (instance == null) {
-      instance = open(localNodeName);
+      instance = open();
     }
     return instance;
   }
 
-  public static Properties open(String localNodeName) {
-    Properties properties = openQuietly(localNodeName);
+  public static Properties open() {
+    Properties properties = openQuietly();
 
     if (properties == null) {
       System.out.println("WARNING: Missing file: " + propertiesFileLocation + " -- create or use ClusterProperties.");
 
-      return new Properties(new java.util.Properties(), localNodeName);
+      return new Properties(new java.util.Properties());
     }
 
     return properties;
   }
 
-  public static Properties openQuietly(String localNodeName) {
+  public static Properties openQuietly() {
     final java.util.Properties properties = new java.util.Properties();
 
     try {
@@ -50,16 +49,16 @@ public final class Properties {
       return null;
     }
 
-    return new Properties(properties, localNodeName);
+    return new Properties(properties);
   }
 
-  public static Properties openWith(java.util.Properties properties, String localNodeName) {
-    instance = new Properties(properties, localNodeName);
+  public static Properties openWith(java.util.Properties properties) {
+    instance = new Properties(properties);
     return instance;
   }
 
-  public static Properties openForTest(java.util.Properties properties, String localNodeName) {
-    return openWith(properties, localNodeName);
+  public static Properties openForTest(java.util.Properties properties) {
+    return openWith(properties);
   }
 
   public int applicationBufferSize() {
@@ -84,10 +83,6 @@ public final class Properties {
     }
 
     return pooledBuffers;
-  }
-
-  public int applicationPort() {
-    return applicationPort(localNodeName);
   }
 
   @SuppressWarnings("unchecked")
@@ -141,18 +136,6 @@ public final class Properties {
     return getInteger("cluster.startup.period", 5000);
   }
 
-  public String host() {
-    return host(localNodeName);
-  }
-
-  public short nodeId() {
-    return nodeId(localNodeName);
-  }
-
-  public String nodeName() {
-    return nodeName(localNodeName);
-  }
-
   public int operationalBufferSize() {
     return getInteger("cluster.op.buffer.size", 4096);
   }
@@ -167,19 +150,18 @@ public final class Properties {
     return pooledBuffers;
   }
 
-  public int operationalPort() {
-    return operationalPort(localNodeName);
-  }
-
-  public boolean isSeed() {
-    return isSeed(localNodeName);
-  }
-
+  /**
+   * Gets the configured seeds from the cluster.
+   *
+   * @return
+   */
   public List<SeedNode> seeds() {
     final List<SeedNode> seeds = new ArrayList<>();
-    for (String configuredNodeName : nodes()) {
-      if (isSeed(configuredNodeName)) {
-        seeds.add(new SeedNode(Id.of(nodeId(configuredNodeName)), host(configuredNodeName), operationalPort(configuredNodeName)));
+    final String commaSeparated = getString("cluster.seeds", "");
+
+    if (!commaSeparated.isEmpty()) {
+      for (final String seedNodeProperties : commaSeparated.split(",")) {
+        seeds.add(SeedNode.from(seedNodeProperties));
       }
     }
 
@@ -192,42 +174,26 @@ public final class Properties {
    * @return
    */
   public boolean singleNode() {
-    return nodes().size() == 1; // || clusterQuorum() == 1;
+    return seeds().size() == 0; // || clusterQuorum() == 1;
   }
 
   public boolean useSSL() {
     return getBoolean("cluster.ssl", false);
   }
 
-  public Boolean getBooleanForNode(final String nodeName, final String key, final Boolean defaultValue) {
-    final String value = getStringForNode(nodeName, key, defaultValue.toString());
+  public Boolean getBoolean(final String key, final Boolean defaultValue) {
+    final String value = getString(key, defaultValue.toString());
     return Boolean.parseBoolean(value);
   }
 
-  public Boolean getBoolean(final String key, final Boolean defaultValue) {
-    return getBooleanForNode("", key, defaultValue);
-  }
-
-  public Float getFloatForNode(final String nodeName, final String key, final Float defaultValue) {
-    final String value = getStringForNode(nodeName, key, defaultValue.toString());
+  public Float getFloat(final String key, final Float defaultValue) {
+    final String value = getString(key, defaultValue.toString());
     return Float.parseFloat(value);
   }
 
-  public Float getFloat(final String key, final Float defaultValue) {
-    return getFloatForNode("", key, defaultValue);
-  }
-
-  public Integer getIntegerForNode(final String nodeName, final String key, final Integer defaultValue) {
-    final String value = getStringForNode(nodeName, key, defaultValue.toString());
-    return Integer.parseInt(value);
-  }
-
   public Integer getInteger(final String key, final Integer defaultValue) {
-    return getIntegerForNode("", key, defaultValue);
-  }
-
-  public String getStringForNode(final String nodeName, final String key, final String defaultValue) {
-    return properties.getProperty(key(nodeName, key), defaultValue);
+    final String value = getString(key, defaultValue.toString());
+    return Integer.parseInt(value);
   }
 
   public String getString(final String key, final String defaultValue) {
@@ -237,111 +203,10 @@ public final class Properties {
   public void validateRequired() {
     // assertions in each accessor
 
-    nodeName();
-
-    nodeId();
-
-    host();
-
-    operationalPort();
-
-    applicationPort();
-
-    nodes();
-
     clusterApplicationClassname();
   }
 
-  /**
-   * Get all the nodes.
-   *
-   * @return
-   */
-  List<String> nodes() {
-    final List<String> nodes = new ArrayList<>();
-
-    final String commaSeparated = getString("cluster.nodes", "");
-
-    if (commaSeparated.length() == 0) {
-      throw new IllegalStateException("Must declare nodes in properties file.");
-    }
-
-    for (final String node : commaSeparated.split(",")) {
-      nodes.add(node.trim());
-    }
-
-    return nodes;
-  }
-
-  short nodeId(String nodeName) {
-    final int nodeId = getIntegerForNode(nodeName, "id", -1);
-
-    if (nodeId == -1) {
-      throw new IllegalStateException("Must assign an id to node '"
-              + nodeName + "' in properties file.");
-    }
-
-    return (short) nodeId;
-  }
-
-  String host(String nodeName) {
-    final String host = getStringForNode(nodeName, "host", "");
-
-    if (host.length() == 0) {
-      throw new IllegalStateException("Must assign a host to node '"
-              + nodeName + "' in properties file.");
-    }
-
-    return host;
-  }
-
-  String nodeName(String nodeName) {
-    final String name = getStringForNode(nodeName, "name", "");
-
-    if (name.length() == 0) {
-      throw new IllegalStateException("Must assign a name to node '"
-              + nodeName + "' in properties file.");
-    }
-
-    return name;
-  }
-
-  int operationalPort(String nodeName) {
-    final int port = getIntegerForNode(nodeName, "op.port", 0);
-
-    if (port == 0) {
-      throw new IllegalStateException("Must assign an operational (op) port to node '"
-              + nodeName + "' in properties file.");
-    }
-
-    return port;
-  }
-
-  int applicationPort(String nodeName) {
-    final int port = getIntegerForNode(nodeName, "app.port", 0);
-
-    if (port == 0) {
-      throw new IllegalStateException("Must assign an application (app) port to node '"
-              + nodeName + "' in properties file.");
-    }
-
-    return port;
-  }
-
-  boolean isSeed(String nodeName) {
-    return getBooleanForNode(nodeName, "seed", false);
-  }
-
-  private Properties(java.util.Properties properties, String localNodeName) {
+  private Properties(java.util.Properties properties) {
     this.properties = properties;
-    this.localNodeName = localNodeName;
-  }
-
-  private String key(final String nodeName, final String key) {
-    if (nodeName == null || nodeName.length() == 0) {
-      return key;
-    }
-
-    return "node." + nodeName + "." + key;
   }
 }
