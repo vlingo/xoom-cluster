@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * are useful for test, but provided in {@code java/main} for access by tests
  * outside of {@code xoom-cluster}.
  */
-public class ClusterProperties {
+public class StaticClusterConfiguration {
   private static final String DefaultApplicationClassname = "io.vlingo.xoom.cluster.model.application.FakeClusterApplicationActor";
   private static final Random random = new Random();
   private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
@@ -28,24 +28,24 @@ public class ClusterProperties {
   public final Properties properties;
   public final List<Node> allNodes;
 
-  private ClusterProperties(Properties properties, List<Node> allNodes) {
+  private StaticClusterConfiguration(Properties properties, List<Node> allNodes) {
     this.properties = properties;
     this.allNodes = allNodes;
   }
 
-  public static ClusterProperties allNodes() {
+  public static StaticClusterConfiguration allNodes() {
     return allNodes(PORT_TO_USE);
   }
 
-  public static ClusterProperties allNodes(final AtomicInteger portSeed) {
+  public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed) {
     return allNodes(PORT_TO_USE, 3);
   }
 
-  public static ClusterProperties allNodes(final AtomicInteger portSeed, final int totalNodes) {
+  public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed, final int totalNodes) {
     return allNodes(PORT_TO_USE, totalNodes, DefaultApplicationClassname);
   }
 
-  public static ClusterProperties allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
+  public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
     java.util.Properties common = common(totalNodes, applicationClassname);
     List<Node> allNodes = allNodes(totalNodes, portSeed);
     if (totalNodes > 1) {
@@ -53,22 +53,22 @@ public class ClusterProperties {
       common.setProperty("cluster.seeds", operationalAddress.full());
     }
 
-    return new ClusterProperties(Properties.openWith(common), allNodes);
+    return new StaticClusterConfiguration(Properties.openWith(common), allNodes);
   }
 
-  public static ClusterProperties oneNode() {
+  public static StaticClusterConfiguration oneNode() {
     return oneNode(PORT_TO_USE);
   }
 
-  public static ClusterProperties oneNode(final AtomicInteger portSeed) {
+  public static StaticClusterConfiguration oneNode(final AtomicInteger portSeed) {
     return oneNode(portSeed, DefaultApplicationClassname);
   }
 
-  public static ClusterProperties oneNode(final AtomicInteger portSeed, final String applicationClassname) {
+  public static StaticClusterConfiguration oneNode(final AtomicInteger portSeed, final String applicationClassname) {
     final Properties properties = Properties.openWith(common(1, applicationClassname));
     final List<Node> allNodes = allNodes(1, portSeed);
 
-    return new ClusterProperties(properties, allNodes);
+    return new StaticClusterConfiguration(properties, allNodes);
   }
 
   private static List<Node> allNodes(final int totalNodes, final AtomicInteger portSeed) {
