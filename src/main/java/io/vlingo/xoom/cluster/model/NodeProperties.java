@@ -30,26 +30,26 @@ public class NodeProperties {
   /**
    * Creates a {@code NodeProperties} instance based on a comma separated list of properties.
    *
-   * @param nodePropertiesString Comma separated list of node properties in the form of 'id:name:host:operationalPort:applicationPort:isSeed'
+   * @param nodePropertiesText Comma separated list of node properties in the form of 'id:name:host:operationalPort:applicationPort:isSeed'
    * @return
    */
-  public static NodeProperties from(String nodePropertiesString) {
-    final String[] nodePropertiesValues = nodePropertiesString.split(":");
+  public static NodeProperties from(String nodePropertiesText) {
+    final String[] nodePropertiesValues = nodePropertiesText.split(":");
     if (nodePropertiesValues.length != 6) {
       throw new IllegalArgumentException("Invalid node properties! Expected format: 'id:name:host:operationalPort:applicationPort:isSeed'");
     }
 
-    final short id = checkedGet(() -> Short.parseShort(nodePropertiesValues[0]), "Invalid 'nodeId' property.");
+    final short id = uncheckedGet(() -> Short.parseShort(nodePropertiesValues[0]), "Invalid 'nodeId' property.");
     final String name = nodePropertiesValues[1];
     final String host = nodePropertiesValues[2];
-    final int operationalPort = checkedGet(() -> Integer.parseInt(nodePropertiesValues[3]), "Invalid 'operationalPort' property.");
-    final int applicationPort = checkedGet(() -> Integer.parseInt(nodePropertiesValues[4]), "Invalid 'applicationPort' property.");
-    final boolean isSeed = checkedGet(() -> Boolean.parseBoolean(nodePropertiesValues[5]), "Invalid 'isSeed' property.");
+    final int operationalPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[3]), "Invalid 'operationalPort' property.");
+    final int applicationPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[4]), "Invalid 'applicationPort' property.");
+    final boolean isSeed = uncheckedGet(() -> Boolean.parseBoolean(nodePropertiesValues[5]), "Invalid 'isSeed' property.");
 
     return new NodeProperties(id, name, host, operationalPort, host, applicationPort, isSeed);
   }
 
-  private static <T> T checkedGet(Supplier<T> getAction, String errorMessage) {
+  private static <T> T uncheckedGet(Supplier<T> getAction, String errorMessage) {
     try {
       return getAction.get();
     } catch (Exception e) {
@@ -143,5 +143,9 @@ public class NodeProperties {
     Address applicationAddress = Address.from(Host.of(applicationHost), applicationPort, AddressType.APP);
 
     return new Node(Id.of(id), Name.of(name), operationalAddress, applicationAddress, this.isSeed());
+  }
+
+  public String asText() {
+    return id + ":" + name + ":" + operationalHost + ":" + operationalPort + ":" + applicationPort + ":" + isSeed;
   }
 }
