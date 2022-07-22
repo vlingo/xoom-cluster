@@ -7,6 +7,7 @@
 
 package io.vlingo.xoom.cluster;
 
+import io.vlingo.xoom.cluster.model.NodeProperties;
 import io.vlingo.xoom.cluster.model.Properties;
 import io.vlingo.xoom.wire.node.*;
 
@@ -26,7 +27,7 @@ public class StaticClusterConfiguration {
   private static final AtomicInteger PORT_TO_USE = new AtomicInteger(10_000 + random.nextInt(50_000));
 
   public final Properties properties;
-  public final List<Node> allNodes;
+  public final List<Node> allNodes; // static configuration of nodes; dynamic configuration of nodes is provided by Registry
 
   private StaticClusterConfiguration(Properties properties, List<Node> allNodes) {
     this.properties = properties;
@@ -38,11 +39,11 @@ public class StaticClusterConfiguration {
   }
 
   public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed) {
-    return allNodes(PORT_TO_USE, 3);
+    return allNodes(portSeed, 3);
   }
 
   public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed, final int totalNodes) {
-    return allNodes(PORT_TO_USE, totalNodes, DefaultApplicationClassname);
+    return allNodes(portSeed, totalNodes, DefaultApplicationClassname);
   }
 
   public static StaticClusterConfiguration allNodes(final AtomicInteger portSeed, final int totalNodes, final String applicationClassname) {
@@ -111,5 +112,10 @@ public class StaticClusterConfiguration {
 
   private static int nextPortToUse(final AtomicInteger portSeed) {
     return portSeed.incrementAndGet();
+  }
+
+  public String propertiesOf(int nodeIndex) {
+    return NodeProperties.from(allNodes.get(nodeIndex))
+            .asText();
   }
 }

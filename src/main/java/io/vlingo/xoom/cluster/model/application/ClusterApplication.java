@@ -2,6 +2,7 @@ package io.vlingo.xoom.cluster.model.application;
 
 import io.vlingo.xoom.actors.*;
 import io.vlingo.xoom.cluster.model.Properties;
+import io.vlingo.xoom.cluster.model.node.Registry;
 import io.vlingo.xoom.wire.fdx.outbound.ApplicationOutboundStream;
 import io.vlingo.xoom.wire.message.RawMessage;
 import io.vlingo.xoom.wire.node.Node;
@@ -34,6 +35,7 @@ public interface ClusterApplication extends Startable, Stoppable, ClusterContext
     private static final long serialVersionUID = -2002705648453794614L;
 
     private Node node;
+    private Registry registry;
     private final Class<A> type;
 
     public ClusterApplicationInstantiator(final Class<A> type) {
@@ -46,6 +48,14 @@ public interface ClusterApplication extends Startable, Stoppable, ClusterContext
 
     public void node(final Node node) {
       this.node = node;
+    }
+
+    public Registry registry() {
+      return registry;
+    }
+
+    public void registry(Registry registry) {
+      this.registry = registry;
     }
 
     @Override

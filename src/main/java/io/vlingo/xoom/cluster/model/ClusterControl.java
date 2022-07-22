@@ -35,6 +35,7 @@ public interface ClusterControl {
 
     final ClusterInitializer initializer = new ClusterInitializer(localNodeProperties, properties, world.defaultLogger());
     instantiator.node(initializer.localNode());
+    instantiator.registry(initializer.registry());
 
     final ClusterApplication application = ClusterApplication.instance(stage, instantiator);
 
