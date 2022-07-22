@@ -13,8 +13,8 @@ import org.junit.Test;
 public class NodePropertiesTest {
   @Test
   public void serializationTest() {
-    final String node1Text = "1:node1:localhost:17171:17172:false";
-    final String node2Text = "2:node2:localhost:17173:17174:true";
+    final String node1Text = "1:node1:false:localhost:17171:17172";
+    final String node2Text = "2:node2:true:localhost:17173:17174";
 
     NodeProperties node1Properties = NodeProperties.from(node1Text);
     Assert.assertEquals(node1Text, node1Properties.asText());

@@ -20,33 +20,33 @@ public class NodeProperties {
     return new NodeProperties(
             node.id().value(),
             node.name().value(),
+            node.isSeed(),
             node.operationalAddress().hostName(),
             node.operationalAddress().port(),
             node.applicationAddress().hostName(),
-            node.applicationAddress().port(),
-            node.isSeed());
+            node.applicationAddress().port());
   }
 
   /**
    * Creates a {@code NodeProperties} instance based on a comma separated list of properties.
    *
-   * @param nodePropertiesText Comma separated list of node properties in the form of 'id:name:host:operationalPort:applicationPort:isSeed'
+   * @param nodePropertiesText Comma separated list of node properties in the form of 'id:name:isSeed:host:operationalPort:applicationPort'
    * @return
    */
   public static NodeProperties from(String nodePropertiesText) {
     final String[] nodePropertiesValues = nodePropertiesText.split(":");
     if (nodePropertiesValues.length != 6) {
-      throw new IllegalArgumentException("Invalid node properties! Expected format: 'id:name:host:operationalPort:applicationPort:isSeed'");
+      throw new IllegalArgumentException("Invalid node properties! Expected format: 'id:name:isSeed:host:operationalPort:applicationPort'");
     }
 
     final short id = uncheckedGet(() -> Short.parseShort(nodePropertiesValues[0]), "Invalid 'nodeId' property.");
     final String name = nodePropertiesValues[1];
-    final String host = nodePropertiesValues[2];
-    final int operationalPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[3]), "Invalid 'operationalPort' property.");
-    final int applicationPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[4]), "Invalid 'applicationPort' property.");
-    final boolean isSeed = uncheckedGet(() -> Boolean.parseBoolean(nodePropertiesValues[5]), "Invalid 'isSeed' property.");
+    final boolean isSeed = uncheckedGet(() -> Boolean.parseBoolean(nodePropertiesValues[2]), "Invalid 'isSeed' property.");
+    final String host = nodePropertiesValues[3];
+    final int operationalPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[4]), "Invalid 'operationalPort' property.");
+    final int applicationPort = uncheckedGet(() -> Integer.parseInt(nodePropertiesValues[5]), "Invalid 'applicationPort' property.");
 
-    return new NodeProperties(id, name, host, operationalPort, host, applicationPort, isSeed);
+    return new NodeProperties(id, name, isSeed, host, operationalPort, host, applicationPort);
   }
 
   private static <T> T uncheckedGet(Supplier<T> getAction, String errorMessage) {
@@ -59,6 +59,7 @@ public class NodeProperties {
 
   private short id;
   private String name;
+  private boolean isSeed;
 
   private String operationalHost;
   private int operationalPort;
@@ -66,20 +67,18 @@ public class NodeProperties {
   private String applicationHost;
   private int applicationPort;
 
-  private boolean isSeed;
-
   public NodeProperties() {
     // Java bean
   }
 
-  public NodeProperties(short id, String name, String operationalHost, int operationalPort, String applicationHost, int applicationPort, boolean isSeed) {
+  public NodeProperties(short id, String name, boolean isSeed, String operationalHost, int operationalPort, String applicationHost, int applicationPort) {
     this.id = id;
     this.name = name;
+    this.isSeed = isSeed;
     this.operationalHost = operationalHost;
     this.operationalPort = operationalPort;
     this.applicationHost = applicationHost;
     this.applicationPort = applicationPort;
-    this.isSeed = isSeed;
   }
 
   public short getId() {
@@ -96,6 +95,14 @@ public class NodeProperties {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public boolean isSeed() {
+    return isSeed;
+  }
+
+  public void setSeed(boolean seed) {
+    isSeed = seed;
   }
 
   public String getOperationalHost() {
@@ -130,22 +137,14 @@ public class NodeProperties {
     this.applicationPort = applicationPort;
   }
 
-  public boolean isSeed() {
-    return isSeed;
-  }
-
-  public void setSeed(boolean seed) {
-    isSeed = seed;
-  }
-
   public Node asNode() {
     Address operationalAddress = Address.from(Host.of(operationalHost), operationalPort, AddressType.OP);
     Address applicationAddress = Address.from(Host.of(applicationHost), applicationPort, AddressType.APP);
 
-    return new Node(Id.of(id), Name.of(name), operationalAddress, applicationAddress, this.isSeed());
+    return new Node(Id.of(id), Name.of(name), this.isSeed, operationalAddress, applicationAddress);
   }
 
   public String asText() {
-    return id + ":" + name + ":" + operationalHost + ":" + operationalPort + ":" + applicationPort + ":" + isSeed;
+    return id + ":" + name + ":" + isSeed + ":" + operationalHost + ":" + operationalPort + ":" + applicationPort;
   }
 }

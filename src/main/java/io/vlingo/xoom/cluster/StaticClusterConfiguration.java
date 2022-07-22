@@ -79,8 +79,8 @@ public class StaticClusterConfiguration {
       final boolean isSeed = totalNodes > 1 && i == 1; // only node1 when multi node configuration
       final Host localhost = Host.of("localhost");
 
-      nodes.add(new Node(Id.of(i), nodeName, Address.from(localhost, nextPortToUse(portSeed), AddressType.OP),
-              Address.from(localhost, nextPortToUse(portSeed), AddressType.APP), isSeed));
+      nodes.add(new Node(Id.of(i), nodeName, isSeed, Address.from(localhost, nextPortToUse(portSeed), AddressType.OP),
+              Address.from(localhost, nextPortToUse(portSeed), AddressType.APP)));
     }
 
     return nodes;

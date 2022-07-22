@@ -66,9 +66,9 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
 
     properties.setProperty("cluster.seeds", "localhost:" + node1SeedPort);
 
-    this.localNodeProperties = "1:node1:localhost:" + node1SeedPort + ":" + nextPortToUseString() + ":true";
-    String node2Properties = "2:node2:localhost:" + nextPortToUseString() + ":" + nextPortToUseString() + ":false";
-    String node3Properties = "3:node3:localhost:" + nextPortToUseString() + ":" + nextPortToUseString() + ":false";
+    this.localNodeProperties = "1:node1:true:localhost:" + node1SeedPort + ":" + nextPortToUseString();
+    String node2Properties = "2:node2:false:localhost:" + nextPortToUseString() + ":" + nextPortToUseString();
+    String node3Properties = "3:node3:false:localhost:" + nextPortToUseString() + ":" + nextPortToUseString();
 
     this.properties = Properties.openForTest(properties);
 
@@ -103,6 +103,6 @@ public abstract class AbstractClusterTest extends AbstractMessageTool {
   }
 
   protected Node nextNodeWith(final int nodeNumber, boolean seed) {
-    return Node.with(Id.of(nodeNumber), Name.of("node" + nodeNumber), Host.of("localhost"), nextPortToUse(), nextPortToUse(), seed);
+    return Node.with(Id.of(nodeNumber), Name.of("node" + nodeNumber), seed, Host.of("localhost"), nextPortToUse(), nextPortToUse());
   }
 }

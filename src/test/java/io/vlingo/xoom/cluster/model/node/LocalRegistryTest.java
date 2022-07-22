@@ -82,7 +82,7 @@ public class LocalRegistryTest extends AbstractClusterTest {
     final Name name = new Name("node" + idValue);
     final Address opAddress = new Address(Host.of("localhost"), 1111 + idValue, AddressType.OP);
     final Address appAddress = new Address(Host.of("localhost"), 1111 + idValue + 1, AddressType.APP);
-    final Node node = new Node(id, name, opAddress, appAddress, false);
+    final Node node = new Node(id, name, false, opAddress, appAddress);
     
     return node;
   }
