@@ -7,97 +7,98 @@
 
 package io.vlingo.xoom.cluster.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
+import io.vlingo.xoom.wire.node.Node;
 import org.junit.Test;
 
-import io.vlingo.xoom.wire.node.Id;
-import io.vlingo.xoom.wire.node.Node;
+import io.vlingo.xoom.cluster.StaticClusterConfiguration;
 
-public class ClusterConfigurationTest extends AbstractClusterTest {
+import static org.junit.Assert.*;
+
+public class ClusterConfigurationTest {
+
+  static final String localhost = "localhost";
+
   @Test
-  public void testAllConfiguredNodes() {
-    final Collection<Node> all = config.allNodes();
+  public void shouldConfigureMultiNodeCluster() {
+    int portSeed = 10_000 + new Random().nextInt(50_000);
+    final StaticClusterConfiguration staticConfiguration = StaticClusterConfiguration.allNodes(new AtomicInteger(portSeed));
 
-    assertEquals(3, all.size());
+    // common
+    assertEquals(Integer.valueOf(4096), staticConfiguration.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), staticConfiguration.properties.getInteger("cluster.app.buffer.size", 0));
 
-    final Set<Node> nodes = new HashSet<>();
-    nodes.add(nextNodeWith(1, false));
-    nodes.add(nextNodeWith(2, true));
-    nodes.add(nextNodeWith(3, false));
+    assertEquals(3, staticConfiguration.allNodes.size());
+    assertEquals(false, staticConfiguration.properties.singleNode());
 
-    for (final Node node : all) {
-      nodes.remove(node);
+    for (int i = 0; i < staticConfiguration.allNodes.size(); i++) {
+      Node node = staticConfiguration.allNodes.get(i);
+
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(++portSeed, node.operationalAddress().port());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals(++portSeed, node.applicationAddress().port());
+      assertEquals( i == 0, node.isSeed());
     }
 
-    assertEquals(0, nodes.size());
+    assertFalse(staticConfiguration.properties.getString("cluster.seeds", "").isEmpty());
   }
 
   @Test
-  public void testAllConfiguredNodeNames() throws Exception {
-    final Collection<String> all = config.allNodeNames();
+  public void shouldConfigureFiveNodeCluster() {
+    int portSeed = 10_000 + new Random().nextInt(50_000);
+    final StaticClusterConfiguration staticConfiguration = StaticClusterConfiguration.allNodes(new AtomicInteger(portSeed), 5);
 
-    assertEquals(3, all.size());
+    // common
+    assertEquals(Integer.valueOf(4096), staticConfiguration.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), staticConfiguration.properties.getInteger("cluster.app.buffer.size", 0));
 
-    final Set<String> allNames = new HashSet<>();
-    allNames.add("node1");
-    allNames.add("node2");
-    allNames.add("node3");
+    assertEquals(5, staticConfiguration.allNodes.size());
+    assertEquals(false, staticConfiguration.properties.singleNode());
 
-    for (final String nodeName : all) {
-      allNames.remove(nodeName);
+    for (int i = 0; i < staticConfiguration.allNodes.size(); i++) {
+      Node node = staticConfiguration.allNodes.get(i);
+
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(++portSeed, node.operationalAddress().port());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals(++portSeed, node.applicationAddress().port());
+      assertEquals( i == 0, node.isSeed());
     }
 
-    assertEquals(0, allNames.size());
+    assertFalse(staticConfiguration.properties.getString("cluster.seeds", "").isEmpty());
   }
-  
+
   @Test
-  public void testAllOtherConfiguredNodes() throws Exception {
-    assertEquals(2, config.allOtherNodes(Id.of(1)).size());
-    assertEquals(2, config.allOtherNodes(Id.of(2)).size());
-    assertEquals(2, config.allOtherNodes(Id.of(3)).size());
-    assertEquals(3, config.allOtherNodes(Id.of(4)).size());
-  }
-  
-  @Test
-  public void testAllGreaterConfiguredNodes() throws Exception {
-    assertEquals(3, config.allGreaterNodes(Id.of(0)).size());
-    assertEquals(2, config.allGreaterNodes(Id.of(1)).size());
-    assertEquals(1, config.allGreaterNodes(Id.of(2)).size());
-    assertEquals(0, config.allGreaterNodes(Id.of(3)).size());
-  }
-  
-  @Test
-  public void testConfiguredNodeMatching() throws Exception {
-    assertEquals(Node.NO_NODE, config.nodeMatching(Id.of(0)));
-    assertEquals("node1", config.nodeMatching(Id.of(1)).name().value());
-    assertEquals("node2", config.nodeMatching(Id.of(2)).name().value());
-    assertEquals("node3", config.nodeMatching(Id.of(3)).name().value());
-    assertEquals(Node.NO_NODE, config.nodeMatching(Id.of(4)));
-  }
-  
-  @Test
-  public void testGreatestConfiguredNodeId() throws Exception {
-    assertEquals(Id.of(3), config.greatestNodeId());
-  }
-  
-  @Test
-  public void testHasConfiguredNode() throws Exception {
-    assertFalse(config.hasNode(Id.of(0)));
-    assertTrue(config.hasNode(Id.of(1)));
-    assertTrue(config.hasNode(Id.of(2)));
-    assertTrue(config.hasNode(Id.of(3)));
-    assertFalse(config.hasNode(Id.of(4)));
-  }
-  
-  @Test
-  public void testTotalConfiguredNodes() throws Exception {
-    assertEquals(3, config.totalNodes());
+  public void shouldConfigureSingleNodeCluster() {
+    int portSeed = 10_000 + new Random().nextInt(50_000);
+    final StaticClusterConfiguration staticConfiguration = StaticClusterConfiguration.oneNode(new AtomicInteger(portSeed));
+
+    // common
+    assertEquals(Integer.valueOf(4096), staticConfiguration.properties.getInteger("cluster.op.buffer.size", 0));
+    assertEquals(Integer.valueOf(10240), staticConfiguration.properties.getInteger("cluster.app.buffer.size", 0));
+
+    assertEquals(1, staticConfiguration.allNodes.size());
+    assertEquals(true, staticConfiguration.properties.singleNode());
+
+    for (int i = 0; i < staticConfiguration.allNodes.size(); i++) {
+      Node node = staticConfiguration.allNodes.get(i);
+
+      assertEquals(i + 1, node.id().value());
+      assertEquals("node" + (i + 1), node.name().value());
+      assertEquals(localhost, node.operationalAddress().hostName());
+      assertEquals(++portSeed, node.operationalAddress().port());
+      assertEquals(localhost, node.applicationAddress().hostName());
+      assertEquals(++portSeed, node.applicationAddress().port());
+      assertFalse(node.isSeed()); // on single node cluster, isSeed is not used
+    }
+
+    assertTrue(staticConfiguration.properties.getString("cluster.seeds", "").isEmpty());
   }
 }

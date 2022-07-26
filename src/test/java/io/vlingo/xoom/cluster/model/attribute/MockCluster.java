@@ -11,9 +11,7 @@ import io.vlingo.xoom.wire.node.Node;
 import org.mockito.Mockito;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,16 +20,18 @@ import static org.mockito.Mockito.when;
 
 class MockCluster {
   private final Node localNode;
-  private final ClusterConfiguration config;
+  private final List<Node> allNodes;
+  private final List<Node> allOtherNodes;
   final Cluster cluster;
   public final Map<Address, Integer> sentMessages;
 
-  MockCluster(Node localNode, ClusterConfiguration config) {
+  MockCluster(Node localNode, List<Node> allNodes, List<Node> allOtherNodes) {
     this.localNode = localNode;
-    this.config = config;
+    this.allNodes = allNodes;
+    this.allOtherNodes = allOtherNodes;
     this.cluster = Mockito.mock(Cluster.class);
     this.sentMessages = new HashMap<>();
-    for (Node otherNode : config.allNodes()) {
+    for (Node otherNode : allNodes) {
       Address address = Address.create(otherNode.operationalAddress().hostName(), otherNode.operationalAddress().port());
       Member member = new Member(otherNode.id().valueString(), otherNode.name().value(), address, "namespace");
 
@@ -60,9 +60,9 @@ class MockCluster {
 
     // configure live nodes to be all config nodes
     when(mockRegistry.allOtherNodes())
-            .thenReturn(config.allOtherNodes(localNode.id()));
+            .thenReturn(new HashSet<>(allOtherNodes));
 
-    doAnswer(invocation -> config.nodeMatching(invocation.getArgument(0)))
+    doAnswer(invocation -> nodeMatching(invocation.getArgument(0)))
             .when(mockRegistry)
             .getNode(any(Id.class));
 
@@ -72,5 +72,12 @@ class MockCluster {
   int messagesTo(Node node) {
     Address address = Address.create(node.operationalAddress().hostName(), node.operationalAddress().port());
     return sentMessages.get(address);
+  }
+
+  private Node nodeMatching(Id id) {
+    return allNodes.stream()
+            .filter(n -> n.id().equals(id))
+            .findAny()
+            .orElse(null);
   }
 }

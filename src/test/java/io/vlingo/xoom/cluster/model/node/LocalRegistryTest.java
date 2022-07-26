@@ -25,7 +25,7 @@ public class LocalRegistryTest extends AbstractClusterTest {
 
   @Test
   public void testNoLiveNodes() {
-    final LocalRegistry registry = new LocalRegistry(testWorld.defaultLogger(), config.nodeMatching(Id.of(3)), 2);
+    final LocalRegistry registry = new LocalRegistry(testWorld.defaultLogger(), allNodes.get(0), 2);
     assertTrue(registry.nodes().isEmpty());
   }
   
@@ -65,7 +65,7 @@ public class LocalRegistryTest extends AbstractClusterTest {
   // Note: join() is tested by nearly every test
   
   private LocalRegistry join3Nodes() {
-    final LocalRegistry registry = new LocalRegistry(testWorld.defaultLogger(), config.nodeMatching(Id.of(3)), 2);
+    final LocalRegistry registry = new LocalRegistry(testWorld.defaultLogger(), allNodes.get(0), 2);
     final Node node1 = nodeOf(1);
     final Node node2 = nodeOf(2);
     final Node node3 = nodeOf(3);
@@ -82,7 +82,7 @@ public class LocalRegistryTest extends AbstractClusterTest {
     final Name name = new Name("node" + idValue);
     final Address opAddress = new Address(Host.of("localhost"), 1111 + idValue, AddressType.OP);
     final Address appAddress = new Address(Host.of("localhost"), 1111 + idValue + 1, AddressType.APP);
-    final Node node = new Node(id, name, opAddress, appAddress, false);
+    final Node node = new Node(id, name, false, opAddress, appAddress);
     
     return node;
   }

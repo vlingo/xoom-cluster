@@ -20,7 +20,7 @@ public class ClusterTest extends AbstractClusterTest {
   @Test
   public void testClusterSnapshotControl() {
     final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(World.startWithDefaults("test"),
-            new DefaultClusterApplicationInstantiator(), properties, "node1");
+            new DefaultClusterApplicationInstantiator(), properties, localNodeProperties);
 
     assertNotNull(control);
   }

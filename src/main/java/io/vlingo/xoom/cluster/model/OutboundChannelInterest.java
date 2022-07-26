@@ -13,7 +13,7 @@ class OutboundChannelInterest implements ClusterMembershipInterest {
   @Override
   public void nodeAdded(Node node, boolean isClusterHealthy) {
     // outboundChannelProvider is creating channels on demand; still, initiate the channel creation:
-    outboundChannelProvider.channelFor(node.id());
+    outboundChannelProvider.channelFor(node);
   }
 
   @Override

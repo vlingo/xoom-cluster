@@ -18,13 +18,11 @@ import org.junit.Test;
 import io.vlingo.xoom.cluster.model.AbstractClusterTest;
 import io.vlingo.xoom.cluster.model.attribute.Confirmables.Confirmable;
 import io.vlingo.xoom.cluster.model.attribute.message.AddAttribute;
-import io.vlingo.xoom.wire.node.Id;
 import io.vlingo.xoom.wire.node.Node;
 
 public class ConfirmablesTest extends AbstractClusterTest {
   private Confirmables consumables;
   private Node localNode;
-  private Id localNodeId;
   private Node remoteNode2;
   private Node remoteNode3;
   private AttributeSet set;
@@ -86,18 +84,16 @@ public class ConfirmablesTest extends AbstractClusterTest {
   public void setUp() throws Exception {
     super.setUp();
     
-    localNodeId = Id.of(1);
+    localNode = config.localNode();
     
-    localNode = config.nodeMatching(localNodeId);
+    remoteNode2 = allNodes.get(1);
     
-    remoteNode2 = config.nodeMatching(Id.of(2));
-    
-    remoteNode3 = config.nodeMatching(Id.of(3));
+    remoteNode3 = allNodes.get(2);
 
     set = AttributeSet.named("test-set");
 
     tracked = set.addIfAbsent(Attribute.from("test-attr", "test-value"));
 
-    consumables = new Confirmables(localNode, () -> config.allOtherNodes(localNodeId));
+    consumables = new Confirmables(localNode, this::allOtherNodes);
   }
 }

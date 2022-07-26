@@ -31,28 +31,28 @@ public final class NodeBootstrap {
     }
   }
 
-  public static NodeBootstrap boot(final String nodeName) throws Exception {
-    return boot(nodeName, false);
+  public static NodeBootstrap boot(final String localNodeProperties) throws Exception {
+    return boot(localNodeProperties, false);
   }
 
-  public static NodeBootstrap boot(final String nodeName, final boolean embedded) throws Exception {
-    return boot(World.start("xoom-cluster"), nodeName, embedded);
+  public static NodeBootstrap boot(final String localNodeProperties, final boolean embedded) throws Exception {
+    return boot(World.start("xoom-cluster"), localNodeProperties, embedded);
   }
 
-  public static NodeBootstrap boot(final World world, final String nodeName, final boolean embedded) throws Exception {
-    return boot(World.start("xoom-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance(), nodeName, embedded);
+  public static NodeBootstrap boot(final World world, final String localNodeProperties, final boolean embedded) throws Exception {
+    return boot(World.start("xoom-cluster"), new DefaultClusterApplicationInstantiator(), Properties.instance(), localNodeProperties, embedded);
   }
 
-  public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String nodeName, final boolean embedded) throws Exception {
+  public static NodeBootstrap boot(final World world, final ClusterApplicationInstantiator<?> instantiator, final Properties properties, final String localNodeProperties, final boolean embedded) throws Exception {
     NodeBootstrap instance;
 
-    Properties.instance().validateRequired(nodeName);
+    Properties.instance().validateRequired();
 
-    final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(world, instantiator, properties, nodeName);
+    final Tuple2<ClusterControl, Logger> control = Cluster.controlFor(world, instantiator, properties, localNodeProperties);
 
-    instance = new NodeBootstrap(control, nodeName);
+    instance = new NodeBootstrap(control, localNodeProperties);
 
-    control._2.info("Successfully started cluster node: '" + nodeName + "'");
+    control._2.info("Successfully started cluster node: '" + localNodeProperties + "'");
 
     if (!embedded) {
       control._2.info("==========");

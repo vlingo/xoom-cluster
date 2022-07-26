@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vlingo.xoom.actors.Actor;
+import io.vlingo.xoom.wire.node.*;
 
 public final class Properties {
   private static Properties instance;
@@ -84,17 +85,6 @@ public final class Properties {
     return pooledBuffers;
   }
 
-  public int applicationPort(String nodeName) {
-    final int port = getInteger(nodeName, "app.port", 0);
-
-    if (port == 0) {
-      throw new IllegalStateException("Must assign an application (app) port to node '"
-          + nodeName + "' in properties file.");
-    }
-
-    return port;
-  }
-
   @SuppressWarnings("unchecked")
   public Class<Actor> clusterApplicationClass() {
     final String classname = clusterApplicationClassname();
@@ -146,39 +136,6 @@ public final class Properties {
     return getInteger("cluster.startup.period", 5000);
   }
 
-  public String host(String nodeName) {
-    final String host = getString(nodeName, "host", "");
-
-    if (host.length() == 0) {
-      throw new IllegalStateException("Must assign a host to node '"
-          + nodeName + "' in properties file.");
-    }
-
-    return host;
-  }
-
-  public short nodeId(String nodeName) {
-    final int nodeId = getInteger(nodeName, "id", -1);
-
-    if (nodeId == -1) {
-      throw new IllegalStateException("Must assign an id to node '"
-          + nodeName + "' in properties file.");
-    }
-
-    return (short) nodeId;
-  }
-
-  public String nodeName(String nodeName) {
-    final String name = getString(nodeName, "name", "");
-
-    if (name.length() == 0) {
-      throw new IllegalStateException("Must assign a name to node '"
-          + nodeName + "' in properties file.");
-    }
-
-    return name;
-  }
-
   public int operationalBufferSize() {
     return getInteger("cluster.op.buffer.size", 4096);
   }
@@ -193,40 +150,22 @@ public final class Properties {
     return pooledBuffers;
   }
 
-  public int operationalPort(String nodeName) {
-    final int port = getInteger(nodeName, "op.port", 0);
-
-    if (port == 0) {
-      throw new IllegalStateException("Must assign an operational (op) port to node '"
-          + nodeName + "' in properties file.");
-    }
-
-    return port;
-  }
-
-  public boolean isSeed(String nodeName) {
-    return getBoolean(nodeName, "seed", false);
-  }
-
   /**
-   * Get all the nodes.
+   * Gets the configured seeds from the cluster.
    *
    * @return
    */
-  public List<String> nodes() {
-    final List<String> nodes = new ArrayList<>();
+  public List<SeedNode> seeds() {
+    final List<SeedNode> seeds = new ArrayList<>();
+    final String commaSeparated = getString("cluster.seeds", "");
 
-    final String commaSeparated = getString("cluster.nodes", "");
-
-    if (commaSeparated.length() == 0) {
-      throw new IllegalStateException("Must declare nodes in properties file.");
+    if (!commaSeparated.isEmpty()) {
+      for (final String seedNodeProperties : commaSeparated.split(",")) {
+        seeds.add(SeedNode.from(seedNodeProperties));
+      }
     }
 
-    for (final String node : commaSeparated.split(",")) {
-      nodes.add(node.trim());
-    }
-
-    return nodes;
+    return seeds;
   }
 
   /**
@@ -235,75 +174,39 @@ public final class Properties {
    * @return
    */
   public boolean singleNode() {
-    return nodes().size() == 1; // || clusterQuorum() == 1;
+    return seeds().size() == 0; // || clusterQuorum() == 1;
   }
 
   public boolean useSSL() {
     return getBoolean("cluster.ssl", false);
   }
 
-  public Boolean getBoolean(final String nodeName, final String key, final Boolean defaultValue) {
-    final String value = getString(nodeName, key, defaultValue.toString());
+  public Boolean getBoolean(final String key, final Boolean defaultValue) {
+    final String value = getString(key, defaultValue.toString());
     return Boolean.parseBoolean(value);
   }
 
-  public Boolean getBoolean(final String key, final Boolean defaultValue) {
-    return getBoolean("", key, defaultValue);
-  }
-
-  public Float getFloat(final String nodeName, final String key, final Float defaultValue) {
-    final String value = getString(nodeName, key, defaultValue.toString());
+  public Float getFloat(final String key, final Float defaultValue) {
+    final String value = getString(key, defaultValue.toString());
     return Float.parseFloat(value);
   }
 
-  public Float getFloat(final String key, final Float defaultValue) {
-    return getFloat("", key, defaultValue);
-  }
-
-  public Integer getInteger(final String nodeName, final String key, final Integer defaultValue) {
-    final String value = getString(nodeName, key, defaultValue.toString());
-    return Integer.parseInt(value);
-  }
-
   public Integer getInteger(final String key, final Integer defaultValue) {
-    return getInteger("", key, defaultValue);
-  }
-
-  public String getString(final String nodeName, final String key, final String defaultValue) {
-    return properties.getProperty(key(nodeName, key), defaultValue);
+    final String value = getString(key, defaultValue.toString());
+    return Integer.parseInt(value);
   }
 
   public String getString(final String key, final String defaultValue) {
     return properties.getProperty(key, defaultValue);
   }
 
-  public void validateRequired(final String nodeName) {
+  public void validateRequired() {
     // assertions in each accessor
-
-    nodeName(nodeName);
-
-    nodeId(nodeName);
-
-    host(nodeName);
-
-    operationalPort(nodeName);
-
-    applicationPort(nodeName);
-
-    nodes();
 
     clusterApplicationClassname();
   }
 
   private Properties(java.util.Properties properties) {
     this.properties = properties;
-  }
-
-  private String key(final String nodeName, final String key) {
-    if (nodeName == null || nodeName.length() == 0) {
-      return key;
-    }
-
-    return "node." + nodeName + "." + key;
   }
 }

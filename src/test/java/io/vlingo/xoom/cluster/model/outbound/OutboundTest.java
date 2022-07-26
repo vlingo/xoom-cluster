@@ -37,7 +37,7 @@ public class OutboundTest extends AbstractClusterTest {
   private Outbound outbound;
 
   @Test
-  public void testBroadcast() throws Exception {
+  public void testBroadcast() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
 
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
@@ -58,7 +58,7 @@ public class OutboundTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testBroadcastPooledByteBuffer() throws Exception {
+  public void testBroadcastPooledByteBuffer() {
     final ConsumerByteBuffer buffer1 = pool.acquire();
     final ConsumerByteBuffer buffer2 = pool.acquire();
     final ConsumerByteBuffer buffer3 = pool.acquire();
@@ -84,20 +84,20 @@ public class OutboundTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testBroadcastToSelectNodes() throws Exception {
+  public void testBroadcastToSelectNodes() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
 
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);
     final RawMessage rawMessage3 = buildRawMessageBuffer(buffer, Message3);
 
-    final List<Node> selectNodes = asList(config.nodeMatching(Id.of(3)));
+    final List<Node> selectNodes = asList(allNodes.get(2)); // node3
 
     outbound.broadcast(selectNodes, rawMessage1);
     outbound.broadcast(selectNodes, rawMessage2);
     outbound.broadcast(selectNodes, rawMessage3);
 
-    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(Id.of(3));
+    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(allNodes.get(2));
 
     assertEquals(Message1, mock.writes.get(0));
     assertEquals(Message2, mock.writes.get(1));
@@ -105,20 +105,20 @@ public class OutboundTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testSendTo() throws Exception {
+  public void testSendTo() {
     final ByteBuffer buffer = ByteBufferAllocator.allocate(properties.operationalBufferSize());
 
     final RawMessage rawMessage1 = buildRawMessageBuffer(buffer, Message1);
     final RawMessage rawMessage2 = buildRawMessageBuffer(buffer, Message2);
     final RawMessage rawMessage3 = buildRawMessageBuffer(buffer, Message3);
 
-    final Id id3 = Id.of(3);
+    final Node node3 = allNodes.get(2);
 
-    outbound.sendTo(rawMessage1, id3);
-    outbound.sendTo(rawMessage2, id3);
-    outbound.sendTo(rawMessage3, id3);
+    outbound.sendTo(rawMessage1, node3);
+    outbound.sendTo(rawMessage2, node3);
+    outbound.sendTo(rawMessage3, node3);
 
-    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(Id.of(3));
+    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(node3);
 
     assertEquals(Message1, mock.writes.get(0));
     assertEquals(Message2, mock.writes.get(1));
@@ -126,7 +126,7 @@ public class OutboundTest extends AbstractClusterTest {
   }
 
   @Test
-  public void testSendToPooledByteBuffer() throws Exception {
+  public void testSendToPooledByteBuffer() {
     final ConsumerByteBuffer buffer1 = pool.acquire();
     final ConsumerByteBuffer buffer2 = pool.acquire();
     final ConsumerByteBuffer buffer3 = pool.acquire();
@@ -138,13 +138,13 @@ public class OutboundTest extends AbstractClusterTest {
     final RawMessage rawMessage3 = buildRawMessageBuffer(buffer3.asByteBuffer(), Message3);
     bytesFrom(rawMessage3, buffer3.asByteBuffer());
 
-    final Id id3 = Id.of(3);
+    final Node node3 = allNodes.get(2);
 
-    outbound.sendTo(buffer1, id3);
-    outbound.sendTo(buffer2, id3);
-    outbound.sendTo(buffer3, id3);
+    outbound.sendTo(buffer1, node3);
+    outbound.sendTo(buffer2, node3);
+    outbound.sendTo(buffer3, node3);
 
-    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(Id.of(3));
+    final MockManagedOutboundChannel mock = (MockManagedOutboundChannel) channelProvider.channelFor(node3);
 
     assertEquals(Message1, mock.writes.get(0));
     assertEquals(Message2, mock.writes.get(1));
@@ -157,7 +157,7 @@ public class OutboundTest extends AbstractClusterTest {
     super.setUp();
 
     pool = new ConsumerByteBufferPool(ElasticResourcePool.Config.of(10), properties.applicationBufferSize());
-    channelProvider = new MockManagedOutboundChannelProvider(Id.of(1), config);
+    channelProvider = new MockManagedOutboundChannelProvider(Id.of(1), allNodes);
     outbound = new Outbound(channelProvider, pool);
   }
 }
