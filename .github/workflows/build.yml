@@ -14,5 +14,3 @@ jobs:
     name: Build and Deploy
     uses: vlingo/xoom-platform/.github/workflows/build.yml@master
     secrets: inherit
-    with:
-      maven-build-cmd: mvn --batch-mode --update-snapshots -Pgithub-releases install -Dtest=\!SecureClientTest
